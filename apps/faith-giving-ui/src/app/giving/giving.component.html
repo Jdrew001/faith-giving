@@ -1,0 +1,85 @@
+<div class="give-page">
+    <div class="card flex justify-content-center align-content-center">
+        <div class="card-container">
+            <div class="row mb-2">
+                <h5 class="mb-0">Your Details</h5>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="Email">
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="First Name">
+                </div>
+
+                <div class="col-md-6">
+                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Last Name">
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Phone">
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <h5 class="mb-0">Giving Details</h5>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <input type="number" class="form-control" id="exampleFormControlInput1" placeholder="$0.00">
+                </div>
+            </div>
+
+            <div class="row mb-1">
+                <fieldset>
+                    <legend>
+                        <div class="flex">
+                            <div class="flex-1">
+                                <p class="mb-0">Offering</p>
+                                <p class="text-sm"><em>(General Offering, Building Fund, etc)</em></p>
+                            </div>
+                            <div class="flex align-items-center">
+                                <i class="pi pi-plus"></i>
+                            </div>
+                        </div>
+                    </legend>
+                    <div class="offering-container">
+                        <div class="row">
+                            <div class="flex">
+                                <div class="flex-1">
+                                    <p>1st Offering</p>
+                                </div>
+                                <div class="flex">
+                                    <i class="pi pi-times"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <input type="number" class="form-control" id="exampleFormControlInput1" placeholder="$0.00">
+                            </div>
+            
+                            <div class="col-md-6">
+                                <p-dropdown styleClass="dropdown" [options]="offeringItems" optionLabel="value" emptyMessage="Select"></p-dropdown>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="row">
+                        <p-button icon="pi pi-plus" styleClass="p-button-rounded p-button-danger p-button-text"></p-button>
+                    </div> -->
+                    
+                    <!-- <div class="col-md-12">
+                        <label for="exampleFormControlInput1" class="form-label">Tithe</label>
+                        <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="0">
+                    </div> -->
+                </fieldset>
+            </div>
+        </div>
+    </div>
+</div>
