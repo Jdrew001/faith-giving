@@ -4,6 +4,11 @@ import { GivingComponent } from './giving.component';
 import { GivingRoutingModule } from './giving-routing.module';
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
+import { CardModule } from 'primeng/card';
+import { InputTextModule } from 'primeng/inputtext';
+import { GivingFormService } from './services/giving-form.service';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CheckboxModule } from 'primeng/checkbox';
 
 @NgModule({
   declarations: [GivingComponent],
@@ -11,7 +16,15 @@ import { DropdownModule } from 'primeng/dropdown';
     CommonModule,
     GivingRoutingModule,
     ButtonModule,
-    DropdownModule
+    DropdownModule,
+    CardModule,
+    InputTextModule,
+    FormsModule,
+    ReactiveFormsModule,
+    CheckboxModule
   ],
+  providers: [
+    GivingFormService
+  ]
 })
 export class GivingModule {}

@@ -1,85 +1,104 @@
-<div class="give-page">
-    <div class="card flex justify-content-center align-content-center">
-        <div class="card-container">
-            <div class="row mb-2">
-                <h5 class="mb-0">Your Details</h5>
-            </div>
-            <div class="row mb-3">
-                <div class="col-md-12">
-                    <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="Email">
+<div class="give-page" [formGroup]="givingForm">
+    <div class="flex justify-content-center align-content-center">
+        <p-card class="flex justify-content-center align-content-center">
+            <div class="card-container">
+                <div class="row mb-2">
+                    <h5 class="mb-0">Your Details</h5>
                 </div>
-            </div>
-
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="First Name">
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <input type="email" formControlName="email" class="form-control" id="exampleFormControlInput1" placeholder="Email">
+                    </div>
                 </div>
-
-                <div class="col-md-6">
-                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Last Name">
+    
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <input type="text" formControlName="firstName" class="form-control" id="exampleFormControlInput1" placeholder="First Name">
+                    </div>
+    
+                    <div class="col-md-6">
+                        <input type="text" formControlName="lastName" class="form-control" id="exampleFormControlInput1" placeholder="Last Name">
+                    </div>
                 </div>
-            </div>
-
-            <div class="row mb-4">
-                <div class="col-md-12">
-                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Phone">
+    
+                <div class="row mb-5">
+                    <div class="col-md-12">
+                        <input type="text" formControlName="phone" class="form-control" id="exampleFormControlInput1" placeholder="Phone">
+                    </div>
                 </div>
-            </div>
-
-            <div class="row mb-2">
-                <h5 class="mb-0">Giving Details</h5>
-            </div>
-
-            <div class="row mb-3">
-                <div class="col-md-12">
-                    <input type="number" class="form-control" id="exampleFormControlInput1" placeholder="$0.00">
+    
+                <div class="row mb-2">
+                    <h5 class="mb-0">Tithe Details</h5>
                 </div>
-            </div>
-
-            <div class="row mb-1">
-                <fieldset>
-                    <legend>
-                        <div class="flex">
-                            <div class="flex-1">
-                                <p class="mb-0">Offering</p>
-                                <p class="text-sm"><em>(General Offering, Building Fund, etc)</em></p>
-                            </div>
-                            <div class="flex align-items-center">
-                                <i class="pi pi-plus"></i>
-                            </div>
-                        </div>
-                    </legend>
-                    <div class="offering-container">
-                        <div class="row">
+    
+                <div class="row mb-5">
+                    <div class="col-md-12">
+                        <input type="number" formControlName="tithe" class="form-control" id="exampleFormControlInput1" placeholder="$0.00">
+                    </div>
+                </div>
+    
+                <div class="row mb-3">
+                    <fieldset>
+                        <legend>
                             <div class="flex">
                                 <div class="flex-1">
-                                    <p>1st Offering</p>
+                                    <h5 class="mb-0">Offering Details</h5>
+                                    <p class="text-xs"><em>(General Offering, Building Fund, etc)</em></p>
                                 </div>
-                                <div class="flex">
-                                    <i class="pi pi-times"></i>
+                                <div class="flex align-items-center">
+                                    <i class="pi pi-plus" (click)="addOffering()"></i>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <input type="number" class="form-control" id="exampleFormControlInput1" placeholder="$0.00">
-                            </div>
-            
-                            <div class="col-md-6">
-                                <p-dropdown styleClass="dropdown" [options]="offeringItems" optionLabel="value" emptyMessage="Select"></p-dropdown>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- <div class="row">
-                        <p-button icon="pi pi-plus" styleClass="p-button-rounded p-button-danger p-button-text"></p-button>
-                    </div> -->
+                        </legend>
+                        <div class="offering-container mb-3" formArrayName="offerings" *ngFor="let form of offerings.controls; let i = index">
+                            <ng-container [formGroupName]="i">
+                                <div class="row">
+                                    <div class="flex">
+                                        <div class="flex-1">
+                                            <p>Offering {{i+1}}</p>
+                                        </div>
+                                        <div class="flex">
+                                            <i class="pi pi-times" (click)="deleteOffering(i)"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <input type="number" class="form-control" formControlName="amount" id="exampleFormControlInput1" placeholder="$0.00">
+                                    </div>
                     
-                    <!-- <div class="col-md-12">
-                        <label for="exampleFormControlInput1" class="form-label">Tithe</label>
-                        <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="0">
-                    </div> -->
-                </fieldset>
+                                    <div class="col-md-6">
+                                        <p-dropdown styleClass="dropdown" formControlName="category" [options]="offeringItems" optionLabel="value" emptyMessage="Select"></p-dropdown>
+                                    </div>
+                                </div>
+
+                                <div class="row" *ngIf="isOtherCategory(i)">
+                                    <div class="col-md-12">
+                                        <input type="text" class="form-control" formControlName="other" id="exampleFormControlInput1" placeholder="General Offering, Building Fund, etc">
+                                    </div>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <div class="row mb-3">
+                    <p-checkbox name="groupname" value="val1" label="Help cover the card processing fee?"></p-checkbox>
+                    <label><em style="font-size: 12px">Total + (2.2% + $0.30)</em></label>
+                </div>
+
+                <div class="row mb-3">
+                    <p>Giving Total: $0.00</p>
+                </div>
+
+                <div class="row">
+                    <hr>
+                </div>
+
+                <div class="row">
+                    <button style="width: 100%" pButton type="button" class="p-button-raised p-button-sm" icon="pi pi-credit-card" iconPos="right">Pay with Stripe</button>
+                </div>
             </div>
-        </div>
+        </p-card>
     </div>
 </div>
