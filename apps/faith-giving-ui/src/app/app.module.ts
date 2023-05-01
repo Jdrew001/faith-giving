@@ -6,6 +6,7 @@ import { AppComponent } from "./app.component";
 import { AppRoutingModule, appRoutes } from "./app.routes";
 import { NxWelcomeComponent } from "./nx-welcome.component";
 import { ButtonModule } from 'primeng/button';
+import { CoreModule } from "./core/core.module";
 
 
 @NgModule({
@@ -14,7 +15,8 @@ import { ButtonModule } from 'primeng/button';
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
-    ButtonModule
+    ButtonModule,
+    CoreModule
   ],
   providers: [],
   bootstrap: [AppComponent],

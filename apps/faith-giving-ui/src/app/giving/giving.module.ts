@@ -9,6 +9,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { GivingFormService } from './services/giving-form.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CheckboxModule } from 'primeng/checkbox';
+import { CoreModule } from '../core/core.module';
 
 @NgModule({
   declarations: [GivingComponent],
@@ -21,7 +22,8 @@ import { CheckboxModule } from 'primeng/checkbox';
     InputTextModule,
     FormsModule,
     ReactiveFormsModule,
-    CheckboxModule
+    CheckboxModule,
+    CoreModule
   ],
   providers: [
     GivingFormService

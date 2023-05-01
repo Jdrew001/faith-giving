@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
+import { FormGroup, FormBuilder, FormArray, Validators } from '@angular/forms';
 import { GiveFormValidator } from '../validators/give-validator';
 
 @Injectable()
@@ -16,10 +16,10 @@ export class GivingFormService {
 
   createGivingForm() {
     this.givingForm = new FormGroup({
-      email: this.fb.control(''),
-      firstName: this.fb.control(''),
-      lastName: this.fb.control(''),
-      phone: this.fb.control(''),
+      email: this.fb.control('', [Validators.required, Validators.email]),
+      firstName: this.fb.control('', [Validators.required]),
+      lastName: this.fb.control('', [Validators.required]),
+      phone: this.fb.control('', [Validators.required]),
       tithe: this.fb.control(0),
       offerings: this.fb.array([])
     }, [this.giveValidator.oneRequired]);

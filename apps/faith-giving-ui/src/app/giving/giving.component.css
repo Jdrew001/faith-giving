@@ -40,3 +40,21 @@ i:hover {
 :host ::ng-deep .p-button-icon {
     margin-left: 10px;
 }
+
+p.error {
+    color: red !important;
+    text-align: left !important;
+    text-transform: none !important;
+    padding: 0px !important;
+    margin: 0px !important;
+    font-size: 10px;
+}
+
+span.error {
+    color: red !important;
+    text-align: left !important;
+    text-transform: none !important;
+    padding: 0px !important;
+    margin: 0px !important;
+    font-size: 10px;
+}
