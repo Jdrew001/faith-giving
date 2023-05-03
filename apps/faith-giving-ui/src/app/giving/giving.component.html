@@ -5,92 +5,13 @@
                 <div class="row mb-2">
                     <h5 class="mb-0">Your Details</h5>
                 </div>
-                <div class="row mb-3">
-                    <div class="col-md-12">
-                        <input type="email" formControlName="email" class="form-control" id="exampleFormControlInput1" placeholder="Email">
-                        <p class="error" style="font-size: 10px;" *ngIf="givingForm.get('email').invalid && formSubmitted">E-mail required</p>
-                    </div>
-                </div>
-    
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <input type="text" formControlName="firstName" class="form-control" id="exampleFormControlInput1" placeholder="First Name">
-                        <p class="error" style="font-size: 10px;" *ngIf="givingForm.get('firstName').invalid && formSubmitted">First Name required</p>
-                    </div>
-    
-                    <div class="col-md-6">
-                        <input type="text" formControlName="lastName" class="form-control" id="exampleFormControlInput1" placeholder="Last Name">
-                        <p class="error" style="font-size: 10px;" *ngIf="givingForm.get('firstName').invalid && formSubmitted">Last Name required</p>
-                    </div>
-                </div>
-    
-                <div class="row mb-5">
-                    <div class="col-md-12">
-                        <input type="text" formControlName="phone" class="form-control" id="exampleFormControlInput1" placeholder="Phone">
-                        <p class="error" style="font-size: 10px;" *ngIf="givingForm.get('phone').invalid && formSubmitted">Phone required</p>
-                    </div>
-                </div>
+                <faith-giving-user-details [formSubmitted]="formSubmitted"></faith-giving-user-details>
     
                 <div class="row mb-2">
                     <h5 class="mb-0">Tithe Details</h5>
                 </div>
-    
-                <div class="row mb-5">
-                    <div class="col-md-12">
-                        <input type="number" formControlName="tithe" class="form-control" id="exampleFormControlInput1" placeholder="$0.00">
-                        <p class="error" style="font-size: 10px;" *ngIf="givingForm.errors && givingForm.errors['oneRequired'] && formSubmitted">Tithe or Offering must be provided</p>
-                    </div>
-                </div>
-    
-                <div class="row mb-3">
-                    <fieldset>
-                        <legend>
-                            <div class="flex">
-                                <div class="flex-1">
-                                    <h5 class="mb-0">Offering Details</h5>
-                                    <p class="text-xs"><em>(General Offering, Building Fund, etc)</em><br>
-                                        <span class="error" style="font-size: 10px;" *ngIf="givingForm.errors && givingForm.errors['oneRequired'] && formSubmitted">Tithe or Offering must be provided</span></p>
-                                    
-                                </div>
-                                <div class="flex align-items-center">
-                                    <i class="pi pi-plus" (click)="addOffering()"></i>
-                                </div>
-                            </div>
-                        </legend>
-                        <div class="offering-container mb-3" formArrayName="offerings" *ngFor="let form of offerings.controls; let i = index">
-                            <ng-container [formGroupName]="i">
-                                <div class="row">
-                                    <div class="flex">
-                                        <div class="flex-1">
-                                            <p>Offering {{i+1}}<br>
-                                                <span class="error" style="font-size: 10px;" *ngIf="form.errors && form.errors['offeringRequired'] && formSubmitted">Offering required.<br>Remove or fill in to continue.</span></p>
-                                        </div>
-                                        <div class="flex">
-                                            <i class="pi pi-times" (click)="deleteOffering(i)"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div class="col-md-6">
-                                        <input type="number" class="form-control" formControlName="amount" id="exampleFormControlInput1" placeholder="$0.00">
-                                    </div>
-                    
-                                    <div class="col-md-6">
-                                        <p-dropdown styleClass="dropdown" formControlName="category" [options]="offeringItems" optionLabel="value" emptyMessage="Select"></p-dropdown>
-                                        <p class="error" style="font-size: 10px;" *ngIf="form.errors && form.errors['categoryRequired'] && formSubmitted">A category must be selected</p>
-                                    </div>
-                                </div>
 
-                                <div class="row" *ngIf="isOtherCategory(i)">
-                                    <div class="col-md-12">
-                                        <input type="text" class="form-control" formControlName="other" id="exampleFormControlInput1" placeholder="General Offering, Building Fund, etc">
-                                        <p class="error" style="font-size: 10px;" *ngIf="form.errors && form.errors['otherRequired'] && formSubmitted">An other offering type must be specified</p>
-                                    </div>
-                                </div>
-                            </ng-container>
-                        </div>
-                    </fieldset>
-                </div>
+                <faith-giving-giving-details [formSubmitted]="formSubmitted"></faith-giving-giving-details>
 
                 <div class="row mb-3">
                     <p-checkbox name="groupname" value="val1" label="Help cover the card processing fee?"></p-checkbox>

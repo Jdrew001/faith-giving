@@ -7,3 +7,8 @@ body {
     margin: unset !important;
     background-color: #f3f3f3;
 }
+
+button {
+    background-color: #e02e2e !important;
+    border: none !important;
+}

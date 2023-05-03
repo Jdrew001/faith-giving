@@ -11,19 +11,7 @@ import { GrowlService } from '../core/growl.service';
 export class GivingComponent implements OnInit {
 
   get givingForm() { return this.formService.givingForm; }
-  get offerings() { return this.formService.offerings; }
   formSubmitted = false;
-
-  offeringItems = [
-    {
-      id: 1,
-      value: 'General Offering'
-    },
-     {
-      id: 2,
-      value: 'Other'
-    }
-  ]
 
   constructor(
     private formService: GivingFormService,
@@ -43,21 +31,6 @@ export class GivingComponent implements OnInit {
     }
 
     this.handleFormError();
-  }
-
-  addOffering() {
-    this.offerings.push(this.formService.addOfferingToArray());
-  }
-
-  deleteOffering(index: number) {
-    this.formService.deleteFromArray(index);
-  }
-
-  isOtherCategory(index: number) {
-    let control = this.formService.offerings.controls[index].get('category') as FormControl;
-
-    console.log('Control', control.value)
-    return control.value?.value === 'Other';
   }
 
   handleFormError() {

@@ -10,9 +10,17 @@ import { GivingFormService } from './services/giving-form.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CheckboxModule } from 'primeng/checkbox';
 import { CoreModule } from '../core/core.module';
+import { UserDetailsComponent } from './user-details/user-details.component';
+import { GivingDetailsComponent } from './giving-details/giving-details.component';
+import { CardDetailsComponent } from './card-details/card-details.component';
 
 @NgModule({
-  declarations: [GivingComponent],
+  declarations: [
+    GivingComponent,
+    UserDetailsComponent,
+    GivingDetailsComponent,
+    CardDetailsComponent,
+  ],
   imports: [
     CommonModule,
     GivingRoutingModule,
@@ -23,10 +31,8 @@ import { CoreModule } from '../core/core.module';
     FormsModule,
     ReactiveFormsModule,
     CheckboxModule,
-    CoreModule
+    CoreModule,
   ],
-  providers: [
-    GivingFormService
-  ]
+  providers: [GivingFormService],
 })
 export class GivingModule {}

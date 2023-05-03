@@ -1,0 +1,33 @@
+.offering-container {
+    border-color: #e0e0e0!important;
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,.1),0 2px 10px 0 rgba(0,0,0,.01)!important;
+    padding: 15px;
+}
+
+:host ::ng-deep .dropdown {
+    width: 100%;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 0.7rem;
+    color: #212529;
+    background-color: transparent;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    -webkit-appearance: none;
+    appearance: none;
+    border-radius: 0.375rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+i {
+    color: #e02e2e;
+}
+
+i:hover {
+    cursor: pointer;
+    color: #851c1c;
+}
+
+:host ::ng-deep .p-button-icon {
+    margin-left: 10px;
+}
