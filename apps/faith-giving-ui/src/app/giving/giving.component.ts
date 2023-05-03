@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { GivingFormService } from './services/giving-form.service';
+import { GivingService } from './services/giving.service';
 import { FormControl, FormGroup } from '@angular/forms';
 import { GrowlService } from '../core/growl.service';
 
@@ -15,10 +16,12 @@ export class GivingComponent implements OnInit {
 
   constructor(
     private formService: GivingFormService,
-    private growlService: GrowlService
+    private growlService: GrowlService,
+    private giveService: GivingService
   ) {}
 
   ngOnInit() {
+    this.giveService.getCategoryReferenceData();
     this.formService.createGivingForm();
   }
 

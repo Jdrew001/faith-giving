@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { GivingFormService } from '../services/giving-form.service';
 import { FormControl } from '@angular/forms';
+import { GivingService } from '../services/giving.service';
 
 @Component({
   selector: 'faith-giving-giving-details',
@@ -14,19 +15,11 @@ export class GivingDetailsComponent {
   get givingForm() { return this.formService.givingForm; }
   get offerings() { return this.formService.offerings; }
 
-  offeringItems = [
-    {
-      id: 1,
-      value: 'General Offering'
-    },
-     {
-      id: 2,
-      value: 'Other'
-    }
-  ]
+  get categories() { return this.givingService.categories; }
 
   constructor(
     private formService: GivingFormService,
+    private givingService: GivingService
   ) { }
 
   addOffering() {
@@ -39,8 +32,6 @@ export class GivingDetailsComponent {
 
   isOtherCategory(index: number) {
     let control = this.formService.offerings.controls[index].get('category') as FormControl;
-
-    console.log('Control', control.value)
     return control.value?.value === 'Other';
   }
   

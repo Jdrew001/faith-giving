@@ -15,12 +15,6 @@ import { initializeApp } from "firebase/app";
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService: ConfigService = app.get(ConfigService);
-  // const adminConfig: ServiceAccount = {
-  //   "projectId": configService.get<string>('FIREBASE_PROJECT_ID'),
-  //   "privateKey": configService.get<string>('FIREBASE_PRIVATE_KEY')
-  //                              .replace(/\\n/g, '\n'),
-  //   "clientEmail": configService.get<string>('FIREBASE_CLIENT_EMAIL'),
-  // };
   const firebaseConfig = {
     apiKey: configService.get<string>('FIREBASE_API_KEY'),
     authDomain: configService.get<string>('FIREBASE_AUTH_DOMAIN'),
@@ -36,9 +30,8 @@ async function bootstrap() {
   const globalPrefix = 'api';
   app.setGlobalPrefix(globalPrefix);
 
-
-
   const port = process.env.PORT || 3000;
+  app.enableCors();
   await app.listen(port);
   Logger.log(
     `🚀 Application is running on: http://localhost:${port}/${globalPrefix}`

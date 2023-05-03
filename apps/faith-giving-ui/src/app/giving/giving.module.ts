@@ -13,6 +13,8 @@ import { CoreModule } from '../core/core.module';
 import { UserDetailsComponent } from './user-details/user-details.component';
 import { GivingDetailsComponent } from './giving-details/giving-details.component';
 import { CardDetailsComponent } from './card-details/card-details.component';
+import { GivingService } from './services/giving.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -32,7 +34,11 @@ import { CardDetailsComponent } from './card-details/card-details.component';
     ReactiveFormsModule,
     CheckboxModule,
     CoreModule,
+    HttpClientModule
   ],
-  providers: [GivingFormService],
+  providers: [
+    GivingFormService,
+    GivingService
+  ],
 })
 export class GivingModule {}
