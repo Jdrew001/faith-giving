@@ -1,34 +1,49 @@
 <div class="give-page" [formGroup]="givingForm">
-    <div class="flex justify-content-center align-content-center">
+    <div class="flex justify-content-center align-content-center" [ngSwitch]="activeFormIndex">
         <p-card class="flex justify-content-center align-content-center">
             <div class="card-container">
-                <div class="row mb-2">
-                    <h5 class="mb-0">Your Details</h5>
-                </div>
-                <faith-giving-user-details [formSubmitted]="formSubmitted"></faith-giving-user-details>
+                <ng-container 
+                    *ngSwitchCase="0">
+                    <div class="row mb-2">
+                        <h5 class="mb-0">Your Details</h5>
+                    </div>
+                    <faith-giving-user-details [formSubmitted]="formSubmitted"></faith-giving-user-details>
+
+                    <div class="row mb-2">
+                        <h5 class="mb-0">Tithe Details</h5>
+                    </div>
+
+                    <faith-giving-giving-details [formSubmitted]="formSubmitted"></faith-giving-giving-details>
+
+                    <div class="row mb-3">
+                        <p-checkbox name="groupname" value="val1" label="Help cover the card processing fee?"></p-checkbox>
+                        <label><em style="font-size: 10px">Total + (2.2% + $0.30)</em></label>
+                    </div>
     
-                <div class="row mb-2">
-                    <h5 class="mb-0">Tithe Details</h5>
-                </div>
+                    <div class="row mb-3">
+                        <p>Giving Total: $0.00</p>
+                    </div>
+    
+                    <div class="row">
+                        <hr>
+                    </div>
+    
+                    <div class="row">
+                        <button (click)="payWithStripe()" style="width: 100%" pButton type="button" class="p-button-raised p-button-sm" icon="pi pi-credit-card" iconPos="right">Pay with Stripe</button>
+                    </div>
 
-                <faith-giving-giving-details [formSubmitted]="formSubmitted"></faith-giving-giving-details>
+                </ng-container>
 
-                <div class="row mb-3">
-                    <p-checkbox name="groupname" value="val1" label="Help cover the card processing fee?"></p-checkbox>
-                    <label><em style="font-size: 10px">Total + (2.2% + $0.30)</em></label>
-                </div>
-
-                <div class="row mb-3">
-                    <p>Giving Total: $0.00</p>
-                </div>
-
-                <div class="row">
-                    <hr>
-                </div>
-
-                <div class="row">
-                    <button (click)="submitForm()" style="width: 100%" pButton type="button" class="p-button-raised p-button-sm" icon="pi pi-credit-card" iconPos="right">Pay with Stripe</button>
-                </div>
+                <ng-container 
+                    *ngSwitchCase="1">
+                    <div>
+                        <div class="row mb-2">
+                            <h5 class="mb-0">Tithe Details</h5>
+                        </div>
+    
+                        <faith-giving-card-details [formSubmitted]="formSubmitted"></faith-giving-card-details>
+                    </div>
+                </ng-container>
             </div>
         </p-card>
     </div>

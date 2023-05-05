@@ -5,6 +5,7 @@ import {MessagesModule} from 'primeng/messages';
 import {MessageModule} from 'primeng/message';
 import { MessageService } from 'primeng/api';
 import {ToastModule} from 'primeng/toast';
+import { StripeService } from './services/stripe.service';
 
 
 
@@ -18,7 +19,8 @@ import {ToastModule} from 'primeng/toast';
   ],
   providers: [
     GrowlService,
-    MessageService
+    MessageService,
+    StripeService
   ],
   exports: [
     MessagesModule,

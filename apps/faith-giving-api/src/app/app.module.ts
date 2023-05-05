@@ -4,9 +4,11 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DataService } from './services/data/data.service';
+import { GivingModule } from './giving/giving.module';
 
 @Module({
   imports: [
+    GivingModule,
     ConfigModule.forRoot({
       envFilePath: '.env',
     }),

@@ -25,8 +25,6 @@ export class GivingService extends BaseService {
     this.http.get(url)
       .pipe(catchError((err) => this.handleError(err)))
       .subscribe((data: Reference[]) => {
-        console.log('data', data)
-        this.growlService.showSuccessMessage('Reference data loaded successfully.')
         this.categories = data;
     });
   }

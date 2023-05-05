@@ -15,6 +15,7 @@ import { GivingDetailsComponent } from './giving-details/giving-details.componen
 import { CardDetailsComponent } from './card-details/card-details.component';
 import { GivingService } from './services/giving.service';
 import { HttpClientModule } from '@angular/common/http';
+import { NgxStripeModule } from 'ngx-stripe';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { HttpClientModule } from '@angular/common/http';
     ReactiveFormsModule,
     CheckboxModule,
     CoreModule,
-    HttpClientModule
+    HttpClientModule,
+    NgxStripeModule.forRoot('pk_test_51IWOf3A0DJoBf0VzbZR7l3xohneGilLnLoYtjesw2BED5SqjGsV8TZa2Xx9d68RCFlmAN87ErPgQhx9UMT1yrC1400omCjotV3')
   ],
   providers: [
     GivingFormService,

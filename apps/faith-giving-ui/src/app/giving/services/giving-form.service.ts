@@ -21,7 +21,7 @@ export class GivingFormService {
       lastName: this.fb.control('', [Validators.required]),
       phone: this.fb.control('', [Validators.required]),
       tithe: this.fb.control(0),
-      offerings: this.fb.array([])
+      offerings: this.fb.array([]),
     }, [this.giveValidator.oneRequired]);
   }
 

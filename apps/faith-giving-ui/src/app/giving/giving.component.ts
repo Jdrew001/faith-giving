@@ -3,6 +3,11 @@ import { GivingFormService } from './services/giving-form.service';
 import { GivingService } from './services/giving.service';
 import { FormControl, FormGroup } from '@angular/forms';
 import { GrowlService } from '../core/growl.service';
+import { StripeService, StripePaymentElementComponent } from 'ngx-stripe';
+import {
+  StripeElementsOptions,
+  PaymentIntent
+} from '@stripe/stripe-js';
 
 @Component({
   selector: 'faith-giving-giving',
@@ -13,6 +18,11 @@ export class GivingComponent implements OnInit {
 
   get givingForm() { return this.formService.givingForm; }
   formSubmitted = false;
+  activeFormIndex = 0;
+
+  elementsOptions: StripeElementsOptions = {
+    locale: 'en'
+  };
 
   constructor(
     private formService: GivingFormService,
@@ -23,6 +33,9 @@ export class GivingComponent implements OnInit {
   ngOnInit() {
     this.giveService.getCategoryReferenceData();
     this.formService.createGivingForm();
+  }
+  payWithStripe() {
+    this.activeFormIndex = 1;
   }
 
   submitForm() {
