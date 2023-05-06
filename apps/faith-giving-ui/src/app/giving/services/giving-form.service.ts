@@ -27,7 +27,7 @@ export class GivingFormService {
       firstName: this.fb.control('', [Validators.required]),
       lastName: this.fb.control('', [Validators.required]),
       phone: this.fb.control('', [Validators.required]),
-      tithe: this.fb.control(0),
+      tithe: this.fb.control('$0.00'),
       offerings: this.fb.array([]),
       feeCovered: this.fb.control(false)
     }, [this.giveValidator.oneRequired]);
@@ -35,8 +35,8 @@ export class GivingFormService {
 
   addOfferingToArray() {
     return new FormGroup({
-      amount: this.fb.control(0),
-      category: this.fb.control(''),
+      amount: this.fb.control('$0.00'),
+      category: this.fb.control(1, [Validators.required]),
       other: this.fb.control('')
     }, [this.giveValidator.offeringRequired, this.giveValidator.validateOffering, this.giveValidator.validateOfferingOther]);
   }

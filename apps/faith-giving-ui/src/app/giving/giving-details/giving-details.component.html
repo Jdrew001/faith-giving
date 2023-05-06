@@ -2,7 +2,7 @@
 <ng-container [formGroup]="givingForm">
     <div class="row mb-5">
         <div class="col-md-12">
-            <input type="number" formControlName="tithe" class="form-control" placeholder="$0.00">
+            <input currencyMask type="text" formControlName="tithe" class="form-control" placeholder="$0.00">
             <p class="error" style="font-size: 10px;" *ngIf="givingForm.errors && givingForm.errors['oneRequired'] && formSubmitted">Tithe or Offering must be provided</p>
         </div>
     </div>
@@ -37,11 +37,11 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <input type="number" class="form-control" formControlName="amount" id="exampleFormControlInput1" placeholder="$0.00">
+                            <input currencyMask type="text" class="form-control" formControlName="amount" id="exampleFormControlInput1" placeholder="$0.00">
                         </div>
         
                         <div class="col-md-6">
-                            <p-dropdown styleClass="dropdown" formControlName="category" [options]="categories" optionLabel="label" emptyMessage="Select"></p-dropdown>
+                            <p-dropdown styleClass="dropdown" formControlName="category" optionValue="value" dataKey="value" [options]="categories" optionLabel="label" emptyMessage="Select"></p-dropdown>
                             <p class="error" style="font-size: 10px;" *ngIf="form.errors && form.errors['categoryRequired'] && formSubmitted">A category must be selected</p>
                         </div>
                     </div>

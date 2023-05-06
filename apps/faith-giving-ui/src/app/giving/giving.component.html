@@ -21,17 +21,22 @@
                     </div>
     
                     <div class="row mb-3">
-                        <p>Giving Total: ${{giveTotal}}</p>
+                        <p>Giving Total: {{giveTotal | currency}}</p>
                     </div>
     
                     <div class="row">
                         <hr>
                     </div>
     
-                    <div class="row">
+                    <div class="row mb-4">
                         <button (click)="payWithStripe()" style="width: 100%" pButton type="button" class="p-button-raised p-button-sm" icon="pi pi-credit-card" iconPos="right">Pay with Stripe</button>
                     </div>
 
+                    <div class="row">
+                        <div class="col-md-12 p-0 text-center">
+                            <a (click)="clearFields()" class="clear-btn">Clear</a>
+                        </div>
+                    </div>
                 </ng-container>
 
                 <ng-container 
@@ -43,7 +48,8 @@
                     <faith-giving-card-details
                         [formSubmitted]="formSubmitted"
                         [stripe]="stripe"
-                        (submit$)="submitForm($event)"></faith-giving-card-details>
+                        (submit$)="submitForm($event)"
+                        (backToPrevious$)="previous()"></faith-giving-card-details>
                 </ng-container>
             </div>
         </p-card>

@@ -72,17 +72,24 @@ export class GivingService extends BaseService {
     });
   }
 
-  calculateTotal(tithe, offering: FormArray) : number {
+  calculateTotal(tithe, offering: {amount: string}[]) : number {
     let offeringTotal = 0;
-    offering?.controls.forEach(val => {
-      offeringTotal += val.get('amount')?.value;
+    let convertedTithe = this.convertToNumber(tithe);
+    
+    offering.forEach(val => {
+      offeringTotal += this.convertToNumber(val?.amount);
+      console.log('convertedTithe', val?.amount)
     });
 
-    if (this.formService.feeCovered.value && (tithe.value + offeringTotal) !== 0) {
-      return +(tithe.value + offeringTotal + (((tithe.value + offeringTotal) * GiveConstants.RATE_FEE) + 0.30)).toFixed(2);
+    if (this.formService.feeCovered.value && (tithe + offeringTotal) !== 0) {
+      return +(convertedTithe + offeringTotal + (((convertedTithe + offeringTotal) * GiveConstants.RATE_FEE) + 0.30)).toFixed(1);
     }
 
-    return tithe.value + offeringTotal;
+    return convertedTithe + offeringTotal;
+  }
+
+  convertToNumber(value: string) {
+    return parseFloat(value.replace(/[$,]/g, ""));
   }
 
   private processPayment(paymentMethod: any) {
@@ -113,7 +120,23 @@ export class GivingService extends BaseService {
   private generateBodyForPayment(paymentMethod: any) {
     return {
       paymentMethodId: paymentMethod['paymentMethod']['id'],
-      giveDetails: this.formService.givingForm.getRawValue()
+      giveDetails: this.convertStringValueToNumber(this.formService.givingForm.getRawValue())
+    }
+  }
+
+  private convertStringValueToNumber(rawValue) {
+    let convertedTithe = this.convertToNumber(rawValue.tithe);
+    let convertedOfferings = rawValue.offerings.map(val => {
+      return {
+        ...val,
+        amount: this.convertToNumber(val.amount)
+      }
+    });
+
+    return {
+      ...rawValue,
+      tithe: convertedTithe,
+      offerings: convertedOfferings
     }
   }
 

@@ -9,10 +9,10 @@ export class GrowlService {
   ) { }
 
   showErrorMessage(message: string) {
-    this.messageService.add({ severity: 'error', summary: "Validation Failure", detail: message });
+    this.messageService.add({ severity: 'error', summary: "Failure", detail: message });
   }
 
   showSuccessMessage(message: string) {
-    this.messageService.add({ severity: 'success', summary: "Validation Failure", detail: message });
+    this.messageService.add({ severity: 'success', summary: "Success", detail: message });
   }
 }

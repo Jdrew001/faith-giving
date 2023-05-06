@@ -3,7 +3,6 @@ import { GivingFormService } from './services/giving-form.service';
 import { GivingService } from './services/giving.service';
 import { GrowlService } from '../core/growl.service';
 import { GiveConstants } from './giving.constants';
-import { FormGroup } from '@angular/forms';
 
 declare var Stripe;
 
@@ -31,6 +30,11 @@ export class GivingComponent implements OnInit {
     this.stripe = Stripe(GiveConstants.STRIPE_PK);
     this.giveService.getCategoryReferenceData();
     this.formService.createGivingForm();
+
+    this.formService.givingForm.valueChanges.subscribe((value) => {
+      console.log('value', value)
+      this.giveTotal = this.giveService.calculateTotal(value.tithe, value.offerings);
+    });
   }
   payWithStripe() {
     this.formSubmitted = true;
@@ -38,7 +42,6 @@ export class GivingComponent implements OnInit {
       this.growlService.showErrorMessage('Please fix the errors in the form before submitting.');
       return;
     }
-    // this.giveService.generatePaymentIntent(this.givingForm.getRawValue());
     this.giveService.activeIndex = 1;
   }
 
@@ -50,14 +53,17 @@ export class GivingComponent implements OnInit {
     this.growlService.showErrorMessage('Please fix the errors in the form before submitting.');
   }
 
-  ngDoCheck() {
-    const titheAmount = this.formService.tithe;
-    if (!titheAmount.value) { titheAmount.setValue(0) }
-    this.formService.offerings.controls.forEach((val: FormGroup)=> {
-      let offering = val.get('amount');
-      if (!offering?.value) { offering?.setValue(0) };
-    })
-    
-    this.giveTotal = this.giveService.calculateTotal(titheAmount, this.formService.offerings);
+  convertToNumber(value: string) {
+    return parseFloat(value.replace(/[$,\.]/g, ""));
+  }
+
+  previous() {
+    this.giveService.activeIndex--;
+  }
+
+  clearFields() {
+    this.formService.givingForm.markAsPristine();
+    this.formService.givingForm.reset();
+    this.formSubmitted = false;
   }
 }

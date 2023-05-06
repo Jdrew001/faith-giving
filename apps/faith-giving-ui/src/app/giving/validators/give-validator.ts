@@ -22,8 +22,6 @@ export class GiveFormValidator {
         const offeringOther = giveForm.get('other');
         
         if (offeringControl && offeringControl.value !== 0) {
-            console.log('Offering Other', offeringOther.value);
-            console.log('Offering Category', offeringCat.value);
             if (offeringCat && offeringCat.value === 'Other' && offeringOther && (offeringOther.value === '' || !offeringOther.value)) {
                 return { 'otherRequired': true };
             }

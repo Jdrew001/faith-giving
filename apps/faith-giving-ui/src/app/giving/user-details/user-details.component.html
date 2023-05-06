@@ -20,7 +20,7 @@
     
     <div class="row mb-5">
         <div class="col-md-12">
-            <input type="text" formControlName="phone" class="form-control" id="exampleFormControlInput1" placeholder="Phone">
+            <input mask="(000) 000-0000" type="text" formControlName="phone" class="form-control" id="exampleFormControlInput1" placeholder="Phone">
             <p class="error" style="font-size: 10px;" *ngIf="givingForm.get('phone').invalid && formSubmitted">Phone required</p>
         </div>
     </div>
