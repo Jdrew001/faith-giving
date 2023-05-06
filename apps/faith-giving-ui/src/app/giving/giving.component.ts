@@ -14,7 +14,7 @@ declare var Stripe;
 export class GivingComponent implements OnInit {
 
   get givingForm() { return this.formService.givingForm; }
-  formSubmitted = false;
+  get formSubmitted() { return this.giveService.formSubmitted; }
   get activeFormIndex() { return this.giveService.activeIndex; }
 
   stripe;
@@ -37,7 +37,7 @@ export class GivingComponent implements OnInit {
     });
   }
   payWithStripe() {
-    this.formSubmitted = true;
+    this.giveService.formSubmitted = true;
     if (this.givingForm.invalid) {
       this.growlService.showErrorMessage('Please fix the errors in the form before submitting.');
       return;
@@ -64,6 +64,6 @@ export class GivingComponent implements OnInit {
   clearFields() {
     this.formService.givingForm.markAsPristine();
     this.formService.givingForm.reset();
-    this.formSubmitted = false;
+    this.giveService.formSubmitted = false;
   }
 }

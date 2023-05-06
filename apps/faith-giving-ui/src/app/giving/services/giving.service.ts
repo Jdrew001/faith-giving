@@ -22,6 +22,7 @@ export class GivingService extends BaseService {
   set paymentIntent(value) { this._paymentIntent = value; }
 
   activeIndex = 0;
+  formSubmitted = false;
 
   constructor(
     private http: HttpClient,
@@ -142,7 +143,9 @@ export class GivingService extends BaseService {
 
   private handlePaymentSuccess(result: any) {
     if (result['success']) {
-      this.formService.givingForm.reset();
+      this.formService.createGivingForm();
+      this.formService.givingForm.markAsPristine();
+      this.formSubmitted = false;
       this.growlService.showSuccessMessage('Your payment was successful!');
       this.activeIndex = 0;
     } else {
