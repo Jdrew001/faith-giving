@@ -1,4 +1,7 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { GiveConstants } from '../giving.constants';
+
+declare var Stripe;
 
 @Component({
   selector: 'faith-giving-card-details',
@@ -54,7 +57,9 @@ export class CardDetailsComponent implements AfterViewInit {
     invalid: 'invalid',
   };
 
-  constructor() {}
+  constructor() {
+    this.stripe = Stripe(GiveConstants.STRIPE_PK);
+  }
 
   ngAfterViewInit() {
     setTimeout(() => {

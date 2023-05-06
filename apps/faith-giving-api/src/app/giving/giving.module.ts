@@ -3,6 +3,7 @@ import { GivingService } from './giving.service';
 import { GivingController } from './giving.controller';
 import { ConfigModule } from '@nestjs/config';
 import { DataService } from '../services/data/data.service';
+import { StripeService } from '../services/stripe.service';
 
 @Module({
   imports: [
@@ -11,6 +12,6 @@ import { DataService } from '../services/data/data.service';
     }),
   ],
   controllers: [GivingController],
-  providers: [GivingService, DataService],
+  providers: [GivingService, DataService, StripeService],
 })
 export class GivingModule {}
