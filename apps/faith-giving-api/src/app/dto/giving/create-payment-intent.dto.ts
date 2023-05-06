@@ -7,6 +7,7 @@ export interface CreatePaymentIntentDto {
     phone: string;
     tithe: number;
     offerings: Offering[];
+    feeCovered: boolean;
 }
 
 export interface Offering {

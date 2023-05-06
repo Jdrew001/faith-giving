@@ -1,13 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit } from '@angular/core';
 import { GivingFormService } from './services/giving-form.service';
 import { GivingService } from './services/giving.service';
-import { FormControl, FormGroup } from '@angular/forms';
 import { GrowlService } from '../core/growl.service';
-import { StripeService, StripePaymentElementComponent } from 'ngx-stripe';
-import {
-  StripeElementsOptions,
-  PaymentIntent
-} from '@stripe/stripe-js';
+import { GiveConstants } from './giving.constants';
+import { FormGroup } from '@angular/forms';
+
+declare var Stripe;
 
 @Component({
   selector: 'faith-giving-giving',
@@ -18,11 +16,10 @@ export class GivingComponent implements OnInit {
 
   get givingForm() { return this.formService.givingForm; }
   formSubmitted = false;
-  activeFormIndex = 0;
+  get activeFormIndex() { return this.giveService.activeIndex; }
 
-  elementsOptions: StripeElementsOptions = {
-    locale: 'en'
-  };
+  stripe;
+  giveTotal = 0;
 
   constructor(
     private formService: GivingFormService,
@@ -31,25 +28,36 @@ export class GivingComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.stripe = Stripe(GiveConstants.STRIPE_PK);
     this.giveService.getCategoryReferenceData();
     this.formService.createGivingForm();
   }
   payWithStripe() {
-    this.activeFormIndex = 1;
-  }
-
-  submitForm() {
     this.formSubmitted = true;
-    if (!this.givingForm.invalid) {
-      console.log('Form Submitted', this.givingForm.getRawValue());
-
+    if (this.givingForm.invalid) {
+      this.growlService.showErrorMessage('Please fix the errors in the form before submitting.');
       return;
     }
+    // this.giveService.generatePaymentIntent(this.givingForm.getRawValue());
+    this.giveService.activeIndex = 1;
+  }
 
-    this.handleFormError();
+  async submitForm(data: {number: ElementRef, zipCode: number}) {
+    await this.giveService.submitPayment(this.stripe, data.number, data.zipCode);
   }
 
   handleFormError() {
     this.growlService.showErrorMessage('Please fix the errors in the form before submitting.');
+  }
+
+  ngDoCheck() {
+    const titheAmount = this.formService.tithe;
+    if (!titheAmount.value) { titheAmount.setValue(0) }
+    this.formService.offerings.controls.forEach((val: FormGroup)=> {
+      let offering = val.get('amount');
+      if (!offering?.value) { offering?.setValue(0) };
+    })
+    
+    this.giveTotal = this.giveService.calculateTotal(titheAmount, this.formService.offerings);
   }
 }

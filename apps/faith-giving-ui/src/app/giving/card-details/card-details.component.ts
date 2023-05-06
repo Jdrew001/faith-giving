@@ -1,7 +1,6 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { GiveConstants } from '../giving.constants';
-
-declare var Stripe;
+import { GrowlService } from '../../core/growl.service';
 
 @Component({
   selector: 'faith-giving-card-details',
@@ -11,6 +10,7 @@ declare var Stripe;
 export class CardDetailsComponent implements AfterViewInit {
 
   @Input() formSubmitted: boolean;
+  @Input() stripe;
 
   @ViewChild('numberElement') numberElement: ElementRef;
   @ViewChild('expElement') expElement: ElementRef;
@@ -19,7 +19,6 @@ export class CardDetailsComponent implements AfterViewInit {
   @Output() submit$: EventEmitter<any> = new EventEmitter();
   @Output() backToPrevious$: EventEmitter<any> = new EventEmitter(); 
 
-  stripe;
   number;
   exp;
   cvv;
@@ -57,8 +56,13 @@ export class CardDetailsComponent implements AfterViewInit {
     invalid: 'invalid',
   };
 
-  constructor() {
-    this.stripe = Stripe(GiveConstants.STRIPE_PK);
+  get isCreditCardFormValid() {
+    return !this.cardErrors && !this.expErrors && !this.cvvErrors && this.zipCode.toString().length !== '' && this.zipCode.toString().length === 5;
+  }
+
+  constructor(
+    private growlService: GrowlService
+  ) {
   }
 
   ngAfterViewInit() {
@@ -69,7 +73,11 @@ export class CardDetailsComponent implements AfterViewInit {
   }
 
   submit() {
-    this.submit$.next(true);
+    if (!this.isCreditCardFormValid) {
+      this.growlService.showErrorMessage('Please fix the errors in the form before submitting.');
+      return;
+    }
+    this.submit$.next({number: this.number, zipCode: this.zipCode});
   }
 
   backToPrevious() {

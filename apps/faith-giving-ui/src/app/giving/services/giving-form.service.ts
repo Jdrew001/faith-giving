@@ -10,6 +10,13 @@ export class GivingFormService {
 
   get offerings() { return this.givingForm.controls['offerings'] as FormArray; }
 
+  get email() { return this.givingForm.controls['email']; }
+  get firstName() { return this.givingForm.controls['firstName']; }
+  get lastName() { return this.givingForm.controls['lastName']; }
+  get phone() { return this.givingForm.controls['phone']; }
+
+  get tithe() { return this.givingForm.controls['tithe']; }
+  get feeCovered() { return this.givingForm.controls['feeCovered']; }
   constructor(
     private fb: FormBuilder
   ) { }
@@ -22,6 +29,7 @@ export class GivingFormService {
       phone: this.fb.control('', [Validators.required]),
       tithe: this.fb.control(0),
       offerings: this.fb.array([]),
+      feeCovered: this.fb.control(false)
     }, [this.giveValidator.oneRequired]);
   }
 

@@ -1,4 +1,4 @@
-<div class="row justify-content-center cc-info">
+<div class="row cc-info mb-2">
     <div class="col-md-12 p-0">
         <div #numberElement class="input form-control" id="numberElement"></div>
         <p class="error" style="font-size: 10px;margin: 2px !important;" *ngIf="cardErrors?.error && formSubmitted">{{ cardErrors?.error?.message }}</p>
@@ -6,7 +6,7 @@
     </div>
 </div>
 
-<div class="row justify-content-center">
+<div class="row mb-2">
     <div class="col-md-12 p-0">
       <div #expElement class="input form-control" id="expElement "></div>
       <p class="error" style="font-size: 10px;margin: 2px !important;" *ngIf="expErrors?.error && formSubmitted">{{ expErrors?.error?.message }}</p>
@@ -14,7 +14,7 @@
     </div>
 </div>
 
-<div class="row justify-content-center">
+<div class="row mb-2">
     <div class="col-md-12 p-0">
       <div #cvvElement class="input form-control" id="cvvElement"></div>
       <p class="error" style="font-size: 10px;margin: 2px !important;" *ngIf="cvvErrors?.error && formSubmitted">{{ cvvErrors?.error?.message }}</p>
@@ -22,17 +22,15 @@
     </div>
 </div>
 
-<div class="row justify-content-center pb-5">
+<div class="row mb-2">
     <div class="col-md-12 p-0">
         <input [(ngModel)]="zipCode" placeholder="ZIP CODE" mdbInput class="form-control zip-code" type="number" max="5">
         <p class="error" style="font-size: 10px;margin: 2px !important;" *ngIf="(zipCode === '') && formSubmitted">Please provide a zip code</p>
     </div>
 </div>
 
-<div class="row justify-content-center pay ">
-    <div class="col-md-12 p-0">
-        <a mdbBtn class="waves-light button btn-block z-depth-1" style="font-size: 15px;" (click)="submit()">Submit</a>
-    </div>
+<div class="row mb-2">
+    <button (click)="submit()" style="width: 100%" pButton type="button" class="p-button-raised p-button-sm" icon="pi pi-credit-card" iconPos="right">Pay with Stripe</button>
 </div>
 
 <div class="row justify-content-center pay">

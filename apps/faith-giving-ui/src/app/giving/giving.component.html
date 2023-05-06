@@ -16,12 +16,12 @@
                     <faith-giving-giving-details [formSubmitted]="formSubmitted"></faith-giving-giving-details>
 
                     <div class="row mb-3">
-                        <p-checkbox name="groupname" value="val1" label="Help cover the card processing fee?"></p-checkbox>
+                        <p-checkbox name="groupname" [binary]="true" formControlName="feeCovered" label="Help cover the card processing fee?"></p-checkbox>
                         <label><em style="font-size: 10px">Total + (2.2% + $0.30)</em></label>
                     </div>
     
                     <div class="row mb-3">
-                        <p>Giving Total: $0.00</p>
+                        <p>Giving Total: ${{giveTotal}}</p>
                     </div>
     
                     <div class="row">
@@ -36,13 +36,14 @@
 
                 <ng-container 
                     *ngSwitchCase="1">
-                    <div>
-                        <div class="row mb-2">
-                            <h5 class="mb-0">Tithe Details</h5>
-                        </div>
-    
-                        <faith-giving-card-details [formSubmitted]="formSubmitted"></faith-giving-card-details>
+                    <div class="row mb-2">
+                        <h5 class="mb-0">Card Details</h5>
                     </div>
+
+                    <faith-giving-card-details
+                        [formSubmitted]="formSubmitted"
+                        [stripe]="stripe"
+                        (submit$)="submitForm($event)"></faith-giving-card-details>
                 </ng-container>
             </div>
         </p-card>
