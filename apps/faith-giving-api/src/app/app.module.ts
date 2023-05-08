@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { DataService } from './services/data/data.service';
 import { GivingModule } from './giving/giving.module';
 
@@ -11,7 +11,7 @@ import { GivingModule } from './giving/giving.module';
     GivingModule,
     ConfigModule.forRoot({
       envFilePath: '.env',
-    }),
+    })
   ],
   controllers: [AppController],
   providers: [AppService, DataService],

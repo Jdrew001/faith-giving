@@ -1,11 +1,9 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { DataService } from '../services/data/data.service';
 import { CreatePaymentIntentDto } from '../dto/giving/create-payment-intent.dto';
 import { StripeService } from '../services/stripe.service';
 import { GiveDetails, PaymentDTO } from '../dto/giving/payment.dto';
-import { get, ref, set } from 'firebase/database';
-import { AppConstants } from '../app.constant';
-const { v4: uuidv4 } = require('uuid');
+import { getDocs, where, query, addDoc } from 'firebase/firestore';
 
 @Injectable()
 export class GivingService {
@@ -21,7 +19,13 @@ export class GivingService {
     }
 
     async submitPayment(body: PaymentDTO) {
-        const payment = await this.stripeService.submitPayment(body);
+        let payment;
+        try {
+            payment = await this.stripeService.submitPayment(body);
+        } catch (error) {
+            throw new BadRequestException('An error occurred', { cause: new Error(), description: 'error submitting payment' });
+        }
+       
 
         if (payment.status == 'succeeded') {
             let uploadResult = await this.uploadGivingInformation(body.giveDetails);
@@ -33,23 +37,27 @@ export class GivingService {
     }
 
     async uploadGivingInformation(data: GiveDetails) {
-        let refDb = ref(this.dataService.getDatabase(), `${this.dataService.dbPath}/${AppConstants.OFFERINGS_PATH}/${uuidv4()}`);
+        let result;
         try {
-            await set(refDb, data);
-            Logger.log(`Giving information uploaded successfully`);
+            result = addDoc(this.dataService.collection('giving'), data);
         } catch (error) {
             Logger.error(`Error uploading giving information: ${error}`);
             return false;
         }
 
-        return true;
+        return result;
     }
 
-    async getGivingInformationForUser() {
-        let refDb = ref(this.dataService.getDatabase(), `${this.dataService.dbPath}/${AppConstants.OFFERINGS_PATH}`);
-        let data = await get(refDb);
-        Logger.log(`Giving information retrieved successfully`, data.val());
-        let result = data.val().filter(d => d.email == 'dtatkison@gmail.com');
-        return data.exists() ? result : [];
+    async getGivingInformationForUser(email: string) {
+        let data;
+        try {
+            let col = query(this.dataService.collection('giving'), where('email', '==', email));
+            data = await getDocs(col);
+        } catch (error) {
+            Logger.error(`Error getting documents: ${error}`);
+            throw new BadRequestException('An error occurred', { cause: new Error(), description: 'error retrieving giving information' })
+        }
+
+        return {data: data.docs.map(doc => doc.data()) as GiveDetails[], length: data.docs.length};
     }
 }

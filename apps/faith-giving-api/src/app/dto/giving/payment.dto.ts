@@ -5,7 +5,7 @@ export interface PaymentDTO {
     giveDetails: GiveDetails;
 }
 
-export interface GiveDetails {
+export class GiveDetails {
     email: string;
     firstName: string;
     lastName: string;

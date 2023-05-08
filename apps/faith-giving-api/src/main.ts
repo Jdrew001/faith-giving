@@ -11,6 +11,7 @@ import { ConfigService } from '@nestjs/config';
 
 // Import firebase-admin
 import { initializeApp } from "firebase/app";
+import * as admin from "firebase-admin";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -31,7 +32,9 @@ async function bootstrap() {
   app.setGlobalPrefix(globalPrefix);
 
   const port = process.env.PORT || 3000;
-  app.enableCors();
+  app.enableCors({
+    origin: ["http://localhost:4200"]
+  });
   await app.listen(port);
   Logger.log(
     `🚀 Application is running on: http://localhost:${port}/${globalPrefix}`

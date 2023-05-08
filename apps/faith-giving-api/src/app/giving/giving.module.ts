@@ -4,12 +4,13 @@ import { GivingController } from './giving.controller';
 import { ConfigModule } from '@nestjs/config';
 import { DataService } from '../services/data/data.service';
 import { StripeService } from '../services/stripe.service';
+import { FirebaseModule } from '@nhogs/nestjs-firebase';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: '.env',
-    }),
+    })
   ],
   controllers: [GivingController],
   providers: [GivingService, DataService, StripeService],

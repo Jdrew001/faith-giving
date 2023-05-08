@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { CreatePaymentIntentDto } from '../dto/giving/create-payment-intent.dto';
 import { GivingService } from './giving.service';
 import { PaymentDTO } from '../dto/giving/payment.dto';
@@ -10,6 +10,12 @@ export class GivingController {
         private givingService: GivingService
     ) {}
 
+    @Get("getGivingInformationForUser/:email")
+    async getGivingInformationForUser(@Param('email') email: string) {
+        if (!email) throw new BadRequestException('An error occurred', { cause: new Error(), description: 'email required' });
+        return this.givingService.getGivingInformationForUser(email);
+    }
+
     @Post("createPaymentIntent")
     createPaymentIntent(@Body() body: CreatePaymentIntentDto) {
         return this.givingService.createPaymentIntent(body);
@@ -19,10 +25,5 @@ export class GivingController {
     async submitPayment(@Body() body: PaymentDTO) {
         await this.givingService.submitPayment(body);
         return {success: true, message: "Payment submitted successfully"}
-    }
-
-    @Get("getGivingInformationForUser")
-    async getGivingInformationForUser() {
-        return this.givingService.getGivingInformationForUser();
     }
 }

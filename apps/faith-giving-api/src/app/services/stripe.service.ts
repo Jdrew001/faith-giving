@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import Stripe from 'stripe';
 import { CreatePaymentIntentDto } from '../dto/giving/create-payment-intent.dto';
 import { PaymentDTO } from '../dto/giving/payment.dto';
@@ -29,12 +29,17 @@ export class StripeService {
     async createPaymentIntent(data: CreatePaymentIntentDto) {
         Logger.log(`Creating payment intent`);
         let total = this.getTotal(data.tithe, data.offerings, data.feeCovered);
+        let paymentIntent;
         Logger.log(`Total: ${total}`);
-        let paymentIntent: Stripe.PaymentIntent = await this.stripe.paymentIntents.create({
-            amount: total * 100, // TODO: This needs to be calculated based on the amount passed in
-            currency: 'usd',
-            payment_method_types: ['card'],
-        });
+        try {
+            paymentIntent = await this.stripe.paymentIntents.create({
+                amount: total * 100, // TODO: This needs to be calculated based on the amount passed in
+                currency: 'usd',
+                payment_method_types: ['card'],
+            });
+        } catch (error) {
+            throw new BadRequestException('An error occurred', { cause: new Error(), description: 'error creating payment intent' });
+        }
         return {id: paymentIntent.id, clientSecret: paymentIntent.client_secret };
     }
 
@@ -47,12 +52,12 @@ export class StripeService {
 
         if (!payment) {
             Logger.error(`Payment failed`, payment);
-            throw new Error(`Payment failed`);
+            throw new BadRequestException('An error occurred', { cause: new Error(), description: 'error submitting payment' });
         }
 
         if (payment.status != 'succeeded') {
             Logger.error(`Payment failed`, payment);
-            throw new Error(`Payment failed`);
+            throw new BadRequestException('An error occurred', { cause: new Error(), description: 'error submitting payment' });
         }
 
         Logger.log(`Payment succeeded`, payment);
