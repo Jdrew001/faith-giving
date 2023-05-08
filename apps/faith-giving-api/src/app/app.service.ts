@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { DataService } from './services/data/data.service';
-import { ref, child, get } from "firebase/database";
 import { AppConstants } from './app.constant';
 import { Utils } from './utils/util';
 import { ReferenceDto } from './dto/reference.dto';
+import { getDocs, query, where } from 'firebase/firestore';
 
 @Injectable()
 export class AppService {
@@ -15,13 +15,14 @@ export class AppService {
   }
 
   async getReferenceData(): Promise<ReferenceDto[]> {
-    const offeringCategories = ref(this.dataService.getDatabase(), `${this.dataService.dbPath}/${AppConstants.OFFERINGS_REFERENCE_PATH}`);
-    let data = await get(offeringCategories);
-    let result = Utils.objectsToArray(data.val()) as ReferenceDto[];
-    return data.exists() ? this.filterSortRefData(result) : [];
-  }
+    let refData;
+    try {
+      refData = await getDocs(query(this.dataService.collection('reference'), where('activeInd', '==', 'A')));
+    } catch (error) {
+      Logger.error(`Error getting documents: ${error}`);
+      throw new BadRequestException('An error occurred', { cause: new Error(), description: 'error retrieving reference data' })
+    }
 
-  private filterSortRefData(data: ReferenceDto[]) {
-    return data.filter(d => d.activeInd == 'A').sort((a, b) => a.value - b.value);
+    return refData.docs.map(doc => doc.data()).sort((a, b) => a.id - b.id) as ReferenceDto[];
   }
 }

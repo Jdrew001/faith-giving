@@ -42,15 +42,6 @@ export class DataService {
         return collection(this.firestore, `${AppConstants.APP_PATH}${this.firestorePath}`, ...pathSegments);
     }
 
-    getDatabase() {
-        if (this.database) {
-            return this.database;
-        }
-
-        this.database = getDatabase();
-        return this.database;
-    }
-
     initDB() {
         if (this.firestore) {
             return;
