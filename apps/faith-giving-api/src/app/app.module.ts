@@ -5,15 +5,18 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { DataService } from './services/data/data.service';
 import { GivingModule } from './giving/giving.module';
+import { EmailService } from './services/email/email.service';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
     GivingModule,
     ConfigModule.forRoot({
       envFilePath: '.env',
-    })
+    }),
+    HttpModule
   ],
   controllers: [AppController],
-  providers: [AppService, DataService],
+  providers: [AppService, DataService, EmailService],
 })
 export class AppModule {}
