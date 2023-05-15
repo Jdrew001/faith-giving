@@ -12,5 +12,5 @@ export interface CreatePaymentIntentDto {
 
 export interface Offering {
     amount: number;
-    category: ValueLabel;
+    category: number;
 }

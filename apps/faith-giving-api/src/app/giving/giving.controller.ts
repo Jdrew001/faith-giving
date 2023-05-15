@@ -29,17 +29,4 @@ export class GivingController {
         await this.givingService.submitPayment(body);
         return {success: true, message: "Payment submitted successfully"}
     }
-
-    @Get("test")
-    async test() {
-        const result = await this.emailService.sendEmailToTemplate<{name: string}>(
-            'dtatkison@gmail.com',
-            EmailConstant.HELLO_WORLD_TEMPLATE,
-            {name: "Drew Atkison"})
-        if (result?.status == 202) {
-            return {success: true, message: "Email sent successfully"}
-        } else {
-            return {success: false, message: "Email failed to send"}
-        }
-    }
 }

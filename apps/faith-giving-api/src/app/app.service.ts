@@ -25,4 +25,16 @@ export class AppService {
 
     return refData.docs.map(doc => doc.data()).sort((a, b) => a.id - b.id) as ReferenceDto[];
   }
+
+  async getAdminUsers(): Promise<{email: string}[]> {
+    let users;
+    try {
+      users = await getDocs(query(this.dataService.collection('admins')));
+    } catch (error) {
+      Logger.error(`Error getting documents: ${error}`);
+      throw new BadRequestException('An error occurred', { cause: new Error(), description: 'error retrieving admin data' })
+    }
+
+    return users.docs.map(doc => doc.data());
+  }
 }

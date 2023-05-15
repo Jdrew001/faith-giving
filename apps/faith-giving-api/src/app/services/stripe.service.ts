@@ -33,7 +33,7 @@ export class StripeService {
         Logger.log(`Total: ${total}`);
         try {
             paymentIntent = await this.stripe.paymentIntents.create({
-                amount: total * 100, // TODO: This needs to be calculated based on the amount passed in
+                amount: parseFloat((total * 100).toFixed(2)), // TODO: This needs to be calculated based on the amount passed in
                 currency: 'usd',
                 payment_method_types: ['card'],
             });

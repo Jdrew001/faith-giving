@@ -6,6 +6,7 @@ import { DataService } from '../services/data/data.service';
 import { StripeService } from '../services/stripe.service';
 import { EmailService } from '../services/email/email.service';
 import { HttpModule } from '@nestjs/axios';
+import { AppService } from '../app.service';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { HttpModule } from '@nestjs/axios';
     GivingService,
     DataService,
     StripeService,
-    EmailService],
+    EmailService,
+    AppService],
 })
 export class GivingModule {}

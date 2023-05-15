@@ -1,10 +1,9 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import * as SendGrid from '@sendgrid/mail';
 import { AppConstants } from '../../app.constant';
 import { EmailTemplate } from './email.model';
 import { HttpService } from '@nestjs/axios';
-import { catchError, lastValueFrom } from 'rxjs';
+import { lastValueFrom } from 'rxjs';
 import { EmailConstant } from './email.constant';
 
 @Injectable()
@@ -15,7 +14,7 @@ export class EmailService {
         private httpService: HttpService
     ) {}
 
-    async sendEmailToTemplate<T extends { [key: string]: string; }>(to: string, template: string, templateData?: T) {
+    async sendEmailToTemplate<T extends { [key: string]: string; }>(to: string, subject: string, template: string, templateData?: T) {
         const mail: EmailTemplate = {
             personalizations: [{
                 to: [{email: to}],
