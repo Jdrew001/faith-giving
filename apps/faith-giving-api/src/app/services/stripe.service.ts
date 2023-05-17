@@ -26,9 +26,8 @@ export class StripeService {
         });
     }
 
-    async createPaymentIntent(data: CreatePaymentIntentDto) {
+    async createPaymentIntent(data: CreatePaymentIntentDto, total: number) {
         Logger.log(`Creating payment intent`);
-        let total = this.getTotal(data.tithe, data.offerings, data.feeCovered);
         let paymentIntent;
         Logger.log(`Total: ${total}`);
         try {
@@ -63,15 +62,4 @@ export class StripeService {
         Logger.log(`Payment succeeded`, payment);
         return payment;
     }
-
-    private getTotal(tithe, offerings, feeCovered) {
-        let total = tithe;
-        let offeringTotal = offerings.map(x => x.amount);
-        offeringTotal.forEach(item => total += item);
-        if (feeCovered) {
-          let fee = ((total * 0.022) + 0.30).toFixed(2);
-          total = +total + +fee;
-        }
-        return total;
-      }
 }
