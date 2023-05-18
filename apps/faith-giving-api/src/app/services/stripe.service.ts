@@ -42,8 +42,8 @@ export class StripeService {
         return {id: paymentIntent.id, clientSecret: paymentIntent.client_secret };
     }
 
-    async submitPayment(body: PaymentDTO) {
-        let paymentIntent = await this.createPaymentIntent(body.giveDetails);
+    async submitPayment(body: PaymentDTO, total: number) {
+        let paymentIntent = await this.createPaymentIntent(body.giveDetails, total);
         Logger.log(`Submitting payment`);
         let payment = await this.stripe.paymentIntents.confirm(paymentIntent.id, {
             payment_method: body.paymentMethodId
@@ -59,7 +59,7 @@ export class StripeService {
             throw new BadRequestException('An error occurred', { cause: new Error(), description: 'error submitting payment' });
         }
 
-        Logger.log(`Payment succeeded`, payment);
+        Logger.log(`Payment succeeded`);
         return payment;
     }
 }

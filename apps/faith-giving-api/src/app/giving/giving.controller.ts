@@ -19,11 +19,6 @@ export class GivingController {
         return this.givingService.getGivingInformationForUser(email);
     }
 
-    @Post("createPaymentIntent")
-    createPaymentIntent(@Body() body: CreatePaymentIntentDto) {
-        return this.givingService.createPaymentIntent(body);
-    }
-
     @Post("submitPayment")
     async submitPayment(@Body() body: PaymentDTO) {
         await this.givingService.submitPayment(body);

@@ -7,6 +7,7 @@ import { getDocs, where, query, addDoc } from 'firebase/firestore';
 import { EmailService } from '../services/email/email.service';
 import { EmailConstant } from '../services/email/email.constant';
 import { AppService } from '../app.service';
+import { ReferenceDto } from '../dto/reference.dto';
 import { GivingReportDto } from '../dto/email/giving.model';
 
 @Injectable()
@@ -19,21 +20,11 @@ export class GivingService {
         private appService: AppService
     ) {}
 
-    async createPaymentIntent(body: CreatePaymentIntentDto) {
-        let total = this.getTotal(body.tithe, body.offerings, body.feeCovered);
-        const stripeIntent = await this.stripeService.createPaymentIntent(body, total);
-        return stripeIntent;
-    }
-
     async submitPayment(body: PaymentDTO) {
         let payment;
-        // this should only be calculated once.. When we create a payment intent, we need to store that
-        // payment intent in db. Then when we are planning on submitting, we need to get that payment intent and giving details
-        // Once it processess successfully we can delete intent
-        // TODO:
         let total = this.getTotal(body.giveDetails.tithe, body.giveDetails.offerings, body.giveDetails.feeCovered);
         try {
-            payment = await this.stripeService.submitPayment(body);
+            payment = await this.stripeService.submitPayment(body, total);
         } catch (error) {
             throw new BadRequestException('An error occurred', { cause: new Error(), description: 'error submitting payment' });
         }
@@ -44,13 +35,12 @@ export class GivingService {
             if (!uploadResult) {
                 Logger.error(`Giving information upload failed`);
             } else {
-                let admins = (await this.appService.getAdminUsers()).map(o => o.email);
+                let refData = await this.appService.getReferenceData();
+                let givingReportDTO = await this.generateGivingReport(body.giveDetails, refData, total);
+
                 //Send give report to pastor
-                Logger.log('Sending email to admins');
-                admins.forEach(async user => await this.emailService.sendEmailToTemplate<any>(user, 
-                    EmailConstant.GIVING_REPORT_SUBJECT, 
-                    EmailConstant.GIVING_REPORT, 
-                    await this.generateGivingReport(body.giveDetails, total)));
+                Logger.log('Sending email to admins')
+                await this.emailService.sendEmailToTemplate<any>("dtatkison@gmail.com", EmailConstant.GIVING_REPORT_SUBJECT, EmailConstant.GIVING_REPORT, givingReportDTO);
 
                 //Send give recept to giver
                 
@@ -84,7 +74,27 @@ export class GivingService {
         return {data: data.docs.map(doc => doc.data()) as GiveDetails[], length: data.docs.length};
     }
 
-    getTotal(tithe, offerings, feeCovered) {
+    private async generateGivingReport(data: GiveDetails, refData: Array<ReferenceDto>, total: number) {
+        let remappedOfferings = [];
+
+        data.offerings.forEach(item => {
+            let label = refData.find(o => o.id == item.category).label;
+            remappedOfferings.push({label: label, amount: item.amount});
+        });
+        
+        return new GivingReportDto(
+            data.firstName,
+            data.lastName,
+            data.email,
+            data.phone,
+            data.tithe.toString(),
+            remappedOfferings,
+            data.feeCovered,
+            parseFloat((total).toFixed(2)).toString()
+        );
+    }
+
+    private getTotal(tithe, offerings, feeCovered) {
         let total = tithe;
         let offeringTotal = offerings.map(x => x.amount);
         offeringTotal.forEach(item => total += item);
@@ -93,49 +103,5 @@ export class GivingService {
           total = +total + +fee;
         }
         return total;
-    }
-
-    /**
-     * 
-     * {
-    "email": "dtatkison@gmail.com",
-    "phone": "(682) 414-0386",
-    "tithing": "100.00",
-    "offerings": [
-        {
-            "label": "General Offering",
-            "amount": "100.00"
-        }
-    ],
-    "feeCovered": true,
-    "total": "100.00"
-}
-     */
-    private async generateGivingReport(data: GiveDetails, total: number) {
-        return new GivingReportDto(
-            data.firstName,
-            data.lastName,
-            data.email,
-            data.phone,
-            data.tithe.toString(),
-            data.offerings.map(o => {return {
-                amount: o.amount,
-                label: o.category
-            }}),
-            data.feeCovered,
-            total
-        )
-        // let offeringRef = await this.appService.getReferenceData();
-        // let offerings = '';
-        // data.offerings.forEach(item => {
-        //     let offeringType = offeringRef.find(o => o.id == item.category)
-        //     offerings += `${offeringType.label}: $${item.amount}\n`
-        // });
-        // return {
-        //     fullName: `${data.firstName} ${data.lastName}`,
-        //     email: data.email,
-        //     tithe: data.tithe,
-        //     offerings: offerings
-        // }
     }
 }
