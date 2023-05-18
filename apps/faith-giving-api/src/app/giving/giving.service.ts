@@ -37,10 +37,13 @@ export class GivingService {
             } else {
                 let refData = await this.appService.getReferenceData();
                 let givingReportDTO = await this.generateGivingReport(body.giveDetails, refData, total);
+                let admins = await this.appService.getAdminUsers();
 
-                //Send give report to pastor
+                //Send give report to admins
                 Logger.log('Sending email to admins')
-                await this.emailService.sendEmailToTemplate<any>("dtatkison@gmail.com", EmailConstant.GIVING_REPORT_SUBJECT, EmailConstant.GIVING_REPORT, givingReportDTO);
+                admins.forEach(async user => {
+                    await this.emailService.sendEmailToTemplate<any>(user.email, EmailConstant.GIVING_REPORT_SUBJECT, EmailConstant.GIVING_REPORT, givingReportDTO);
+                });
 
                 //Send give recept to giver
                 
