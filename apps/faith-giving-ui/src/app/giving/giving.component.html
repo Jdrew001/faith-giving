@@ -1,85 +1,58 @@
-<div class="give-page">
-    <div class="card flex justify-content-center align-content-center">
-        <div class="card-container">
-            <div class="row mb-2">
-                <h5 class="mb-0">Your Details</h5>
-            </div>
-            <div class="row mb-3">
-                <div class="col-md-12">
-                    <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="Email">
-                </div>
-            </div>
+<div class="give-page" [formGroup]="givingForm">
+    <div class="flex justify-content-center align-content-center" [ngSwitch]="activeFormIndex">
+        <p-card class="flex justify-content-center align-content-center">
+            <div class="card-container">
+                <ng-container 
+                    *ngSwitchCase="0">
+                    <div class="row mb-2">
+                        <h5 class="mb-0">Your Details</h5>
+                    </div>
+                    <faith-giving-user-details [formSubmitted]="formSubmitted"></faith-giving-user-details>
 
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="First Name">
-                </div>
+                    <div class="row mb-2">
+                        <h5 class="mb-0">Tithe Details</h5>
+                    </div>
 
-                <div class="col-md-6">
-                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Last Name">
-                </div>
-            </div>
+                    <faith-giving-giving-details [formSubmitted]="formSubmitted"></faith-giving-giving-details>
 
-            <div class="row mb-4">
-                <div class="col-md-12">
-                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Phone">
-                </div>
-            </div>
+                    <div class="row mb-3">
+                        <p-checkbox name="groupname" [binary]="true" formControlName="feeCovered" label="Help cover the card processing fee?"></p-checkbox>
+                        <label><em style="font-size: 10px">Total + (2.2% + $0.30)</em></label>
+                    </div>
+    
+                    <div class="row mb-3">
+                        <p>Giving Total: {{giveTotal | currency}}</p>
+                    </div>
+    
+                    <div class="row">
+                        <hr>
+                    </div>
+    
+                    <div class="row mb-4">
+                        <button (click)="payWithStripe()" style="width: 100%" pButton type="button" class="p-button-raised p-button-sm" icon="pi pi-credit-card" iconPos="right">Pay with Stripe</button>
+                    </div>
 
-            <div class="row mb-2">
-                <h5 class="mb-0">Giving Details</h5>
-            </div>
-
-            <div class="row mb-3">
-                <div class="col-md-12">
-                    <input type="number" class="form-control" id="exampleFormControlInput1" placeholder="$0.00">
-                </div>
-            </div>
-
-            <div class="row mb-1">
-                <fieldset>
-                    <legend>
-                        <div class="flex">
-                            <div class="flex-1">
-                                <p class="mb-0">Offering</p>
-                                <p class="text-sm"><em>(General Offering, Building Fund, etc)</em></p>
-                            </div>
-                            <div class="flex align-items-center">
-                                <i class="pi pi-plus"></i>
-                            </div>
-                        </div>
-                    </legend>
-                    <div class="offering-container">
-                        <div class="row">
-                            <div class="flex">
-                                <div class="flex-1">
-                                    <p>1st Offering</p>
-                                </div>
-                                <div class="flex">
-                                    <i class="pi pi-times"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <input type="number" class="form-control" id="exampleFormControlInput1" placeholder="$0.00">
-                            </div>
-            
-                            <div class="col-md-6">
-                                <p-dropdown styleClass="dropdown" [options]="offeringItems" optionLabel="value" emptyMessage="Select"></p-dropdown>
-                            </div>
+                    <div class="row">
+                        <div class="col-md-12 p-0 text-center">
+                            <a (click)="clearFields()" class="clear-btn">Clear</a>
                         </div>
                     </div>
-                    <!-- <div class="row">
-                        <p-button icon="pi pi-plus" styleClass="p-button-rounded p-button-danger p-button-text"></p-button>
-                    </div> -->
-                    
-                    <!-- <div class="col-md-12">
-                        <label for="exampleFormControlInput1" class="form-label">Tithe</label>
-                        <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="0">
-                    </div> -->
-                </fieldset>
+                </ng-container>
+
+                <ng-container 
+                    *ngSwitchCase="1">
+                    <div class="row mb-2">
+                        <h5 class="mb-0">Card Details</h5>
+                    </div>
+
+                    <faith-giving-card-details
+                        [formSubmitted]="formSubmitted"
+                        [stripe]="stripe"
+                        (submit$)="submitForm($event)"
+                        (backToPrevious$)="previous()"></faith-giving-card-details>
+                </ng-container>
             </div>
-        </div>
+        </p-card>
     </div>
 </div>
+<p-toast position="bottom-center"></p-toast>
