@@ -1,9 +1,7 @@
 import { BadRequestException, Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { CreatePaymentIntentDto } from '../dto/giving/create-payment-intent.dto';
 import { GivingService } from './giving.service';
 import { PaymentDTO } from '../dto/giving/payment.dto';
 import { EmailService } from '../services/email/email.service';
-import { EmailConstant } from '../services/email/email.constant';
 
 @Controller('giving')
 export class GivingController {

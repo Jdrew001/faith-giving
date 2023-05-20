@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AppConstants } from '../../app.constant';
 import { EmailTemplate } from './email.model';
 import { HttpService } from '@nestjs/axios';
-import { lastValueFrom } from 'rxjs';
+import { EMPTY, catchError, lastValueFrom } from 'rxjs';
 import { EmailConstant } from './email.constant';
 
 @Injectable()
@@ -30,6 +30,11 @@ export class EmailService {
                 Authorization: `Bearer ${this.configService.get<string>('SENDGRID_API_KEY')}`,
                 'Content-Type': 'application/json'
             }
-        }));
+        }).pipe(catchError(err => this.handleError(err))));
+    }
+
+    private handleError(err: any) {
+        Logger.error('Unable to send an email to template', err, new Date());
+        return EMPTY;
     }
 }
