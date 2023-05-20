@@ -94,7 +94,7 @@ export class GivingService {
         let remappedOfferings = [];
         offerings.forEach(item => {
             let label = refData.find(o => o.id == item.category).label;
-            remappedOfferings.push({label: label, amount: item.amount});
+            remappedOfferings.push({label: label, amount: parseFloat((item.amount).toFixed(2)).toString()});
         });
 
         return remappedOfferings;
@@ -106,7 +106,7 @@ export class GivingService {
             data.lastName,
             data.email,
             data.phone,
-            data.tithe.toString(),
+            parseFloat((data.tithe).toFixed(2)).toString(),
             this.remapOfferings(refData, data.offerings),
             data.feeCovered,
             parseFloat((total).toFixed(2)).toString()
