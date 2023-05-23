@@ -33,7 +33,7 @@ async function bootstrap() {
 
   const port = process.env.PORT || 3000;
   app.enableCors({
-    origin: ["http://localhost:4200"]
+    origin: ["http://localhost:4200", "https://discoverfaitharlington.org"]
   });
   await app.listen(port);
   Logger.log(
