@@ -184,5 +184,4 @@ jobs:
       #here we can notify the user and cause the job to fail
       - name: Check affected projects
         run: |
-          echo "Remote variable: ${{ steps.status_check.outputs.api_status }}"
-updated cors · Jdrew001/faith-giving@2c94805 
+          echo "Remote variable: ${{ steps.status_check.outputs.api_status }}" 
