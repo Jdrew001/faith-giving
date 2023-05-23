@@ -28,7 +28,7 @@ async function bootstrap() {
   }
   initializeApp(firebaseConfig);
 
-  Sentry.init({//
+  Sentry.init({
     dsn: "https://9cc121f88c7e4a2fae9f3667b704c762@o392330.ingest.sentry.io/4505235004719104"
   });
 
