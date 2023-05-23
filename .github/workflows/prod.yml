@@ -1,0 +1,218 @@
+Skip to content
+
+Search or jump to...
+Pull requests
+Issues
+Codespaces
+Marketplace
+Explore
+ 
+@Jdrew001 
+Jdrew001
+/
+faith-giving
+Private
+Cannot fork because you own this repository and are not a member of any organizations.
+Code
+Issues
+Pull requests
+Actions
+Projects
+Wiki
+Security
+Insights
+Settings
+Prod
+updated cors #86
+Jobs
+Run details
+Workflow file for this run
+.github/workflows/prod.yml at 2c94805
+name: Prod
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+env:
+  FAITH_GIVING_API: "faith-giving-api"
+  FAITH_GIVING_UI: "faith-giving-ui"
+
+jobs:
+  build:
+    permissions: write-all
+    name: Building Applications
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+
+      - name: Install Nx CLI
+        run: npm install -g @nrwl/cli
+
+      - uses: nrwl/nx-set-shas@v3
+        with: 
+          main-branch-name: 'master'
+          
+      - run: npm i --force
+      - run: npm --prefix api-gateway --omit=dev -f install
+
+      - run: npx nx affected -t build --parallel=3
+
+      - name: Check affected projects
+        id: affected-projects
+        run: |
+          affected_projects=$(npx nx print-affected --base=${{ github.event.before }} --head=${{ github.sha }} --select=projects)
+          echo "::set-output name=projects::$affected_projects"
+          echo "Workspace: ${{ github.workspace }}"
+      - name: Upload Faith-Giving-Api Files
+        if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
+        uses: actions/upload-artifact@v3
+        with:
+          name: faith_giving_api
+          path: dist/apps/faith-giving-api
+
+      - name: Upload Faith-Giving-UI Files
+        if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_UI)
+        uses: actions/upload-artifact@v3
+        with:
+          name: faith_giving_ui
+          path: dist/apps/faith-giving-ui
+
+  deploy:
+    permissions: write-all
+    name: Deploy Applications
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+
+      - name: Install Nx CLI
+        run: npm install -g @nrwl/cli
+
+      - uses: nrwl/nx-set-shas@v3
+        with: 
+          main-branch-name: 'master'
+          
+      - run: npm i --force
+
+      - name: Check affected projects
+        id: affected-projects
+        run: |
+          affected_projects=$(npx nx print-affected --base=${{ github.event.before }} --head=${{ github.sha }} --select=projects)
+          echo "::set-output name=projects::$affected_projects"
+      - name: Download API Files
+        if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
+        uses: actions/download-artifact@v2
+        with:
+          name: faith_giving_api
+          path: api_project
+
+      - name: Copy API to Server
+        if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
+        uses: garygrossgarten/github-action-scp@release
+        with: 
+          local: api_project
+          remote: /root/projects/faith-giving-api
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          rmRemote: false
+          concurrency: 2
+          recursive: true
+          atomicPut: true
+
+      - name: Install deps
+        if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd /root/projects/faith-giving-api
+            npm install --omit=dev --verbose
+            npm install tslib --verbose
+      - name: Restart API
+        if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: |
+            pm2 restart faith-giving-api
+      - name: Download UI Files
+        if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_UI)
+        uses: actions/download-artifact@v2
+        with:
+          name: faith_giving_ui
+          path: ui_project
+
+      - name: Copy UI to Server
+        if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_UI)
+        uses: garygrossgarten/github-action-scp@release
+        with: 
+          local: ui_project
+          remote: /root/projects/faith-giving-ui
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          rmRemote: true
+          concurrency: 2
+          recursive: true
+          atomicPut: true
+
+      - name: Copy API to Server_web dir
+        if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_UI)
+        uses: garygrossgarten/github-action-scp@release
+        with: 
+          local: ui_project
+          remote: /var/www/faith-giving
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          rmRemote: true
+          concurrency: 2
+          recursive: true
+          atomicPut: true
+
+  validate: 
+    name: Validate API Running
+    permissions: write-all
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Restart API
+        id: status_check
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: |
+            api_status=$(pm2 jlist | jq -r '.[1].pm2_env.status')
+            echo "::set-output name=api_status::$api_status"
+      #here we can notify the user and cause the job to fail
+      - name: Check affected projects
+        run: |
+          echo "Remote variable: ${{ steps.status_check.outputs.api_status }}"
+updated cors · Jdrew001/faith-giving@2c94805 
