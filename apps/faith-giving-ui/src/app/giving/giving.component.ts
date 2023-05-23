@@ -16,6 +16,7 @@ export class GivingComponent implements OnInit {
   get givingForm() { return this.formService.givingForm; }
   get formSubmitted() { return this.giveService.formSubmitted; }
   get activeFormIndex() { return this.giveService.activeIndex; }
+  get stripeKey() { return process.env['NODE_ENV'] == 'development' ? GiveConstants.STRIPE_PK_TEST : GiveConstants.STRIPE_PK;}
 
   stripe;
   giveTotal = 0;
