@@ -15,4 +15,9 @@ export class AppController {
   getReferenceData() {
     return this.appService.getReferenceData();
   }
+
+  @Get('environment')
+  getEnv() {
+    return process.env.NODE_ENV
+  }
 }
