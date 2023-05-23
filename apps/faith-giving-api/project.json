@@ -16,7 +16,8 @@
         "tsConfig": "apps/faith-giving-api/tsconfig.app.json",
         "assets": ["apps/faith-giving-api/src/assets"],
         "isolatedConfig": true,
-        "webpackConfig": "apps/faith-giving-api/webpack.config.js"
+        "webpackConfig": "apps/faith-giving-api/webpack.config.js",
+        "generatePackageJson": true
       },
       "configurations": {
         "development": {},
