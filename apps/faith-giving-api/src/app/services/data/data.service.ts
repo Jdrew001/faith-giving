@@ -1,6 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { getDatabase } from "firebase/database"; 
-import * as admin from 'firebase-admin';
+import * as Sentry from '@sentry/node';
 
 import {
     addDoc,
@@ -35,6 +34,7 @@ export class DataService {
     ) {
         this.dbPath = this.environment === 'development' ? 'dev' : 'prod';
         this.firestorePath = this.environment === 'development' ? '/dev' : '/prod';
+        Sentry.captureMessage(`dbpath: ${this.dbPath}, firestorepath: ${this.firestorePath}`, Sentry.Severity.Log);
         setTimeout(() => {this.initDB();},1);
     }
 

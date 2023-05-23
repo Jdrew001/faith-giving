@@ -2,6 +2,7 @@ import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import Stripe from 'stripe';
 import { CreatePaymentIntentDto } from '../dto/giving/create-payment-intent.dto';
 import { PaymentDTO } from '../dto/giving/payment.dto';
+import * as Sentry from '@sentry/node';
 
 @Injectable()
 export class StripeService {
@@ -37,6 +38,7 @@ export class StripeService {
                 payment_method_types: ['card'],
             });
         } catch (error) {
+            Sentry.captureException(`error creating payment intent: ${error}`);
             throw new BadRequestException('An error occurred', { cause: new Error(), description: 'error creating payment intent' });
         }
         return {id: paymentIntent.id, clientSecret: paymentIntent.client_secret };
@@ -51,11 +53,13 @@ export class StripeService {
 
         if (!payment) {
             Logger.error(`Payment failed`, payment);
+            Sentry.captureException(`error submitting payment (submit payment) failed: ${payment}`);
             throw new BadRequestException('An error occurred', { cause: new Error(), description: 'error submitting payment' });
         }
 
         if (payment.status != 'succeeded') {
             Logger.error(`Payment failed`, payment);
+            Sentry.captureException(`error submitting payment (submit payment) failed: ${payment}`);
             throw new BadRequestException('An error occurred', { cause: new Error(), description: 'error submitting payment' });
         }
 

@@ -11,7 +11,7 @@ import { ConfigService } from '@nestjs/config';
 
 // Import firebase-admin
 import { initializeApp } from "firebase/app";
-import * as admin from "firebase-admin";
+import * as Sentry from '@sentry/node';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -27,6 +27,10 @@ async function bootstrap() {
     measurementId: configService.get<string>('FIREBASE_MEASUREMENT_ID')
   }
   initializeApp(firebaseConfig);
+
+  Sentry.init({
+    dsn: "https://9cc121f88c7e4a2fae9f3667b704c762@o392330.ingest.sentry.io/4505235004719104"
+  });
 
   const globalPrefix = 'api';
   app.setGlobalPrefix(globalPrefix);
