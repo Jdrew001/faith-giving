@@ -43,3 +43,5 @@ Thumbs.db
 package-lock.json
 
 apps/faith-giving-api/.env
+
+apps/faith-giving-ui/src/index.html

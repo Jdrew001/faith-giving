@@ -38,11 +38,11 @@ export class GivingComponent implements OnInit {
     });
   }
   payWithStripe() {
-    this.giveService.formSubmitted = true;
-    if (this.givingForm.invalid) {
-      this.growlService.showErrorMessage('Please fix the errors in the form before submitting.');
-      return;
-    }
+    // this.giveService.formSubmitted = true;
+    // if (this.givingForm.invalid) {
+    //   this.growlService.showErrorMessage('Please fix the errors in the form before submitting.');
+    //   return;
+    // }
     this.giveService.activeIndex = 1;
   }
 
