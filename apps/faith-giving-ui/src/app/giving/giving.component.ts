@@ -28,12 +28,11 @@ export class GivingComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.stripe = Stripe(GiveConstants.STRIPE_PK);
+    this.stripe = Stripe(this.stripeKey);
     this.giveService.getCategoryReferenceData();
     this.formService.createGivingForm();
 
     this.formService.givingForm.valueChanges.subscribe((value) => {
-      console.log('value', value)
       this.giveTotal = this.giveService.calculateTotal(value.tithe, value.offerings);
     });
   }

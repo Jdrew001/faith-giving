@@ -1,8 +1,3 @@
-/**
- * This is not a production server yet!
- * This is only a minimal backend to get started.
- */
-
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 
@@ -29,7 +24,9 @@ async function bootstrap() {
   initializeApp(firebaseConfig);
 
   Sentry.init({
-    dsn: "https://9cc121f88c7e4a2fae9f3667b704c762@o392330.ingest.sentry.io/4505235004719104"
+    dsn: process.env.SENTRY_URL,
+    environment: process.env.NODE_ENV,
+    enabled: process.env.NODE_ENV == 'production'
   });
 
   const globalPrefix = 'api';

@@ -10,6 +10,7 @@ import { AppService } from '../app.service';
 import { ReferenceDto } from '../dto/reference.dto';
 import { GivingReceipt, GivingReportDto } from '../dto/email/giving.model';
 import * as Sentry from '@sentry/node';
+import { AppConstants } from '../app.constant';
 
 @Injectable()
 export class GivingService {
@@ -27,8 +28,9 @@ export class GivingService {
         try {
             payment = await this.stripeService.submitPayment(body, total);
         } catch (error) {
-            Sentry.captureException(`error submitting payment: ${error}`);
-            throw new BadRequestException('An error occurred', { cause: new Error(), description: 'error submitting payment' });
+            Sentry.captureException(`error submitting payment: ${error}, User: ${body.giveDetails.firstName} ${body.giveDetails.lastName}`);
+            let message = AppConstants.CARD_ERROR_MESSAGES[error?.code] ?? 'Oops, an error occurred';
+            throw new BadRequestException('An error occurred', { cause: error, description: message });
         }
         
         if (payment.status == 'succeeded') {
@@ -36,7 +38,7 @@ export class GivingService {
             let uploadResult = await this.uploadGivingInformation(body.giveDetails);
             if (!uploadResult) {
                 Logger.error(`Giving information upload failed`, uploadResult);
-                Sentry.captureException(`Giving information upload failed: ${uploadResult}`);
+                Sentry.captureException(`Giving information upload failed: ${uploadResult}, Details: ${body.giveDetails}`);
             } else {
                 let refData = await this.appService.getReferenceData();
                 let givingReportDTO = await this.generateGivingReport(body.giveDetails, refData, total);
