@@ -8,11 +8,11 @@ export class GrowlService {
     private messageService: MessageService
   ) { }
 
-  showErrorMessage(message: string) {
-    this.messageService.add({ severity: 'error', summary: "Failure", detail: message });
+  showErrorMessage(message: string, title?:string) {
+    this.messageService.add({ severity: 'error', summary: title? title: 'Failure', detail: message, sticky: true });
   }
 
   showSuccessMessage(message: string) {
-    this.messageService.add({ severity: 'success', summary: "Success", detail: message });
+    this.messageService.add({ severity: 'success', summary: "Success", detail: message, sticky: true });
   }
 }

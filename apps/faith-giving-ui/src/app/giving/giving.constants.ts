@@ -1,5 +1,6 @@
 export class GiveConstants {
     public static GIVE_REFERENCE_PATH = 'api/reference';
+    public static CALCULATE_TOTAL = 'api/giving/calculateTotal';
     public static GIVE_PAYMENT_INTENT_PATH = 'api/giving/createPaymentIntent';
     public static GIVE_PAYMENT_PATH = 'api/giving/submitPayment';
     public static STRIPE_PK = 'pk_live_51IWOf3A0DJoBf0VzY3xgx6DmyJKBu1Jdu32HvAxA0QLmjIrYAzF9MAehrqDnJRlTg7fw3u3kkEGUAnHrgqupldL100jciG8fKC';

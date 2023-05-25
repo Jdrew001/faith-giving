@@ -14,3 +14,9 @@ export class GiveDetails {
     offerings: Offering[];
     feeCovered: boolean;
 }
+
+export class CalulateTotalDto {
+    tithe: number;
+    offerings: {amount: number}[];
+    feeCovered: boolean;
+}

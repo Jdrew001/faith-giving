@@ -5,6 +5,7 @@ import { EmailTemplate } from './email.model';
 import { HttpService } from '@nestjs/axios';
 import { EMPTY, catchError, lastValueFrom } from 'rxjs';
 import { EmailConstant } from './email.constant';
+import * as Sentry from '@sentry/node';
 
 @Injectable()
 export class EmailService {
@@ -20,7 +21,7 @@ export class EmailService {
                 to: [{email: to}],
                 dynamic_template_data: templateData ? {...templateData}: null
             }],
-            subject: 'Hello World',
+            subject: subject,
             from: AppConstants.SENDGRID_EMAIL_SENDER,
             template_id: template
         }
@@ -35,6 +36,7 @@ export class EmailService {
 
     private handleError(err: any) {
         Logger.error('Unable to send an email to template', err, new Date());
+        Sentry.captureException(`Email templates have failed: ${err}`);
         return EMPTY;
     }
 }

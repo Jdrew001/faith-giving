@@ -13,9 +13,9 @@ export class BaseService {
         return this.BASE_URL + path;
     }
 
-    protected handleError(error: any) {
-        console.error(error);
-        this.growlService.showErrorMessage(error.message);
+    protected handleError(obj: any) {
+        console.error(obj);
+        this.growlService.showErrorMessage(obj?.error?.error, obj?.error?.message);
         return EMPTY;
     }
 }

@@ -40,3 +40,25 @@ i:hover {
 :host ::ng-deep .p-button-icon {
     margin-left: 10px;
 }
+
+:host ::ng-deep p-card {
+    width: 50%;
+}
+
+.clear-btn:hover {
+    cursor: pointer;
+}
+
+.stripe-image {
+    width: 50%;
+    margin: auto;
+}
+
+@media (max-width: 900px) {
+    :host ::ng-deep p-card {
+        width: 95%;
+    }
+    .card-container {
+        margin: 3%;
+    }
+}

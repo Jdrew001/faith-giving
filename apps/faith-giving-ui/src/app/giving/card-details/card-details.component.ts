@@ -11,6 +11,7 @@ export class CardDetailsComponent implements AfterViewInit {
 
   @Input() formSubmitted: boolean;
   @Input() stripe;
+  @Input() initRequest: boolean = false;
 
   @ViewChild('numberElement') numberElement: ElementRef;
   @ViewChild('expElement') expElement: ElementRef;
@@ -18,6 +19,10 @@ export class CardDetailsComponent implements AfterViewInit {
 
   @Output() submit$: EventEmitter<any> = new EventEmitter();
   @Output() backToPrevious$: EventEmitter<any> = new EventEmitter(); 
+
+  cardLoaded = false;
+  cvvLoaded = false;
+  expLoaded = false;
 
   number;
   exp;
@@ -57,7 +62,7 @@ export class CardDetailsComponent implements AfterViewInit {
   };
 
   get isCreditCardFormValid() {
-    return !this.cardErrors && !this.expErrors && !this.cvvErrors && this.zipCode.toString().length !== '' && this.zipCode.toString().length === 5;
+    return !this.cardErrors && !this.expErrors && !this.cvvErrors && this.zipCode?.toString()?.length !== '' && this.zipCode?.toString()?.length === 5;
   }
 
   constructor(
@@ -113,14 +118,9 @@ export class CardDetailsComponent implements AfterViewInit {
         }
       }
     });
-    this.number.addEventListener('ready', ({ error, empty }) => {
+    this.number.addEventListener('ready', (data) => {
       this.cardErrors = null;
-      if (error || empty) {
-        this.cardErrors = {
-          isEmpty: empty,
-          error: error
-        }
-      }
+      setTimeout(() => {this.cardLoaded = true;}, 1000);
     });
 
     this.exp.addEventListener('change', ({ error, empty }) => {
@@ -134,12 +134,8 @@ export class CardDetailsComponent implements AfterViewInit {
     });
     this.exp.addEventListener('ready', ({ error, empty }) => {
       this.expErrors = null;
-      if (error || empty) {
-        this.expErrors = {
-          isEmpty: empty,
-          error: error
-        }
-      }
+      this.cvvLoaded = true;
+      setTimeout(() => {this.cvvLoaded = true;}, 1000);
     });
 
     this.cvv.addEventListener('change', ({ error, empty }) => {
@@ -153,12 +149,8 @@ export class CardDetailsComponent implements AfterViewInit {
     });
     this.cvv.addEventListener('ready', ({ error, empty }) => {
       this.cvvErrors = null;
-      if (error || empty) {
-        this.cvvErrors = {
-          isEmpty: empty,
-          error: error
-        }
-      }
+      this.expLoaded = true;
+      setTimeout(() => {this.expLoaded = true;}, 1000);
     });
   }
 }

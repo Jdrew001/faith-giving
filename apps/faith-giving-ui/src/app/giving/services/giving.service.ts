@@ -2,7 +2,7 @@ import { ElementRef, EnvironmentInjector, Injectable } from '@angular/core';
 import { BaseService } from '../../utils/base.service';
 import { HttpClient } from '@angular/common/http';
 import { Reference } from '../models/reference.model';
-import { catchError } from 'rxjs';
+import { catchError, debounceTime, distinctUntilChanged } from 'rxjs';
 import { GiveConstants } from '../giving.constants';
 import { GrowlService } from '../../core/growl.service';
 import { PaymentIntent } from '../models/giving.model';
@@ -23,6 +23,8 @@ export class GivingService extends BaseService {
 
   activeIndex = 0;
   formSubmitted = false;
+  requestInit = false;
+  giveTotal = 0;
 
   constructor(
     private http: HttpClient,
@@ -47,6 +49,7 @@ export class GivingService extends BaseService {
   }
 
   async submitPayment(stripe, element: ElementRef, zipCode: number) {
+    this.requestInit = true;
     let paymentMethod = await this.createPaymentMethod(stripe, element, zipCode);
     console.log('paymentMethod', paymentMethod);
 
@@ -73,20 +76,34 @@ export class GivingService extends BaseService {
     });
   }
 
-  calculateTotal(tithe, offering: {amount: string}[]) : number {
-    let offeringTotal = 0;
+  calculateTotal(tithe, offering: {amount: string}[]) {
+    const url = this.getApiUrl(GiveConstants.CALCULATE_TOTAL);
     let convertedTithe = this.convertToNumber(tithe);
-    
-    offering.forEach(val => {
-      offeringTotal += this.convertToNumber(val?.amount);
-      console.log('convertedTithe', val?.amount)
-    });
+    let covertedOfferings = offering.map(o => 
+      {return {amount: this.convertToNumber(o.amount)}}
+    )
+    this.http.post(url, {tithe: convertedTithe, offerings: covertedOfferings, feeCovered: this.formService.feeCovered.value})
+      .pipe(
+        debounceTime(800),
+        distinctUntilChanged()
+        )
+      .subscribe((value: {success: boolean, data: number}) => {
+        if (value.success) {
+          this.giveTotal = value.data;
+        } else {
+          console.error("ERROR: Fetching the total from service!!!");
+        }
+      })
+  }
 
-    if (this.formService.feeCovered.value && (tithe + offeringTotal) !== 0) {
-      return +(convertedTithe + offeringTotal + (((convertedTithe + offeringTotal) * GiveConstants.RATE_FEE) + 0.30)).toFixed(1);
-    }
+  registerTitheOfferingChanges() {
+    let offerings$ = this.formService.offerings?.valueChanges;
+    let tithe$ = this.formService.tithe?.valueChanges;
+    let feeCovered$ = this.formService.feeCovered?.valueChanges;
 
-    return convertedTithe + offeringTotal;
+    tithe$.subscribe(() => this.calculateTotal(this.formService.tithe.value, this.formService.offerings.value));
+    offerings$.subscribe(() => this.calculateTotal(this.formService.tithe.value, this.formService.offerings.value));
+    feeCovered$.subscribe(() => this.calculateTotal(this.formService.tithe.value, this.formService.offerings.value))
   }
 
   convertToNumber(value: string) {
@@ -97,8 +114,10 @@ export class GivingService extends BaseService {
     let body = this.generateBodyForPayment(paymentMethod);
     const url = this.getApiUrl(GiveConstants.GIVE_PAYMENT_PATH);
     this.http.post(url, body)
-      .pipe(catchError((err) => this.handleError(err)))
+      .pipe(catchError((err) => {this.requestInit = false; return this.handleError(err)}))
       .subscribe((result: any) => {
+        this.requestInit = false;
+        this.giveTotal = 0;
         this.handlePaymentSuccess(result);
       });
   }
@@ -146,10 +165,11 @@ export class GivingService extends BaseService {
       this.formService.createGivingForm();
       this.formService.givingForm.markAsPristine();
       this.formSubmitted = false;
-      this.growlService.showSuccessMessage('Your payment was successful!');
+      this.growlService.showSuccessMessage('Your giving was successful!');
       this.activeIndex = 0;
+      this.registerTitheOfferingChanges();
     } else {
-      this.growlService.showErrorMessage('There was a problem with your payment. Please try again.');
+      this.growlService.showErrorMessage('There was a problem with your giving. Please try again.');
     }
   }
 }
