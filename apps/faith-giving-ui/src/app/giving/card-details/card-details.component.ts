@@ -57,7 +57,7 @@ export class CardDetailsComponent implements AfterViewInit {
   };
 
   get isCreditCardFormValid() {
-    return !this.cardErrors && !this.expErrors && !this.cvvErrors && this.zipCode.toString().length !== '' && this.zipCode.toString().length === 5;
+    return !this.cardErrors && !this.expErrors && !this.cvvErrors && this.zipCode?.toString()?.length !== '' && this.zipCode?.toString()?.length === 5;
   }
 
   constructor(
