@@ -1,6 +1,7 @@
 <div class="give-page" [formGroup]="givingForm">
     <div class="flex justify-content-center align-content-center" [ngSwitch]="activeFormIndex">
         <p-card class="">
+            
             <div class="card-container">
                 <ng-container 
                     *ngSwitchCase="0">
@@ -37,6 +38,10 @@
                             <a (click)="clearFields()" class="clear-btn">Clear</a>
                         </div>
                     </div>
+
+                    <div class="row">
+                        <img class="stripe-image mt-2" src="http://cdn.mcauto-images-production.sendgrid.net/df8f02344b758210/acade95b-fac1-4685-a60b-880f176b6859/450x220.png" />
+                    </div>
                 </ng-container>
 
                 <ng-container 
@@ -56,3 +61,6 @@
     </div>
 </div>
 <p-toast position="bottom-center"></p-toast>
+<div *ngIf="requestInit" class="loader-overlay">
+    <p-progressSpinner class="spinner"></p-progressSpinner>
+</div>

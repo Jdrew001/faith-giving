@@ -49,6 +49,11 @@ i:hover {
     cursor: pointer;
 }
 
+.stripe-image {
+    width: 50%;
+    margin: auto;
+}
+
 @media (max-width: 900px) {
     :host ::ng-deep p-card {
         width: 95%;

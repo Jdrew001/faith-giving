@@ -17,6 +17,7 @@ export class GivingComponent implements OnInit {
   get formSubmitted() { return this.giveService.formSubmitted; }
   get activeFormIndex() { return this.giveService.activeIndex; }
   get stripeKey() { return process.env['NODE_ENV'] == 'development' ? GiveConstants.STRIPE_PK_TEST : GiveConstants.STRIPE_PK;}
+  get requestInit() { return this.giveService.requestInit; }
 
   stripe;
   giveTotal = 0;
@@ -37,11 +38,11 @@ export class GivingComponent implements OnInit {
     });
   }
   payWithStripe() {
-    // this.giveService.formSubmitted = true;
-    // if (this.givingForm.invalid) {
-    //   this.growlService.showErrorMessage('Please fix the errors in the form before submitting.');
-    //   return;
-    // }
+    this.giveService.formSubmitted = true;
+    if (this.givingForm.invalid) {
+      this.growlService.showErrorMessage('Please fix the errors in the form before submitting.');
+      return;
+    }
     this.giveService.activeIndex = 1;
   }
 

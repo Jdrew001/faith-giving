@@ -12,3 +12,27 @@ button.p-button {
     background-color: #e02e2e !important;
     border: none !important;
 }
+
+.spinner {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.loader-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3); /* Semi-transparent background */
+    z-index: 9999; /* Higher z-index to cover other elements */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+.p-progress-spinner {
+    width: 50px !important;
+}

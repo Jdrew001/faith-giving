@@ -23,6 +23,7 @@ export class GivingService extends BaseService {
 
   activeIndex = 0;
   formSubmitted = false;
+  requestInit = false;
 
   constructor(
     private http: HttpClient,
@@ -47,6 +48,7 @@ export class GivingService extends BaseService {
   }
 
   async submitPayment(stripe, element: ElementRef, zipCode: number) {
+    this.requestInit = true;
     let paymentMethod = await this.createPaymentMethod(stripe, element, zipCode);
     console.log('paymentMethod', paymentMethod);
 
@@ -99,6 +101,7 @@ export class GivingService extends BaseService {
     this.http.post(url, body)
       .pipe(catchError((err) => this.handleError(err)))
       .subscribe((result: any) => {
+        this.requestInit = false;
         this.handlePaymentSuccess(result);
       });
   }
@@ -146,10 +149,10 @@ export class GivingService extends BaseService {
       this.formService.createGivingForm();
       this.formService.givingForm.markAsPristine();
       this.formSubmitted = false;
-      this.growlService.showSuccessMessage('Your payment was successful!');
+      this.growlService.showSuccessMessage('Your giving was successful!');
       this.activeIndex = 0;
     } else {
-      this.growlService.showErrorMessage('There was a problem with your payment. Please try again.');
+      this.growlService.showErrorMessage('There was a problem with your giving. Please try again.');
     }
   }
 }
