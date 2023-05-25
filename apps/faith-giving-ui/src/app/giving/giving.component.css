@@ -50,7 +50,7 @@ i:hover {
 }
 
 .stripe-image {
-    width: 50%;
+    width: 25%;
     margin: auto;
 }
 
@@ -60,5 +60,22 @@ i:hover {
     }
     .card-container {
         margin: 3%;
+    }
+
+    .stripe-image {
+        width: 40% !important;
+    }
+}
+
+@media (max-width: 500px) {
+    :host ::ng-deep p-card {
+        width: 95%;
+    }
+    .card-container {
+        margin: 3%;
+    }
+
+    .stripe-image {
+        width: 50% !important;
     }
 }

@@ -54,11 +54,13 @@ export class GivingService extends BaseService {
     console.log('paymentMethod', paymentMethod);
 
     if (!paymentMethod) {
+      this.requestInit = false;
       this.growlService.showErrorMessage('There was a problem with your payment method. Please try again.');
       return;
     }
 
     if (paymentMethod.error) {
+      this.requestInit = false;
       this.growlService.showErrorMessage('There was a problem with your payment method. Please try again.');
       return;
     }
