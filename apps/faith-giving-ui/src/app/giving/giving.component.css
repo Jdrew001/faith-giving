@@ -45,6 +45,10 @@ i:hover {
     width: 50%;
 }
 
+.clear-btn:hover {
+    cursor: pointer;
+}
+
 @media (max-width: 900px) {
     :host ::ng-deep p-card {
         width: 95%;
