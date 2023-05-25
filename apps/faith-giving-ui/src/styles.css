@@ -37,3 +37,11 @@ button.p-button {
 .p-progress-spinner {
     width: 50px !important;
 }
+
+
+
+@media (max-width: 500px) {
+    .p-toast-message {
+        margin: 0px 2rem !important;
+    }
+}
