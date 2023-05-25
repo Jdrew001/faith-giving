@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { DataService } from '../services/data/data.service';
 import { CreatePaymentIntentDto, Offering } from '../dto/giving/create-payment-intent.dto';
 import { StripeService } from '../services/stripe.service';
-import { GiveDetails, PaymentDTO } from '../dto/giving/payment.dto';
+import { CalulateTotalDto, GiveDetails, PaymentDTO } from '../dto/giving/payment.dto';
 import { getDocs, where, query, addDoc } from 'firebase/firestore';
 import { EmailService } from '../services/email/email.service';
 import { EmailConstant } from '../services/email/email.constant';
@@ -86,12 +86,16 @@ export class GivingService {
         return {data: data.docs.map(doc => doc.data()) as GiveDetails[], length: data.docs.length};
     }
 
+    calculateTotal(body: CalulateTotalDto) {
+        return this.getTotal(body.tithe, body.offerings, body.feeCovered).toFixed(2);
+    }
+
     private generateGivingRecept(data: GiveDetails, refData: Array<ReferenceDto>, total: number) {
         return new GivingReceipt(
             data.firstName,
             data.lastName,
             data.tithe.toFixed(2),
-            this.remapOfferings(refData, data.offerings),
+            this.remapOfferings(refData, data.offerings),   
             data.feeCovered,
            (total).toFixed(2)
         ); 
@@ -120,15 +124,20 @@ export class GivingService {
         return remappedOfferings;
     }
 
-    private getTotal(tithe, offerings, feeCovered) {
+    private getTotal(tithe, offerings, feeCovered): number {
         let total = tithe;
-        let offeringTotal = offerings.map(x => x.amount);
-        offeringTotal.forEach(item => total += item);
+        let offeringTotal = 0;
+
+        offerings?.forEach(item => {
+            offeringTotal += item.amount;
+        });
+
         if (feeCovered) {
-          let fee = ((total * 0.022) + 0.30).toFixed(2);
-          total = +total + +fee;
+            const fee = (total + offeringTotal) * 0.022 + 0.30;
+            return +(total + offeringTotal + fee).toFixed(2);
         }
-        return total;
+
+        return total + offeringTotal;
     }
 
     private mapDtoToEntity(dto: GiveDetails) {

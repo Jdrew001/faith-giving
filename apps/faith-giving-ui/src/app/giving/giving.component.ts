@@ -1,8 +1,9 @@
-import { Component, ElementRef, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit } from '@angular/core';
 import { GivingFormService } from './services/giving-form.service';
 import { GivingService } from './services/giving.service';
 import { GrowlService } from '../core/growl.service';
 import { GiveConstants } from './giving.constants';
+import { combineLatest, zip } from 'rxjs';
 
 declare var Stripe;
 
@@ -18,9 +19,9 @@ export class GivingComponent implements OnInit {
   get activeFormIndex() { return this.giveService.activeIndex; }
   get stripeKey() { return process.env['NODE_ENV'] == 'development' ? GiveConstants.STRIPE_PK_TEST : GiveConstants.STRIPE_PK;}
   get requestInit() { return this.giveService.requestInit; }
+  get giveTotal() { return this.giveService.giveTotal; }
 
   stripe;
-  giveTotal = 0;
 
   constructor(
     private formService: GivingFormService,
@@ -32,11 +33,9 @@ export class GivingComponent implements OnInit {
     this.stripe = Stripe(this.stripeKey);
     this.giveService.getCategoryReferenceData();
     this.formService.createGivingForm();
-
-    this.formService.givingForm.valueChanges.subscribe((value) => {
-      this.giveTotal = this.giveService.calculateTotal(value.tithe, value.offerings);
-    });
+    this.giveService.registerTitheOfferingChanges();
   }
+
   payWithStripe() {
     this.giveService.formSubmitted = true;
     if (this.givingForm.invalid) {
