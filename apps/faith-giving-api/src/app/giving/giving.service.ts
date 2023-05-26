@@ -63,11 +63,15 @@ export class GivingService {
 
     async uploadGivingInformation(data: GiveDetails) {
         let result;
+        let nData = {
+            ...data,
+            role: ['SYSTEM']
+        }
         try {
-            result = addDoc(this.dataService.collection('giving'), data);
+            result = addDoc(this.dataService.collection('giving'), nData);
         } catch (error) {
             Logger.error(`Error uploading giving information: ${error}`);
-            return false;
+            throw new BadRequestException('An error occurred', { cause: new Error(), description: 'error saving information' })
         }
 
         return result;
