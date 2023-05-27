@@ -191,7 +191,7 @@ jobs:
           echo "Faith Giving API is not online"
           
 
-  success-notify:
+  notifysuccess:
     name: Success Notification
     needs: build, deploy, validate
     runs-on: ubuntu-latest
@@ -203,7 +203,7 @@ jobs:
         with:
           args: 'The faith giving projects have been deployed.'
 
-  failure-notify:
+  notifyfailure:
     name: Failure Notification
     needs: build, deploy, validate
     runs-on: ubuntu-latest
