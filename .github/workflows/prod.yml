@@ -193,7 +193,7 @@ jobs:
 
   notifysuccess:
     name: Success Notification
-    needs: build, deploy, validate
+    needs: [build, deploy, validate]
     runs-on: ubuntu-latest
     steps:
       - name: Send Notification
@@ -205,7 +205,7 @@ jobs:
 
   notifyfailure:
     name: Failure Notification
-    needs: build, deploy, validate
+    needs: [build, deploy, validate]
     runs-on: ubuntu-latest
     if: ${{ (needs.build.result != 'success' && needs.build.conclusion != 'skipped') && (needs.deploy.result != 'success' && needs.deploy.conclusion != 'skipped') && (needs.validate.result != 'success' && needs.validate.conclusion != 'skipped') }}
     steps:
