@@ -162,39 +162,10 @@ jobs:
           concurrency: 2
           recursive: true
           atomicPut: true
-
-  validate: 
-    name: Validate API Running
-    permissions: write-all
-    needs: deploy
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checking run status
-        id: status_check
-        uses: appleboy/ssh-action@v0.1.10
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
-          port: ${{ secrets.PORT }}
-          script: |
-            api_status=$(pm2 jlist | jq -r '.[] | select(.name == "faith-giving-api") | .pm2_env.status')
-            echo "::set-output name=api_status::$api_status"
-      #here we can notify the user and cause the job to fail
-      - name: Check affected projects
-        run: |
-          echo "Remote variable: ${{ steps.status_check.outputs.api_status }}"
-  #exit 1
-      - name: Fail Build if API is Offline
-        #if: ${{ steps.status_check.outputs.api_status }} != 'online'
-        run: |
-          echo "Faith Giving API is not online"
-          echo ${{ steps.status_check.outputs.api_status }}
           
-
   notifysuccess:
     name: Success Notification
-    needs: [build, deploy, validate]
+    needs: [build, deploy]
     runs-on: ubuntu-latest
     if: ${{ (needs.build.result == 'success') && (needs.deploy.result == 'success') && (needs.validate.result == 'success') }}
     steps:
@@ -207,9 +178,9 @@ jobs:
 
   notifyfailure:
     name: Failure Notification
-    needs: [build, deploy, validate]
+    needs: [build, deploy]
     runs-on: ubuntu-latest
-    if: ${{ (needs.build.result != 'success' && needs.build.conclusion != 'skipped') && (needs.deploy.result != 'success' && needs.deploy.conclusion != 'skipped') && (needs.validate.result != 'success' && needs.validate.conclusion != 'skipped') }}
+    if: ${{ (needs.build.result != 'success' && needs.build.conclusion != 'skipped') && (needs.deploy.result != 'success' && needs.deploy.conclusion != 'skipped') }}
     steps:
       - name: Send Notification
         env:
