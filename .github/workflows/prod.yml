@@ -178,7 +178,7 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
           script: |
-            api_status=$(pm2 jlist | jq -r '.[1].pm2_env.status')
+            api_status=$(pm2 jlist | jq -r '.[] | select(.name == "faith-giving-api") | .pm2_env.status')
             echo "::set-output name=api_status::$api_status"
       #here we can notify the user and cause the job to fail
       - name: Check affected projects
