@@ -184,4 +184,35 @@ jobs:
       #here we can notify the user and cause the job to fail
       - name: Check affected projects
         run: |
-          echo "Remote variable: ${{ steps.status_check.outputs.api_status }}" 
+          echo "Remote variable: ${{ steps.status_check.outputs.api_status }}"
+  #exit 1
+      - name: Fail Build if API is Offline
+        if: ${{ steps.status_check.outputs.api_status }} != 'online'
+        run: |
+          echo "Faith Giving API is not online"
+          
+
+  success-notify:
+    name: Success Notification
+    needs: build, deploy, validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Notification
+        env:
+          DISCORD_WEBHOOK: https://discord.com/api/webhooks/1112064055318954084/w6BtgqtiL-7thiRhd5qCTqsrkTaVHX9jJbY2wyFzayw_ixajA7zSycKaiu_jIGfnKmJQ
+        uses: Ilshidur/action-discord@master
+        with:
+          args: 'The faith giving projects have been deployed.'
+
+  failure-notify:
+    name: Failure Notification
+    needs: build, deploy, validate
+    runs-on: ubuntu-latest
+    if: ${{ (needs.build.result != 'success' && needs.build.conclusion != 'skipped') && (needs.deploy.result != 'success' && needs.deploy.conclusion != 'skipped') && (needs.validate.result != 'success' && needs.validate.conclusion != 'skipped') }}
+    steps:
+      - name: Send Notification
+        env:
+          DISCORD_WEBHOOK: https://discord.com/api/webhooks/1112064055318954084/w6BtgqtiL-7thiRhd5qCTqsrkTaVHX9jJbY2wyFzayw_ixajA7zSycKaiu_jIGfnKmJQ
+        uses: Ilshidur/action-discord@master
+        with:
+          args: 'The faith giving jobs deployment failed'
