@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-  pull_request:
 
 env:
   FAITH_GIVING_API: "faith-giving-api"
