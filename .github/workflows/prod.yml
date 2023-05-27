@@ -195,6 +195,7 @@ jobs:
     name: Success Notification
     needs: [build, deploy, validate]
     runs-on: ubuntu-latest
+    if: ${{ (needs.build.result == 'success') && (needs.deploy.result == 'success') && (needs.validate.result == 'success') }}
     steps:
       - name: Send Notification
         env:
