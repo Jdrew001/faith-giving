@@ -13,4 +13,5 @@ export interface CreatePaymentIntentDto {
 export interface Offering {
     amount: number;
     category: number;
+    other?: string;
 }

@@ -32,7 +32,7 @@ export class GiveFormValidator {
 
     offeringRequired(giveForm: AbstractControl) : {[key: string]: boolean} {
         const offeringControl = giveForm.get('amount');
-        if (offeringControl && (offeringControl.value === 0) || !offeringControl.value) {
+        if (offeringControl && (offeringControl.value === '$0.00') || !offeringControl.value) {
             return { 'offeringRequired': true };
         }
         return null;
@@ -44,12 +44,12 @@ export class GiveFormValidator {
 
         let offeringValid = false;
         offeringArray.controls.forEach((control: FormGroup) => {
-            if (control.controls['amount'].value !== 0) {
+            if (control.controls['amount'].value !== '$0.00') {
                 offeringValid = true;
             }
         });
 
-        if (!titheControl.value || titheControl.value === 0) { // tithe is empty
+        if (!titheControl.value || titheControl.value === '$0.00') { // tithe is empty
             if (!offeringValid) {
                 return { 'oneRequired':  true };
             }

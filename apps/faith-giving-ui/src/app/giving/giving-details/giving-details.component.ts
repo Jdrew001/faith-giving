@@ -32,7 +32,7 @@ export class GivingDetailsComponent {
 
   isOtherCategory(index: number) {
     let control = this.formService.offerings.controls[index].get('category') as FormControl;
-    return control.value?.label === 'Other';
+    return control?.value == 6;
   }
   
 }
