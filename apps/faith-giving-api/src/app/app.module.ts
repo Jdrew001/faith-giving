@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -7,6 +7,7 @@ import { DataService } from './services/data/data.service';
 import { GivingModule } from './giving/giving.module';
 import { EmailService } from './services/email/email.service';
 import { HttpModule } from '@nestjs/axios';
+import { CorsMiddleware } from './middleware/cors.middleware';
 
 @Module({
   imports: [
@@ -19,4 +20,8 @@ import { HttpModule } from '@nestjs/axios';
   controllers: [AppController],
   providers: [AppService, DataService, EmailService],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(CorsMiddleware).forRoutes('*');
+  }
+}
