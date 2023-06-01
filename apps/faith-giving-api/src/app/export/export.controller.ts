@@ -9,6 +9,7 @@ export class ExportController {
         private exportService: ExportService
     ) {}
 
+    //http://localhost:3000/api/export/{type} example: GIVING or REPORT
     @Get("/:type")
     getExportReport(@Param() type: 'GIVING' | 'REPORT', @Res() response: Response) {
         let givingWorkbook = this.exportService.generateGivingExcel();
