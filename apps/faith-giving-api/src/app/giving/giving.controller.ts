@@ -7,8 +7,7 @@ import { EmailService } from '../services/email/email.service';
 export class GivingController {
 
     constructor(
-        private givingService: GivingService,
-        private emailService: EmailService
+        private givingService: GivingService
     ) {}
 
     @Get("getGivingInformationForUser/:email")

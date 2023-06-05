@@ -12,6 +12,7 @@ import { GivingReceipt, GivingReportDto } from '../dto/email/giving.model';
 import * as Sentry from '@sentry/node';
 import { AppConstants } from '../app.constant';
 import { GivingEntity } from '../entities/giving';
+import { TextingService } from '../services/texting/texting.service';
 
 @Injectable()
 export class GivingService {
@@ -20,7 +21,8 @@ export class GivingService {
         private dataService: DataService,
         private stripeService: StripeService,
         private emailService: EmailService,
-        private appService: AppService
+        private appService: AppService,
+        private textingService: TextingService
     ) {}
 
     async submitPayment(body: PaymentDTO) {
@@ -56,6 +58,8 @@ export class GivingService {
                 //Send give recept to giver
                 Logger.log(`Sending email to giver: ${body.giveDetails.email} ${body.giveDetails.firstName} ${body.giveDetails.lastName}`);
                 await this.emailService.sendEmailToTemplate<any>(body.giveDetails.email, EmailConstant.GIVING_RECIEPT_SUBJECT, EmailConstant.GIVING_RECIEPT_TEMPLATE, givingReceptDTO);
+                await this.textingService.sendText(`+1${body.giveDetails.phone}`, 
+                    `Thank you for giving $${total} to Faith Tabernacle. A reciept has been sent to your email and if you have trouble viewing it, it might be in your spam folder. God Bless!`);
             }
         }
         return payment;

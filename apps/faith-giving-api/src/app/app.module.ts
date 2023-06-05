@@ -7,6 +7,7 @@ import { DataService } from './services/data/data.service';
 import { GivingModule } from './giving/giving.module';
 import { EmailService } from './services/email/email.service';
 import { HttpModule } from '@nestjs/axios';
+import { TextingService } from './services/texting/texting.service';
 import { CorsMiddleware } from './middleware/cors.middleware';
 
 @Module({
@@ -15,10 +16,10 @@ import { CorsMiddleware } from './middleware/cors.middleware';
     ConfigModule.forRoot({
       envFilePath: '.env',
     }),
-    HttpModule
+    HttpModule,
   ],
   controllers: [AppController],
-  providers: [AppService, DataService, EmailService],
+  providers: [AppService, DataService, EmailService, TextingService],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {

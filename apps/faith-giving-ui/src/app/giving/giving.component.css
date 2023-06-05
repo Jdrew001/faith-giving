@@ -37,6 +37,10 @@ i:hover {
     color: #851c1c;
 }
 
+.clear-btn:hover {
+    cursor: pointer;
+}
+
 :host ::ng-deep .p-button-icon {
     margin-left: 10px;
 }
