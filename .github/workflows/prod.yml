@@ -105,6 +105,7 @@ jobs:
           concurrency: 2
           recursive: true
           atomicPut: true
+          port: 22
 
       - name: Install deps
         if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
@@ -112,7 +113,7 @@ jobs:
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
-          privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.PORT }}
           script: |
             cd /root/projects/faith-giving-api
@@ -124,10 +125,11 @@ jobs:
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
-          privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.PORT }}
           script: |
             pm2 restart faith-giving-api
+
       - name: Download UI Files
         if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_UI)
         uses: actions/download-artifact@v2
@@ -148,6 +150,7 @@ jobs:
           concurrency: 2
           recursive: true
           atomicPut: true
+          port: 22
 
       - name: Copy API to Server_web dir
         if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_UI)
@@ -162,29 +165,4 @@ jobs:
           concurrency: 2
           recursive: true
           atomicPut: true
-          
-  notifysuccess:
-    name: Success Notification
-    needs: [build, deploy]
-    runs-on: ubuntu-latest
-    if: ${{ (needs.build.result == 'success') && (needs.deploy.result == 'success') && (needs.validate.result == 'success') }}
-    steps:
-      - name: Send Notification
-        env:
-          DISCORD_WEBHOOK: https://discord.com/api/webhooks/1112064055318954084/w6BtgqtiL-7thiRhd5qCTqsrkTaVHX9jJbY2wyFzayw_ixajA7zSycKaiu_jIGfnKmJQ
-        uses: Ilshidur/action-discord@master
-        with:
-          args: 'The faith giving projects have been deployed.'
-
-  notifyfailure:
-    name: Failure Notification
-    needs: [build, deploy]
-    runs-on: ubuntu-latest
-    if: ${{ (needs.build.result != 'success' && needs.build.conclusion != 'skipped') && (needs.deploy.result != 'success' && needs.deploy.conclusion != 'skipped') }}
-    steps:
-      - name: Send Notification
-        env:
-          DISCORD_WEBHOOK: https://discord.com/api/webhooks/1112064055318954084/w6BtgqtiL-7thiRhd5qCTqsrkTaVHX9jJbY2wyFzayw_ixajA7zSycKaiu_jIGfnKmJQ
-        uses: Ilshidur/action-discord@master
-        with:
-          args: 'The faith giving jobs deployment failed'
+          port: 22
