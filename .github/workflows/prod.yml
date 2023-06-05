@@ -106,6 +106,7 @@ jobs:
           recursive: true
           atomicPut: true
           port: 22
+          verbose: true
 
       - name: Install deps
         if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
@@ -151,6 +152,7 @@ jobs:
           recursive: true
           atomicPut: true
           port: 22
+          verbose: true
 
       - name: Copy API to Server_web dir
         if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_UI)
@@ -166,3 +168,4 @@ jobs:
           recursive: true
           atomicPut: true
           port: 22
+          verbose: true
