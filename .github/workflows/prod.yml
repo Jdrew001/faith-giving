@@ -100,7 +100,7 @@ jobs:
           remote: /root/projects/faith-giving-api
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
+          privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
           rmRemote: false
           concurrency: 2
           recursive: true
@@ -112,7 +112,7 @@ jobs:
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
+          privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.PORT }}
           script: |
             cd /root/projects/faith-giving-api
@@ -124,7 +124,7 @@ jobs:
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
+          privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.PORT }}
           script: |
             pm2 restart faith-giving-api
@@ -143,7 +143,7 @@ jobs:
           remote: /root/projects/faith-giving-ui
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
+          privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
           rmRemote: true
           concurrency: 2
           recursive: true
@@ -157,7 +157,7 @@ jobs:
           remote: /var/www/faith-giving
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
+          privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
           rmRemote: true
           concurrency: 2
           recursive: true
