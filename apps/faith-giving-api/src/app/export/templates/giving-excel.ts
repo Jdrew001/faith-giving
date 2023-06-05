@@ -1,12 +1,33 @@
+import { GivingExportDTO, GivingExportItem } from "../../dto/export.dto";
 import { BaseExcel } from "./base-excel";
 import * as XLSX from 'xlsx';
 
-export class GivingSheet implements BaseExcel {
-    constructor() {}
+export class GivingSheet extends BaseExcel {
+
+    _givingData: GivingExportDTO;
+
+    constructor(
+        data: GivingExportDTO
+    ) {
+        super();
+        this._givingData = data;
+    }
 
     generateSheet(): XLSX.WorkSheet {
         const titleRange = 'C4:E4';
-        let sheet = XLSX.utils.sheet_add_aoa([
+        const janData = this.getData(1, this._givingData);
+        const febData = this.getData(2, this._givingData);
+        const marchData = this.getData(3, this._givingData);
+        const aprilData = this.getData(4, this._givingData);
+        const mayData = this.getData(5, this._givingData);
+        const juneData = this.getData(6, this._givingData);
+        const julyData = this.getData(7, this._givingData);
+        const augData = this.getData(8, this._givingData);
+        const septData = this.getData(9, this._givingData);
+        const octData = this.getData(10, this._givingData);
+        const noveData = this.getData(11, this._givingData);
+        const decData = this.getData(12, this._givingData);
+        let sheet = XLSX.utils.aoa_to_sheet([
             [],
             [],
             [],
@@ -15,30 +36,30 @@ export class GivingSheet implements BaseExcel {
             [], 
             [/*A7*/, '1st Week', '2nd Week', '3rd Week', '4th Week', '5th Week', /* G4 */, 'Total'],
             [],
-            ['Januray', /* B9 */, /* C9 */, /* D9 */, /* E9 */, /* G9 */, , '$0.00'],
+            [janData.name, janData.weeks[0], janData.weeks[1], janData.weeks[2], janData.weeks[3], janData.weeks[4], ,janData.total],
             [],
-            ['February', /* B11 */, /* C11 */, /* D11 */, /* E11 */, /* G11 */,, '$0.00'],
+            [febData.name, febData.weeks[0], febData.weeks[1], febData.weeks[2], febData.weeks[3], febData.weeks[4],,febData.total],
             [],
-            ['March', /* B11 */, /* C11 */, /* D11 */, /* E11 */, /* G11 */,, '$0.00'],
+            [marchData.name, marchData.weeks[0], marchData.weeks[1], marchData.weeks[2], marchData.weeks[3], marchData.weeks[4],,marchData.total],
             [],
-            ['April', /* B11 */, /* C11 */, /* D11 */, /* E11 */, /* G11 */,, '$0.00'],
+            [aprilData.name, aprilData.weeks[0], aprilData.weeks[1], aprilData.weeks[2], aprilData.weeks[3], aprilData.weeks[4],,aprilData.total],
             [],
-            ['May', /* B11 */, /* C11 */, /* D11 */, /* E11 */, /* G11 */,, '$0.00'],
+            [mayData.name, mayData.weeks[0], mayData.weeks[1], mayData.weeks[2], mayData.weeks[3], mayData.weeks[4],,mayData.total],
             [],
-            ['June', /* B11 */, /* C11 */, /* D11 */, /* E11 */, /* G11 */,, '$0.00'],
+            [juneData.name, juneData.weeks[0], juneData.weeks[1], juneData.weeks[2], juneData.weeks[3], juneData.weeks[4],,juneData.total],
             [],
-            ['July', /* B11 */, /* C11 */, /* D11 */, /* E11 */, /* G11 */,, '$0.00'],
+            [julyData.name, julyData.weeks[0], julyData.weeks[1], julyData.weeks[2], julyData.weeks[3], julyData.weeks[4],,julyData.total],
             [],
-            ['August', /* B11 */, /* C11 */, /* D11 */, /* E11 */, /* G11 */,, '$0.00'],
+            [augData.name, augData.weeks[0], augData.weeks[1], augData.weeks[2], augData.weeks[3], augData.weeks[4],,augData.total],
             [],
-            ['September', /* B11 */, /* C11 */, /* D11 */, /* E11 */, /* G11 */,, '$0.00'],
+            [septData.name, septData.weeks[0], septData.weeks[1], septData.weeks[2], septData.weeks[3], septData.weeks[4],,septData.total],
             [],
-            ['October', /* B11 */, /* C11 */, /* D11 */, /* E11 */, /* G11 */,, '$0.00'],
+            [octData.name, octData.weeks[0], octData.weeks[1], octData.weeks[2], octData.weeks[3], octData.weeks[4],,octData.total],
             [],
-            ['November', /* B11 */, /* C11 */, /* D11 */, /* E11 */, /* G11 */, ,'$0.00'],
+            [noveData.name, noveData.weeks[0], noveData.weeks[1], noveData.weeks[2], noveData.weeks[3], noveData.weeks[4], ,noveData.total],
             [],
-            ['December', /* B11 */, /* C11 */, /* D11 */, /* E11 */, /* G11 */, ,'$0.00'],
-          ], null, {origin: "A1" });
+            [decData.name, decData.weeks[0], decData.weeks[1], decData.weeks[2], decData.weeks[3], decData.weeks[4], ,decData.total],
+          ]);
         sheet['!merges'] = [XLSX.utils.decode_range(titleRange)];
         return sheet;
     }
