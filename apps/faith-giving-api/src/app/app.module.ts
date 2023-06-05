@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -8,6 +8,7 @@ import { GivingModule } from './giving/giving.module';
 import { EmailService } from './services/email/email.service';
 import { HttpModule } from '@nestjs/axios';
 import { TextingService } from './services/texting/texting.service';
+import { CorsMiddleware } from './middleware/cors.middleware';
 
 @Module({
   imports: [
@@ -20,4 +21,8 @@ import { TextingService } from './services/texting/texting.service';
   controllers: [AppController],
   providers: [AppService, DataService, EmailService, TextingService],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(CorsMiddleware).forRoutes('*');
+  }
+}
