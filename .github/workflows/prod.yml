@@ -92,34 +92,34 @@ jobs:
           name: faith_giving_api
           path: api_project
 
-      - name: Copy API to Server
-        if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
-        uses: garygrossgarten/github-action-scp@release
-        with: 
-          local: api_project
-          remote: /root/projects/faith-giving-api
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
-          rmRemote: false
-          concurrency: 2
-          recursive: true
-          atomicPut: true
-          port: 22
-          verbose: true
+      # - name: Copy API to Server
+      #   if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
+      #   uses: garygrossgarten/github-action-scp@release
+      #   with: 
+      #     local: api_project
+      #     remote: /root/projects/faith-giving-api
+      #     host: ${{ secrets.HOST }}
+      #     username: ${{ secrets.USERNAME }}
+      #     privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
+      #     rmRemote: false
+      #     concurrency: 2
+      #     recursive: true
+      #     atomicPut: true
+      #     port: 22
+      #     verbose: true
 
-      - name: Install deps
-        if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
-        uses: appleboy/ssh-action@v0.1.10
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.PORT }}
-          script: |
-            cd /root/projects/faith-giving-api
-            npm install --omit=dev --verbose
-            npm install tslib --verbose
+      # - name: Install deps
+      #   if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
+      #   uses: appleboy/ssh-action@v0.1.10
+      #   with:
+      #     host: ${{ secrets.HOST }}
+      #     username: ${{ secrets.USERNAME }}
+      #     key: ${{ secrets.SSH_PRIVATE_KEY }}
+      #     port: ${{ secrets.PORT }}
+      #     script: |
+      #       cd /root/projects/faith-giving-api
+      #       npm install --omit=dev --verbose
+      #       npm install tslib --verbose
       - name: Restart API
         if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
         uses: appleboy/ssh-action@v0.1.10
