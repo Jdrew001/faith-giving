@@ -59,7 +59,7 @@ export class GivingService {
                 Logger.log(`Sending email to giver: ${body.giveDetails.email} ${body.giveDetails.firstName} ${body.giveDetails.lastName}`);
                 await this.emailService.sendEmailToTemplate<any>(body.giveDetails.email, EmailConstant.GIVING_RECIEPT_SUBJECT, EmailConstant.GIVING_RECIEPT_TEMPLATE, givingReceptDTO);
                 await this.textingService.sendText(`+1${body.giveDetails.phone}`, 
-                    `Thank you for giving $${total} to Faith Tabernacle. A reciept has been sent to your email and if you have trouble viewing it, it might be in your spam folder. God Bless!`);
+                    `Thank you for giving $${total.toFixed(2)} to Faith Tabernacle. A reciept has been sent to your email. If you have trouble viewing it, it might be in your spam folder. God Bless!`);
             }
         }
         return payment;
