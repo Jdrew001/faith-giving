@@ -99,7 +99,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: $GITHUB_WORKSPACE/api_project/
+          source: api_project/
           target: /root/projects/faith-giving-api/
           recursive: true
 
