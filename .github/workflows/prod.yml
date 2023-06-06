@@ -136,33 +136,25 @@ jobs:
           path: ui_project
 
       - name: Copy UI to Server
-        if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_UI)
-        uses: garygrossgarten/github-action-scp@release
-        with: 
-          local: ui_project
-          remote: /root/projects/faith-giving-ui
+        if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
+        uses: appleboy/scp-action@master
+        with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
-          privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
-          rmRemote: true
-          concurrency: 2
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: ui_project/
+          target: /root/projects/faith-giving-ui/
           recursive: true
-          atomicPut: true
-          port: 22
-          verbose: true
+          strip_components: 1
 
-      - name: Copy API to Server_web dir
-        if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_UI)
-        uses: garygrossgarten/github-action-scp@release
-        with: 
-          local: ui_project
-          remote: /var/www/faith-giving
+      - name: Copy UI www to Server
+        if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
+        uses: appleboy/scp-action@master
+        with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
-          privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
-          rmRemote: true
-          concurrency: 2
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: ui_project/
+          target: /var/www/faith-giving
           recursive: true
-          atomicPut: true
-          port: 22
-          verbose: true
+          strip_components: 1
