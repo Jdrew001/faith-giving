@@ -93,7 +93,7 @@ jobs:
           path: api_project
 
       - name: Copy Backend to Server
-        if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_UI)
+        if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
@@ -105,7 +105,7 @@ jobs:
             rm -rf /root/projects/faith-giving-api/*
             cp -r api_project/* /root/projects/faith-giving-api/
             mv /root/projects/faith-giving-api-env/.env /root/projects/faith-giving-ui/.env
-            
+
       - name: Restart API
         if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
         uses: appleboy/ssh-action@v0.1.10
