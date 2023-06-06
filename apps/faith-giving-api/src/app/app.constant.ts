@@ -3,7 +3,7 @@ import { EmailJSON } from "./services/email/email.model";
 export class AppConstants {
     public static OFFERINGS_REFERENCE_PATH = 'reference/offeringCategories';
     public static GIVING_PATH = 'giving';
-    public static APP_PATH = 'app';//test1
+    public static APP_PATH = 'app';//test11
     public static SENDGRID_EMAIL_SENDER: EmailJSON = {name: 'Faith Giving', email: 'faithtabernacleupcarlington@gmail.com'} 
 
     public static CARD_ERROR_MESSAGES = {

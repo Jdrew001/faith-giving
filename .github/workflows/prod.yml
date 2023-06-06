@@ -94,17 +94,14 @@ jobs:
 
       - name: Copy Backend to Server
         if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
-        uses: appleboy/ssh-action@master
+        uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            mkdir -p /root/projects/faith-service-api
-            mv /root/projects/faith-giving-api/.env /root/projects/faith-giving-api-env/.env
-            rm -rf /root/projects/faith-giving-api/*
-            cp -r api_project/* /root/projects/faith-giving-api/
-            mv /root/projects/faith-giving-api-env/.env /root/projects/faith-giving-ui/.env
+          source: $GITHUB_WORKSPACE/api_project/
+          target: /root/projects/faith-giving-api/
+          recursive: true
 
       - name: Restart API
         if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
