@@ -104,6 +104,19 @@ jobs:
           recursive: true
           strip_components: 1
 
+      - name: Install deps
+        if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd /root/projects/faith-giving-api
+            npm install --omit=dev --verbose
+            npm install tslib --verbose
+
       - name: Restart API
         if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
         uses: appleboy/ssh-action@v0.1.10
