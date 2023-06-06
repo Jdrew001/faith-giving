@@ -102,6 +102,7 @@ jobs:
           source: api_project/
           target: /root/projects/faith-giving-api/
           recursive: true
+          strip_components: 1
 
       - name: Restart API
         if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
