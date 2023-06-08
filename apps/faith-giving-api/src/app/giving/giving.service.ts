@@ -33,6 +33,7 @@ export class GivingService {
             payment = await this.stripeService.submitPayment(body, total);
         } catch (error) {
             Sentry.captureException(`error submitting payment: ${error}, User: ${entity.firstName} ${entity.lastName}`);
+            Logger.error(`ERROR - giving service: submit payment: ${error}`);
             let message = AppConstants.CARD_ERROR_MESSAGES[error?.code] ?? 'Oops, an error occurred';
             throw new BadRequestException('An error occurred', { cause: error, description: message });
         }

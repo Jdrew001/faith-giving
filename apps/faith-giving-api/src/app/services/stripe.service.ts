@@ -38,6 +38,7 @@ export class StripeService {
                 payment_method_types: ['card'],
             });
         } catch (error) {
+            Logger.error(`ERROR: creating payment intent: ${error}`);
             Sentry.captureException(`error creating payment intent: ${error}`);
             throw new BadRequestException('An error occurred', { cause: new Error(), description: 'error creating payment intent' });
         }
@@ -52,13 +53,13 @@ export class StripeService {
         });
 
         if (!payment) {
-            Logger.error(`Payment failed`, payment);
+            Logger.error(`Payment failed: ${payment}`);
             Sentry.captureException(`error submitting payment (submit payment) failed: ${payment}`);
             throw new BadRequestException('An error occurred', { cause: new Error(), description: 'error submitting payment' });
         }
 
         if (payment.status != 'succeeded') {
-            Logger.error(`Payment failed`, payment);
+            Logger.error(`Payment failed: ${payment}`);
             Sentry.captureException(`error submitting payment (submit payment) failed: ${payment}`);
             throw new BadRequestException('An error occurred', { cause: new Error(), description: 'error submitting payment' });
         }
