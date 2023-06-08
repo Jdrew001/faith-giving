@@ -33,7 +33,6 @@ jobs:
           
       - run: npm i --force
       - run: npm --prefix api-gateway --omit=dev -f install
-
       - run: npx nx affected -t build --parallel=3
 
       - name: Check affected projects
@@ -42,6 +41,7 @@ jobs:
           affected_projects=$(npx nx print-affected --base=${{ github.event.before }} --head=${{ github.sha }} --select=projects)
           echo "::set-output name=projects::$affected_projects"
           echo "Workspace: ${{ github.workspace }}"
+          
       - name: Upload Faith-Giving-Api Files
         if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
         uses: actions/upload-artifact@v3
