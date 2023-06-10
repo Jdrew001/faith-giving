@@ -25,8 +25,7 @@ async function bootstrap() {
 
   Sentry.init({
     dsn: process.env.SENTRY_URL,
-    environment: process.env.NODE_ENV,
-    enabled: process.env.NODE_ENV == 'production'
+    environment: process.env.NODE_ENV
   });
 
   const globalPrefix = 'api';

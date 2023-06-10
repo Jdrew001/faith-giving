@@ -33,7 +33,6 @@ jobs:
           
       - run: npm i --force
       - run: npm --prefix api-gateway --omit=dev -f install
-
       - run: npx nx affected -t build --parallel=3
 
       - name: Check affected projects
@@ -42,6 +41,7 @@ jobs:
           affected_projects=$(npx nx print-affected --base=${{ github.event.before }} --head=${{ github.sha }} --select=projects)
           echo "::set-output name=projects::$affected_projects"
           echo "Workspace: ${{ github.workspace }}"
+          
       - name: Upload Faith-Giving-Api Files
         if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
         uses: actions/upload-artifact@v3
@@ -92,19 +92,17 @@ jobs:
           name: faith_giving_api
           path: api_project
 
-      - name: Copy API to Server
+      - name: Copy Backend to Server
         if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
-        uses: garygrossgarten/github-action-scp@release
-        with: 
-          local: api_project
-          remote: /root/projects/faith-giving-api
+        uses: appleboy/scp-action@master
+        with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
-          rmRemote: false
-          concurrency: 2
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: api_project/
+          target: /root/projects/faith-giving-api/
           recursive: true
-          atomicPut: true
+          strip_components: 1
 
       - name: Install deps
         if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
@@ -112,22 +110,24 @@ jobs:
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.PORT }}
           script: |
             cd /root/projects/faith-giving-api
             npm install --omit=dev --verbose
             npm install tslib --verbose
+
       - name: Restart API
         if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.PORT }}
           script: |
             pm2 restart faith-giving-api
+
       - name: Download UI Files
         if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_UI)
         uses: actions/download-artifact@v2
@@ -137,54 +137,24 @@ jobs:
 
       - name: Copy UI to Server
         if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_UI)
-        uses: garygrossgarten/github-action-scp@release
-        with: 
-          local: ui_project
-          remote: /root/projects/faith-giving-ui
+        uses: appleboy/scp-action@master
+        with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
-          rmRemote: true
-          concurrency: 2
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: ui_project/
+          target: /root/projects/faith-giving-ui/
           recursive: true
-          atomicPut: true
+          strip_components: 1
 
-      - name: Copy API to Server_web dir
+      - name: Copy UI www to Server
         if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_UI)
-        uses: garygrossgarten/github-action-scp@release
-        with: 
-          local: ui_project
-          remote: /var/www/faith-giving
+        uses: appleboy/scp-action@master
+        with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
-          rmRemote: true
-          concurrency: 2
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: ui_project/
+          target: /var/www/faith-giving
           recursive: true
-          atomicPut: true
-          
-  notifysuccess:
-    name: Success Notification
-    needs: [build, deploy]
-    runs-on: ubuntu-latest
-    if: ${{ (needs.build.result == 'success') && (needs.deploy.result == 'success') && (needs.validate.result == 'success') }}
-    steps:
-      - name: Send Notification
-        env:
-          DISCORD_WEBHOOK: https://discord.com/api/webhooks/1112064055318954084/w6BtgqtiL-7thiRhd5qCTqsrkTaVHX9jJbY2wyFzayw_ixajA7zSycKaiu_jIGfnKmJQ
-        uses: Ilshidur/action-discord@master
-        with:
-          args: 'The faith giving projects have been deployed.'
-
-  notifyfailure:
-    name: Failure Notification
-    needs: [build, deploy]
-    runs-on: ubuntu-latest
-    if: ${{ (needs.build.result != 'success' && needs.build.conclusion != 'skipped') && (needs.deploy.result != 'success' && needs.deploy.conclusion != 'skipped') }}
-    steps:
-      - name: Send Notification
-        env:
-          DISCORD_WEBHOOK: https://discord.com/api/webhooks/1112064055318954084/w6BtgqtiL-7thiRhd5qCTqsrkTaVHX9jJbY2wyFzayw_ixajA7zSycKaiu_jIGfnKmJQ
-        uses: Ilshidur/action-discord@master
-        with:
-          args: 'The faith giving jobs deployment failed'
+          strip_components: 1
