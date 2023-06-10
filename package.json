@@ -61,6 +61,7 @@
     "@nhogs/nestjs-firebase": "^0.0.16",
     "@sendgrid/mail": "^7.7.0",
     "@sentry/node": "^5.9.0",
+    "@sheet/core": "^1.20230414.1",
     "@stripe/stripe-js": "^1.52.1",
     "@types/firebase": "^3.2.1",
     "@types/xlsx": "^0.0.36",

@@ -15,7 +15,8 @@ export class ExportService {
     
             XLSX.utils.book_append_sheet(workbook, template, 'Sheet1');
             workbook = this.styleTitheWorkbook(workbook);
-            result = XLSX.write(workbook, { type: 'buffer', bookType: 'xlsx' });
+            result = XLSX.write(workbook, { type: 'buffer', bookType: 'xlsx', cellStyles: true });
+            //result = XLSX.writeFile(workbook, 'giving_report.xlsx', {cellStyles: true});
         } catch(e) {
             throw new BadRequestException('An error occurred', { cause: e, description: 'giving report failure' });
         }

@@ -60,7 +60,12 @@ export class GivingSheet extends BaseExcel {
             [],
             [decData.name, decData.weeks[0], decData.weeks[1], decData.weeks[2], decData.weeks[3], decData.weeks[4], ,decData.total],
           ]);
+        
         sheet['!merges'] = [XLSX.utils.decode_range(titleRange)];
+        sheet['C4'].s = {
+            bold: true,
+            alignment: { horizontal: 'center', vertical: 'center' },
+        }
         return sheet;
     }
 }
