@@ -22,7 +22,7 @@ export class GiveFormValidator {
         const offeringOther = giveForm.get('other');
         
         if (offeringControl && offeringControl.value !== 0) {
-            if (offeringCat && offeringCat.value === 'Other' && offeringOther && (offeringOther.value === '' || !offeringOther.value)) {
+            if (offeringCat && offeringCat.value === '6' && offeringOther && (offeringOther.value === '' || !offeringOther.value)) {
                 return { 'otherRequired': true };
             }
         }

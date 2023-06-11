@@ -36,7 +36,7 @@ export class GivingFormService {
   addOfferingToArray() {
     return new FormGroup({
       amount: this.fb.control('$0.00'),
-      category: this.fb.control(1, [Validators.required]),
+      category: this.fb.control(null, [Validators.required]),
       other: this.fb.control('')
     }, [this.giveValidator.offeringRequired, this.giveValidator.validateOffering, this.giveValidator.validateOfferingOther]);
   }

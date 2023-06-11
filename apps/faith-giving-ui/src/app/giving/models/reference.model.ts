@@ -1,5 +1,5 @@
 export class Reference {
-    value: number;
+    id: number;
     label: string;
     disabled: boolean;
     activeInd: string;
