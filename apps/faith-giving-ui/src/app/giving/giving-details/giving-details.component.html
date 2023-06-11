@@ -41,7 +41,13 @@
                         </div>
         
                         <div class="col-md-6">
-                            <p-dropdown styleClass="dropdown" formControlName="category" optionValue="id" dataKey="id" [options]="categories" optionLabel="label" emptyMessage="Select"></p-dropdown>
+                            <p-dropdown 
+                            styleClass="dropdown" 
+                            formControlName="category" 
+                            optionValue="id" dataKey="id" 
+                            [options]="categories" optionLabel="label" 
+                            emptyMessage="Select"
+                            placeholder="Select"></p-dropdown>
                             <p class="error" style="font-size: 10px;" *ngIf="form.errors && form.errors['categoryRequired'] && formSubmitted">A category must be selected</p>
                         </div>
                     </div>

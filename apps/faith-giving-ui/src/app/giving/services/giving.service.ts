@@ -104,8 +104,26 @@ export class GivingService extends BaseService {
     let feeCovered$ = this.formService.feeCovered?.valueChanges;
 
     tithe$.subscribe(() => this.calculateTotal(this.formService.tithe.value, this.formService.offerings.value));
-    offerings$.subscribe(() => this.calculateTotal(this.formService.tithe.value, this.formService.offerings.value));
-    feeCovered$.subscribe(() => this.calculateTotal(this.formService.tithe.value, this.formService.offerings.value))
+    offerings$.subscribe(() => {
+      this.calculateTotal(this.formService.tithe.value, this.formService.offerings.value);
+      this.updateRefDataState();
+    });
+    feeCovered$.subscribe(() => this.calculateTotal(this.formService.tithe.value, this.formService.offerings.value));
+  }
+
+  updateRefDataState() {
+    const selectedOfferingsArr = this.formService.offerings as FormArray;
+    const selectedOfferings = selectedOfferingsArr.value as Array<{category: number}>;
+    this.categories.forEach(category => {
+      category.disabled = false;
+
+      const isSelected = selectedOfferings.find(o => o.category === category.id);
+      if (isSelected && category.label !== 'Other') {
+        category.disabled = true;
+      }
+    });
+
+    this.formService.givingForm.updateValueAndValidity();
   }
 
   convertToNumber(value: string) {
