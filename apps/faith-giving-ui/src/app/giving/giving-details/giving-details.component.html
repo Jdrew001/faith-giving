@@ -17,7 +17,7 @@
                             <span class="error" style="font-size: 10px;" *ngIf="givingForm.errors && givingForm.errors['oneRequired'] && formSubmitted">Tithe or Offering must be provided</span></p>
                         
                     </div>
-                    <div class="flex align-items-center">
+                    <div *ngIf="offerings?.length !== categories?.length" class="flex align-items-center">
                         <i class="pi pi-plus" (click)="addOffering()"></i>
                     </div>
                 </div>
