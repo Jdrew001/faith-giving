@@ -1,6 +1,5 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import * as XLSXStyle from 'xlsx-style';
-import * as XLSX from 'xlsx';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import * as XLSX from '@sheet/core';
 import { GivingSheet } from './templates/giving-excel';
 import { GivingExportDTO } from '../dto/export.dto';
 
@@ -14,30 +13,12 @@ export class ExportService {
             const template = new GivingSheet(data).generateSheet();
     
             XLSX.utils.book_append_sheet(workbook, template, 'Sheet1');
-            workbook = this.styleTitheWorkbook(workbook);
             result = XLSX.write(workbook, { type: 'buffer', bookType: 'xlsx', cellStyles: true });
-            //result = XLSX.writeFile(workbook, 'giving_report.xlsx', {cellStyles: true});
         } catch(e) {
             throw new BadRequestException('An error occurred', { cause: e, description: 'giving report failure' });
         }
         
-
+        Logger.log(XLSX.version);
         return result;
-    }
-
-    styleTitheWorkbook(workbook) {
-        let sheetName = workbook.SheetNames[0];
-        let sheet = workbook.Sheets[sheetName];
-        let titleCellAddress = 'C4';
-        //style heading
-        let style = {
-            font: { bold: true },
-            alignment: { horizontal: 'center', vertical: 'center' },
-        }
-        const cellAddress = { r: 3, c: 2 };
-        const cellIndex = XLSXStyle.utils.encode_cell(cellAddress);
-        sheet[cellIndex] = { ...sheet[cellIndex], s: style };
-
-        return workbook;
     }
 }
