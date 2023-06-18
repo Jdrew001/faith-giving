@@ -89,8 +89,8 @@ export class ExportController {
 
     //http://localhost:3000/api/export/{type} example: GIVING or REPORT
     @Get("/:type")
-    getExportReport(@Param() type: 'GIVING' | 'REPORT', @Res() response: Response) {
-        let givingWorkbook = this.exportService.generateGivingExcel(this.mockData);
+    getExportReport(@Param() type: 'TITHE' | 'GIVING', @Res() response: Response) {
+        let givingWorkbook = this.exportService.generateTitheExcel(this.mockData);
         response.set({
             'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
             'Content-Disposition': 'attachment; filename=giving_report.xlsx',

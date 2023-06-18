@@ -3,7 +3,7 @@ import { GivingExportDTO, GivingExportItem } from "../../dto/export.dto";
 import { BaseExcel } from "./base-excel";
 import * as XLSX from '@sheet/core';
 
-export class GivingSheet extends BaseExcel {
+export class TitheSheet extends BaseExcel {
 
     _givingData: GivingExportDTO;
     _fontSize = 12;
@@ -95,6 +95,9 @@ export class GivingSheet extends BaseExcel {
         ];
 
         sheet["!cols"] = columnStyles;
+        sheet["!rows"] = [
+            { hpt: 90 }
+        ]
 
         // Other styles
         bodyCells.forEach(cell => {

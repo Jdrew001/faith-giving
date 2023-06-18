@@ -1,16 +1,16 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import * as XLSX from '@sheet/core';
-import { GivingSheet } from './templates/giving-excel';
+import { TitheSheet } from './templates/tithe-excel';
 import { GivingExportDTO } from '../dto/export.dto';
 
 @Injectable()
 export class ExportService {
 
-    generateGivingExcel(data: GivingExportDTO) {
+    generateTitheExcel(data: GivingExportDTO) {
         let result;
         try {
             let workbook = XLSX.utils.book_new();
-            const template = new GivingSheet(data).generateSheet();
+            const template = new TitheSheet(data).generateSheet();
     
             XLSX.utils.book_append_sheet(workbook, template, 'Sheet1');
             result = XLSX.write(workbook, { type: 'buffer', bookType: 'xlsx', cellStyles: true });
