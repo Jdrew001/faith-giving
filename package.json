@@ -57,6 +57,7 @@
     "@nestjs/config": "^2.3.1",
     "@nestjs/core": "^9.0.0",
     "@nestjs/platform-express": "^9.0.0",
+    "@nestjs/typeorm": "^10.0.0",
     "@ng-bootstrap/ng-bootstrap": "^14.1.0",
     "@nhogs/nestjs-firebase": "^0.0.16",
     "@sendgrid/mail": "^7.7.0",
@@ -70,6 +71,7 @@
     "ngx-currency-mask": "^4.3.2",
     "ngx-mask": "^15.1.2",
     "ngx-stripe": "^16.0.0",
+    "pg": "^8.11.0",
     "primeflex": "^3.1.0",
     "primeicons": "5.0.0",
     "primeng": "13.0.2",
@@ -78,6 +80,7 @@
     "stripe": "^12.4.0",
     "tslib": "^2.3.0",
     "twilio": "^4.11.2",
+    "typeorm": "^0.3.16",
     "uuid": "^9.0.0",
     "zone.js": "~0.12.0"
   }
