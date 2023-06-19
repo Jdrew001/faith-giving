@@ -1,13 +1,14 @@
 import { Controller, Get } from '@nestjs/common';
 
 import { AppService } from './app.service';
-import { UserService } from '@faith-giving/faith-giving.service';
+import { UserService, ReferenceService } from '@faith-giving/faith-giving.service';
 
 @Controller()
 export class AppController {
   constructor(
     private readonly appService: AppService,
-    private readonly userService: UserService) {}
+    private readonly userService: UserService,
+    private readonly refService: ReferenceService) {}
 
   @Get()
   async getData() {
@@ -15,8 +16,8 @@ export class AppController {
   }
 
   @Get("reference")
-  getReferenceData() {
-    return this.appService.getReferenceData();
+  async getReferenceData() {
+    return await this.refService.findAll();
   }
 
   @Get('environment')

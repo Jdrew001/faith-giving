@@ -1,11 +1,20 @@
 import { Module } from '@nestjs/common';
 import { UserService } from './user/user.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Giving, Individual, Offering, OfferingType, PaymentMethod, User } from '@faith-giving/faith-giving.model';
+import {
+  Giving,
+  Individual,
+  Offering,
+  OfferingType,
+  PaymentMethod,
+  User,
+} from '@faith-giving/faith-giving.model';
+import { ReferenceService } from './reference/reference.service';
 
 @Module({
   providers: [
-    UserService
+    UserService,
+    ReferenceService
   ],
   imports: [
     TypeOrmModule.forFeature([
@@ -14,9 +23,12 @@ import { Giving, Individual, Offering, OfferingType, PaymentMethod, User } from 
       Offering,
       OfferingType,
       User,
-      PaymentMethod
-    ])
+      PaymentMethod,
+    ]),
   ],
-  exports: [UserService]
+  exports: [
+    UserService,
+    ReferenceService
+  ],
 })
 export class FaithGivingServiceModule {}
