@@ -43,14 +43,14 @@ export class DataService {
     }
 
     initDB() {
-        if (this.firestore) {
-            return;
-        }
+        // if (this.firestore) {
+        //     return;
+        // }
 
-        try {
-            this.firestore = getFirestore();
-        } catch (error) {
-            throw new BadRequestException('An error occurred', { cause: new Error(), description: 'error retrieving firestore instance' })
-        }
+        // try {
+        //     this.firestore = getFirestore();
+        // } catch (error) {
+        //     throw new BadRequestException('An error occurred', { cause: new Error(), description: 'error retrieving firestore instance' })
+        // }
     }
 }

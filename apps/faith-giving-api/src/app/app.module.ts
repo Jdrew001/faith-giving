@@ -9,6 +9,8 @@ import { EmailService } from './services/email/email.service';
 import { HttpModule } from '@nestjs/axios';
 import { TextingService } from './services/texting/texting.service';
 import { CorsMiddleware } from './middleware/cors.middleware';
+import { FaithGivingDataModule } from '@faith-giving/faith-giving.data';
+import { FaithGivingServiceModule } from '@faith-giving/faith-giving.service';
 
 @Module({
   imports: [
@@ -17,6 +19,8 @@ import { CorsMiddleware } from './middleware/cors.middleware';
       envFilePath: '.env',
     }),
     HttpModule,
+    FaithGivingDataModule,
+    FaithGivingServiceModule
   ],
   controllers: [AppController],
   providers: [AppService, DataService, EmailService, TextingService],

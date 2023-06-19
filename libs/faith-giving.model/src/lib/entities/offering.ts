@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Giving } from "./giving";
 
 @Entity()
 export class Offering {
@@ -16,4 +17,7 @@ export class Offering {
         nullable: true
     })
     other: string;
+
+    @ManyToOne(() => Giving, (giving) => giving.offerings)
+    giving: Giving;
 }

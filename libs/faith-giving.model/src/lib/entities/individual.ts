@@ -1,5 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Giving } from "./giving";
+import { PaymentMethod } from "./payment-method";
 
 @Entity()
 export class Individual {
@@ -21,4 +22,7 @@ export class Individual {
 
     @OneToMany(() => Giving, (giving) => giving.individual)
     givings: Array<Giving>;
+
+    @OneToMany(() => PaymentMethod, (paymentMethod) => paymentMethod.individual)
+    paymentMethods: Array<PaymentMethod>;
 }
