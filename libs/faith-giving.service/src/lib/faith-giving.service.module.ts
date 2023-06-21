@@ -10,12 +10,11 @@ import {
   User,
 } from '@faith-giving/faith-giving.model';
 import { ReferenceService } from './reference/reference.service';
+import { GivingService } from './giving/giving.service';
+import { FaithGivingMapperModule } from '@faith-giving/faith-giving.mapper';
 
 @Module({
-  providers: [
-    UserService,
-    ReferenceService
-  ],
+  providers: [UserService, ReferenceService, GivingService],
   imports: [
     TypeOrmModule.forFeature([
       Giving,
@@ -25,10 +24,12 @@ import { ReferenceService } from './reference/reference.service';
       User,
       PaymentMethod,
     ]),
+    FaithGivingMapperModule
   ],
   exports: [
-    UserService,
-    ReferenceService
+    UserService, 
+    ReferenceService,
+    GivingService
   ],
 })
 export class FaithGivingServiceModule {}

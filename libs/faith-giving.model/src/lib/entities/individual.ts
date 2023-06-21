@@ -6,7 +6,7 @@ import { PaymentMethod } from "./payment-method";
 export class Individual {
 
     @PrimaryGeneratedColumn("uuid")
-    id: string;
+    id?: string;
 
     @Column()
     firstname: string;
@@ -21,8 +21,8 @@ export class Individual {
     phone: string;
 
     @OneToMany(() => Giving, (giving) => giving.individual)
-    givings: Array<Giving>;
+    givings?: Array<Giving>;
 
     @OneToMany(() => PaymentMethod, (paymentMethod) => paymentMethod.individual)
-    paymentMethods: Array<PaymentMethod>;
+    paymentMethods?: Array<PaymentMethod>;
 }

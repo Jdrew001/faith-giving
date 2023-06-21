@@ -8,13 +8,15 @@ import { EmailService } from '../services/email/email.service';
 import { HttpModule } from '@nestjs/axios';
 import { AppService } from '../app.service';
 import { TextingService } from '../services/texting/texting.service';
+import { FaithGivingServiceModule } from '@faith-giving/faith-giving.service';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: '.env',
     }),
-    HttpModule
+    HttpModule,
+    FaithGivingServiceModule
   ],
   controllers: [GivingController],
   providers: [

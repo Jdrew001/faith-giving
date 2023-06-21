@@ -18,6 +18,9 @@
       "@faith-giving/faith-giving.data": [
         "libs/faith-giving.data/src/index.ts"
       ],
+      "@faith-giving/faith-giving.mapper": [
+        "libs/faith-giving.mapper/src/index.ts"
+      ],
       "@faith-giving/faith-giving.model": [
         "libs/faith-giving.model/src/index.ts"
       ],

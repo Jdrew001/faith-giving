@@ -5,7 +5,7 @@ import { Giving } from "./giving";
 export class Offering {
 
     @PrimaryGeneratedColumn("uuid")
-    id: string;
+    id?: string;
 
     @Column()
     amount: number;
@@ -16,8 +16,8 @@ export class Offering {
     @Column({
         nullable: true
     })
-    other: string;
+    other?: string;
 
     @ManyToOne(() => Giving, (giving) => giving.offerings)
-    giving: Giving;
+    giving?: Giving;
 }

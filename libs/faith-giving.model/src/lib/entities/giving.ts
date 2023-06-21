@@ -6,7 +6,7 @@ import { Offering } from "./offering";
 export class Giving {
     
     @PrimaryGeneratedColumn("uuid")
-    id: string;
+    id?: string;
 
     @Column()
     tithe: number;
