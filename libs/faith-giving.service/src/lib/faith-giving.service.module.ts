@@ -12,9 +12,19 @@ import {
 import { ReferenceService } from './reference/reference.service';
 import { GivingService } from './giving/giving.service';
 import { FaithGivingMapperModule } from '@faith-giving/faith-giving.mapper';
+import { StripeService } from './stripe/stripe.service';
+import { TextingService } from './texting/texting.service';
+import { EmailService } from './email/email.service';
 
 @Module({
-  providers: [UserService, ReferenceService, GivingService],
+  providers: [
+    UserService,
+    ReferenceService,
+    GivingService,
+    StripeService,
+    TextingService,
+    EmailService,
+  ],
   imports: [
     TypeOrmModule.forFeature([
       Giving,
@@ -24,12 +34,8 @@ import { FaithGivingMapperModule } from '@faith-giving/faith-giving.mapper';
       User,
       PaymentMethod,
     ]),
-    FaithGivingMapperModule
+    FaithGivingMapperModule,
   ],
-  exports: [
-    UserService, 
-    ReferenceService,
-    GivingService
-  ],
+  exports: [UserService, ReferenceService, GivingService],
 })
 export class FaithGivingServiceModule {}

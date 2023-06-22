@@ -11,7 +11,7 @@ export class Offering {
     amount: number;
 
     @Column()
-    type: string;
+    type: number;
 
     @Column({
         nullable: true

@@ -22,5 +22,5 @@ export class CalulateTotalDto {
 export interface OfferingDTO {
     amount: number;
     category: number;
-    other?: string;
+    other: string;
 }

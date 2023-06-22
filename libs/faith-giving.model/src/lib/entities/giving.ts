@@ -11,6 +11,9 @@ export class Giving {
     @Column()
     tithe: number;
 
+    @Column()
+    feeCovered: boolean;
+
     @ManyToOne(() => Individual, (individual) => individual.givings)
     individual: Individual;
 

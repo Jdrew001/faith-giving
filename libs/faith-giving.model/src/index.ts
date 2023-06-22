@@ -6,3 +6,6 @@ export * from './lib/entities/offering';
 export * from './lib/entities/payment-method';
 export * from './lib/entities/user';
 export * from './lib/dto/payment-dto';
+export * from './lib/dto/create-payment-intent.dto';
+export * from './lib/dto/common/value-label';
+export * from './lib/email/email.model';

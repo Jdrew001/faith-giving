@@ -13,11 +13,12 @@ export class GivingMapperService {
                 email: giving.email,
                 phone: giving.phone
             },
+            feeCovered: giving.feeCovered,
             offerings: []
         }
     }
 
-    mapOfferingToEntity(giving: GiveDetails) {
+    mapOfferingToEntity(giving: GiveDetails): Array<Offering> {
         let offerings = giving.offerings;
 
         return offerings.map(({amount, category, other}) => ({
