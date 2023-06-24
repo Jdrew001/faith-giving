@@ -1,8 +1,8 @@
 import { BadRequestException, Body, Controller, Get, Param, Post } from '@nestjs/common';
 //import { GivingService } from './giving.service';
 import { GivingService } from '@faith-giving/faith-giving.service';
-import { CalulateTotalDto, PaymentDTO } from '../dto/giving/payment.dto';
 import { EmailService } from '../services/email/email.service';
+import { CalulateTotalDto, PaymentDTO } from '@faith-giving/faith-giving.model';
 
 @Controller('giving')
 export class GivingController {
