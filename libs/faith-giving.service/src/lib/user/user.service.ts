@@ -15,6 +15,10 @@ export class UserService {
     }
 
     findAdmins(): Promise<Array<User>> {
-        return this.usersRepository.findBy({roles: { id: 0 }});
+        return this.usersRepository
+            .createQueryBuilder('user')
+            .innerJoin('user.roles', 'role')
+            .where('role.id = :roleId', { roleId: 0 })
+            .getMany();
     }
 }
