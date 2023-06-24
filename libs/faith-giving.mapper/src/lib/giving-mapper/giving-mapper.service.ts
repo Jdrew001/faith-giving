@@ -14,13 +14,11 @@ export class GivingMapperService {
                 phone: giving.phone
             },
             feeCovered: giving.feeCovered,
-            offerings: []
+            offerings: this.mapOfferingToEntity(giving.offerings)
         }
     }
 
-    mapOfferingToEntity(giving: GiveDetails): Array<Offering> {
-        let offerings = giving.offerings;
-
+    mapOfferingToEntity(offerings: Array<OfferingDTO>): Array<Offering> {
         return offerings.map(({amount, category, other}) => ({
             amount: amount,
             type: category,

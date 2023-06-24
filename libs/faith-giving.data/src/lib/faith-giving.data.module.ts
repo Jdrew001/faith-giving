@@ -20,7 +20,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         User,
         PaymentMethod
       ],
-      synchronize: true, // Don't use this in the production
+      synchronize: false, // Don't use this in the production
     }), 
   ]
 })

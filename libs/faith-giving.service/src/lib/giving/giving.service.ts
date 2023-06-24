@@ -1,21 +1,81 @@
-import { Injectable } from '@nestjs/common';
-import { Giving, Offering, PaymentDTO } from '@faith-giving/faith-giving.model';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { Giving, GivingReceipt, GivingReportDto, Offering, OfferingType, PaymentDTO } from '@faith-giving/faith-giving.model';
 import { GivingMapperService } from '@faith-giving/faith-giving.mapper';
+import { StripeService } from '../stripe/stripe.service';
+import { EmailService } from '../email/email.service';
+import { TextingService } from '../texting/texting.service';
+import * as Sentry from '@sentry/node';
+import { AppConstants } from '../app.constants';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { ReferenceService } from '../reference/reference.service';
 
 @Injectable()
 export class GivingService {
 
   constructor(
-    private givingMapper: GivingMapperService
+    private givingMapper: GivingMapperService,
+    private stripeService: StripeService,
+    private emailService: EmailService,
+    private textingService: TextingService,
+    @InjectRepository(Giving) private givingRepo: Repository<Giving>,
+    private referenceService: ReferenceService
   ) {}
 
   async submitPayment(body: PaymentDTO) {
       let payment;
       let givingEntity = this.givingMapper.mapGivingToEntity(body.giveDetails);
-      let offeringEntity = this.givingMapper.mapOfferingToEntity(body.giveDetails);
-      let total = this.getTotal(givingEntity.tithe, offeringEntity, givingEntity.feeCovered);
+      let total = this.getTotal(givingEntity.tithe, givingEntity.offerings, givingEntity.feeCovered);
 
-      
+      try {
+        payment = await this.stripeService.submitPayment(body, total);
+      } catch (error) {
+        Sentry.captureException(`error submitting payment: ${error}, User: ${givingEntity.individual.firstname} ${givingEntity.individual.lastname}`);
+        Logger.error(`ERROR - giving service: submit payment: ${error}`);
+        let message = AppConstants.CARD_ERROR_MESSAGES[error?.code] ?? 'Oops, an error occurred';
+        throw new BadRequestException('An error occurred', { cause: error, description: message });
+      }
+
+      if (payment.status != 'succeeded') return;
+      Logger.log('Begin transaction of giving information');
+      let uploadResult = await this.saveGivingInformation(givingEntity);
+
+      if (!uploadResult) {
+        Logger.error(`Giving information upload failed`, uploadResult);
+        Sentry.captureException(`Giving information upload failed: ${uploadResult}, Details: ${givingEntity}`);
+        return;
+      }
+
+      let refData = await this.referenceService.findAll();
+      let GivingReportDto = await this.generateGivingReport(givingEntity, refData, total);
+      let givingReceptDTO = await this.generateGivingRecept(givingEntity, refData, total);
+
+      // TODO: Need to implement the rest of this function
+      // let admins = await this.appService.getAdminUsers();
+
+      // //Send give report to admins
+      // Logger.log('Sending email to admins')
+      // admins.forEach(async user => {
+      //     await this.emailService.sendEmailToTemplate<any>(user.email, EmailConstant.GIVING_REPORT_SUBJECT, EmailConstant.GIVING_REPORT, givingReportDTO);
+      // });
+
+      // //Send give recept to giver
+      // Logger.log(`Sending email to giver: ${body.giveDetails.email} ${body.giveDetails.firstName} ${body.giveDetails.lastName}`);
+      // await this.emailService.sendEmailToTemplate<any>(body.giveDetails.email, EmailConstant.GIVING_RECIEPT_SUBJECT, EmailConstant.GIVING_RECIEPT_TEMPLATE, givingReceptDTO);
+      // await this.textingService.sendText(`+1${body.giveDetails.phone}`, 
+      //     `Thank you for giving $${total.toFixed(2)} to Faith Tabernacle. A reciept has been sent to your email. If you have trouble viewing it, it might be in your spam folder. God Bless!`);
+  }
+
+  async saveGivingInformation(giving: Giving) {
+    try {
+      this.givingRepo.save(giving);
+    } catch(error) {
+      Logger.error('Unable to save giving entity');
+      Sentry.captureException('error saving giving entity');
+      return null;
+    }
+
+    return giving;
   }
 
   calculateTotal(giving: Giving) {
@@ -36,5 +96,39 @@ export class GivingService {
     }
 
     return total + offeringTotal;
+  }
+
+  private generateGivingRecept(data: Giving, refData: Array<OfferingType>, total: number) {
+    return new GivingReceipt(
+      data.individual.firstname,
+      data.individual.lastname,
+      data.tithe.toFixed(2),
+      this.remapOfferings(refData, data.offerings),   
+      data.feeCovered,
+      (total).toFixed(2)
+    ); 
+}
+
+private async generateGivingReport(data: Giving, refData: Array<OfferingType>, total: number) {
+    return new GivingReportDto(
+        data.individual.firstname,
+        data.individual.lastname,
+        data.individual.email,
+        data.individual.phone,
+        (data.tithe).toFixed(2),
+        this.remapOfferings(refData, data.offerings),
+        data.feeCovered,
+        (total).toFixed(2)
+    );
+  }
+
+  private remapOfferings(refData: OfferingType[], offerings: Offering[]) {
+    let remappedOfferings: Array<any> = [];
+    offerings.forEach(item => {
+        let label = refData.find(o => o.id == item.type)?.label;
+        remappedOfferings.push({label: label, amount: (item.amount).toFixed(2)});
+    });
+
+    return remappedOfferings;
   }
 }
