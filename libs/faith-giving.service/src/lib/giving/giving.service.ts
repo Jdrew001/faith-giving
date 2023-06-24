@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
-import { Giving, GivingReceipt, GivingReportDto, Offering, OfferingType, PaymentDTO } from '@faith-giving/faith-giving.model';
+import { CalulateTotalDto, Giving, GivingReceipt, GivingReportDto, Offering, OfferingType, PaymentDTO } from '@faith-giving/faith-giving.model';
 import { GivingMapperService } from '@faith-giving/faith-giving.mapper';
 import { StripeService } from '../stripe/stripe.service';
 import { EmailService } from '../email/email.service';
@@ -88,11 +88,11 @@ export class GivingService {
     return giving;
   }
 
-  calculateTotal(giving: Giving) {
+  calculateTotal(giving: CalulateTotalDto) {
     return this.getTotal(giving.tithe, giving.offerings, giving.feeCovered).toFixed(2);
   }
 
-  private getTotal(tithe: number, offerings: Array<Offering>, feeCovered: boolean): number {
+  private getTotal(tithe: number, offerings: {amount: number}[], feeCovered: boolean): number {
     let total = tithe;
     let offeringTotal = 0;
 
