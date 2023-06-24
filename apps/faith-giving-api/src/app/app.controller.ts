@@ -12,7 +12,7 @@ export class AppController {
 
   @Get()
   async getData() {
-    return await this.userService.findAll();
+    return await this.userService.findAdmins();
   }
 
   @Get("reference")
