@@ -19,7 +19,9 @@ export class User {
     @Column()
     phonenumber: string;
 
-    @ManyToMany(() => Role)
+    @ManyToMany(() => Role, {
+        cascade: true
+    })
     @JoinTable()
     roles: Array<Role>;
 }
