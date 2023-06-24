@@ -13,4 +13,8 @@ export class UserService {
     findAll(): Promise<Array<User>> {
         return this.usersRepository.find();
     }
+
+    findAdmins(): Promise<Array<User>> {
+        return this.usersRepository.findBy({roles: { id: 0 }});
+    }
 }

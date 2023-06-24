@@ -15,6 +15,9 @@ import { FaithGivingMapperModule } from '@faith-giving/faith-giving.mapper';
 import { StripeService } from './stripe/stripe.service';
 import { TextingService } from './texting/texting.service';
 import { EmailService } from './email/email.service';
+import { ConfigModule } from '@nestjs/config';
+import { HttpModule } from '@nestjs/axios';
+import { IndividualService } from './individual/individual.service';
 
 @Module({
   providers: [
@@ -24,6 +27,7 @@ import { EmailService } from './email/email.service';
     StripeService,
     TextingService,
     EmailService,
+    IndividualService,
   ],
   imports: [
     TypeOrmModule.forFeature([
@@ -34,6 +38,10 @@ import { EmailService } from './email/email.service';
       User,
       PaymentMethod,
     ]),
+    ConfigModule.forRoot({
+      envFilePath: '.env',
+    }),
+    HttpModule,
     FaithGivingMapperModule,
   ],
   exports: [UserService, ReferenceService, GivingService],

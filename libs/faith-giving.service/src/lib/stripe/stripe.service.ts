@@ -13,6 +13,8 @@ export class StripeService {
         if (!this.stripeKey) {
             throw new Error('Stripe key not found');
         }
+
+        this.initStripe();
     }
 
     initStripe() {

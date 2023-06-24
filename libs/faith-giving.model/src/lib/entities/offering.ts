@@ -7,7 +7,7 @@ export class Offering {
     @PrimaryGeneratedColumn("uuid")
     id?: string;
 
-    @Column()
+    @Column('decimal', { precision: 10, scale: 2 })
     amount: number;
 
     @Column()

@@ -9,6 +9,9 @@ import { AppConstants } from '../app.constants';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ReferenceService } from '../reference/reference.service';
+import { UserService } from '../user/user.service';
+import { EmailConstant } from '../email/email.constant';
+import { IndividualService } from '../individual/individual.service';
 
 @Injectable()
 export class GivingService {
@@ -18,8 +21,11 @@ export class GivingService {
     private stripeService: StripeService,
     private emailService: EmailService,
     private textingService: TextingService,
+    private userService: UserService,
     @InjectRepository(Giving) private givingRepo: Repository<Giving>,
-    private referenceService: ReferenceService
+    @InjectRepository(Offering) private offeringRepo: Repository<Offering>,
+    private referenceService: ReferenceService,
+    private individualService: IndividualService
   ) {}
 
   async submitPayment(body: PaymentDTO) {
@@ -49,26 +55,30 @@ export class GivingService {
       let refData = await this.referenceService.findAll();
       let GivingReportDto = await this.generateGivingReport(givingEntity, refData, total);
       let givingReceptDTO = await this.generateGivingRecept(givingEntity, refData, total);
+      let admins = await this.userService.findAdmins();
 
-      // TODO: Need to implement the rest of this function
-      // let admins = await this.appService.getAdminUsers();
+      //Send give report to admins
+      Logger.log('Sending email to admins')
+      admins.forEach(async user => {
+          await this.emailService.sendEmailToTemplate<any>(user.email, EmailConstant.GIVING_REPORT_SUBJECT, EmailConstant.GIVING_REPORT, GivingReportDto);
+      });
 
-      // //Send give report to admins
-      // Logger.log('Sending email to admins')
-      // admins.forEach(async user => {
-      //     await this.emailService.sendEmailToTemplate<any>(user.email, EmailConstant.GIVING_REPORT_SUBJECT, EmailConstant.GIVING_REPORT, givingReportDTO);
-      // });
-
-      // //Send give recept to giver
-      // Logger.log(`Sending email to giver: ${body.giveDetails.email} ${body.giveDetails.firstName} ${body.giveDetails.lastName}`);
-      // await this.emailService.sendEmailToTemplate<any>(body.giveDetails.email, EmailConstant.GIVING_RECIEPT_SUBJECT, EmailConstant.GIVING_RECIEPT_TEMPLATE, givingReceptDTO);
-      // await this.textingService.sendText(`+1${body.giveDetails.phone}`, 
-      //     `Thank you for giving $${total.toFixed(2)} to Faith Tabernacle. A reciept has been sent to your email. If you have trouble viewing it, it might be in your spam folder. God Bless!`);
+      //Send give recept to giver
+      Logger.log(`Sending email to giver: ${body.giveDetails.email} ${body.giveDetails.firstName} ${body.giveDetails.lastName}`);
+      await this.emailService.sendEmailToTemplate<any>(body.giveDetails.email, EmailConstant.GIVING_RECIEPT_SUBJECT, EmailConstant.GIVING_RECIEPT_TEMPLATE, givingReceptDTO);
+      await this.textingService.sendText(`+1${body.giveDetails.phone}`, 
+          `Thank you for giving $${total.toFixed(2)} to Faith Tabernacle. A reciept has been sent to your email. If you have trouble viewing it, it might be in your spam folder. God Bless!`);
   }
 
   async saveGivingInformation(giving: Giving) {
     try {
-      this.givingRepo.save(giving);
+      const individual = await this.individualService.findIndividualByEmail(giving.individual.email);
+
+      if (individual) {
+        giving.individual = individual;
+      }
+
+      await this.givingRepo.save(giving);
     } catch(error) {
       Logger.error('Unable to save giving entity');
       Sentry.captureException('error saving giving entity');

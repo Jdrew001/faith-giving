@@ -4,10 +4,7 @@ import { Column, Entity, PrimaryColumn } from "typeorm";
 export class Role {
 
     @PrimaryColumn()
-    id: number;
-
-    @Column()
-    name: RoleName;
+    id: RoleName;
 }
 
 export enum RoleName {
