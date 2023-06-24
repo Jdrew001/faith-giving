@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToMany, JoinTable } from 'typeorm';
+import { Role } from './role';
 
 @Entity()
 export class User {
@@ -17,4 +18,8 @@ export class User {
 
     @Column()
     phonenumber: string;
+
+    @ManyToMany(() => Role)
+    @JoinTable()
+    roles: Array<Role>;
 }
