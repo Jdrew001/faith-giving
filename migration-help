@@ -1,0 +1,4 @@
+to create a migration with custom name
+
+npm run typeorm:create-migration -- ./migrations/testing
+npx nx run faith-giving-api:typeorm:create-migration -- ./migrations/testing3

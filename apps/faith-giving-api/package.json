@@ -1,0 +1,11 @@
+{
+    "name": "faith-giving",
+    "version": "1.0.3",
+    "license": "MIT",
+    "scripts": {
+        "typeorm:create-migration": "npx typeorm-ts-node-commonjs migration:create",
+        "typeorm:run-migrations": "npx typeorm-ts-node-commonjs migration:run -d ./src/typeOrm.config.ts",
+        "typeorm:revert-migrations": "npx typeorm-ts-node-commonjs migration:revert -d ./src/typeOrm.config.ts"
+    },
+    "private": true
+}
