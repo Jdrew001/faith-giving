@@ -45,6 +45,6 @@ jobs:
           echo "Workspace: ${{ github.workspace }}"
 
       - name: Run Command
-        if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
+        #if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
         run: |
           npx nx run faith-giving-api:typeorm:run-migrations
