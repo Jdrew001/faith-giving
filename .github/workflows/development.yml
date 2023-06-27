@@ -8,10 +8,10 @@ on:
 env:
   FAITH_GIVING_API: "faith-giving-api"
   FAITH_GIVING_UI: "faith-giving-ui"
-  DB_HOST: ${{DB_HOST}}
-  DB_PORT: ${{DB_PORT}}
-  DB_USER: ${{DB_USER}}
-  DB_PASSWORD: ${{DB_PASSWORD}}
+  DB_HOST: ${{secrets.DB_HOST}}
+  DB_PORT: ${{secrets.DB_PORT}}
+  DB_USER: ${{secrets.DB_USER}}
+  DB_PASSWORD: ${{secrets.DB_PASSWORD}}
       
 jobs:
   build-test:
