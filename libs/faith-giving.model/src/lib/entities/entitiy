@@ -1,0 +1,9 @@
+Entities
+--------
+
+user (id, email, firstname, lastname, phonenumber)
+individual (id, firstname, lastname, email, phone)
+giving (id, tithe, individualId, feeCovered)
+offering (id, amount, type)
+giving_offering (givingId, offeringId)
+paymentMethods (id, paymentId, individualId)

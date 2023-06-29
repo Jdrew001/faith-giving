@@ -9,12 +9,25 @@
     "experimentalDecorators": true,
     "importHelpers": true,
     "target": "es2015",
-    "module": "esnext",
+    "module": "CommonJS",
     "lib": ["es2020", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@faith-giving/faith-giving.data": [
+        "libs/faith-giving.data/src/index.ts"
+      ],
+      "@faith-giving/faith-giving.mapper": [
+        "libs/faith-giving.mapper/src/index.ts"
+      ],
+      "@faith-giving/faith-giving.model": [
+        "libs/faith-giving.model/src/index.ts"
+      ],
+      "@faith-giving/faith-giving.service": [
+        "libs/faith-giving.service/src/index.ts"
+      ]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }
