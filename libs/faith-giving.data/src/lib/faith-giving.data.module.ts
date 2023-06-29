@@ -12,7 +12,7 @@ import { Role } from 'libs/faith-giving.model/src/lib/entities/role';
       port: Number(process.env['DB_PORT']),
       username: process.env['DB_USER'],
       password: process.env['DB_PASSWORD'],
-      database: 'faith-giving',
+      database: process.env['DB_NAME'],
       entities: [
         Giving,
         Individual,

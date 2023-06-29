@@ -7,6 +7,9 @@ export class Role {
     @PrimaryColumn()
     id: RoleName;
 
+    @Column()
+    name: string;
+
     @ManyToMany(() => User, user => user.roles)
     users: Array<User>;
 }
