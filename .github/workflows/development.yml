@@ -1,50 +1,50 @@
-name: development
+# name: development
 
-on:
-  push:
-    branches:
-      - development
+# on:
+#   push:
+#     branches:
+#       - development
 
-env:
-  FAITH_GIVING_API: "faith-giving-api"
-  FAITH_GIVING_UI: "faith-giving-ui"
-  DB_HOST: ${{secrets.DB_HOST}}
-  DB_PORT: ${{secrets.DB_PORT}}
-  DB_USER: ${{secrets.DB_USER}}
-  DB_PASSWORD: ${{secrets.DB_PASSWORD}}
+# env:
+#   FAITH_GIVING_API: "faith-giving-api"
+#   FAITH_GIVING_UI: "faith-giving-ui"
+#   DB_HOST: ${{secrets.DB_HOST}}
+#   DB_PORT: ${{secrets.DB_PORT}}
+#   DB_USER: ${{secrets.DB_USER}}
+#   DB_PASSWORD: ${{secrets.DB_PASSWORD}}
       
-jobs:
-  build-test:
-    permissions: write-all
-    name: connectdb
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+# jobs:
+#   build-test:
+#     permissions: write-all
+#     name: connectdb
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v2
+#         with:
+#           fetch-depth: 0
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: 14
+#       - name: Set up Node.js
+#         uses: actions/setup-node@v2
+#         with:
+#           node-version: 14
 
-      - name: Install Nx CLI
-        run: npm install -g @nrwl/cli
+#       - name: Install Nx CLI
+#         run: npm install -g @nrwl/cli
 
-      - uses: nrwl/nx-set-shas@v3
-        with: 
-          main-branch-name: 'development'
+#       - uses: nrwl/nx-set-shas@v3
+#         with: 
+#           main-branch-name: 'development'
           
-      - run: npm i --force
+#       - run: npm i --force
 
-      - name: Check affected projects
-        id: affected-projects
-        run: |
-          affected_projects=$(npx nx print-affected --base=${{ github.event.before }} --head=${{ github.sha }} --select=projects)
-          echo "::set-output name=projects::$affected_projects"
-          echo "Workspace: ${{ github.workspace }}"
+#       - name: Check affected projects
+#         id: affected-projects
+#         run: |
+#           affected_projects=$(npx nx print-affected --base=${{ github.event.before }} --head=${{ github.sha }} --select=projects)
+#           echo "::set-output name=projects::$affected_projects"
+#           echo "Workspace: ${{ github.workspace }}"
 
-      - name: Run Command
-        #if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API) testing
-        run: |
-          npx nx run faith-giving-api:typeorm:run-migrations
+#       - name: Run Command
+#         #if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API) testing
+#         run: |
+#           npx nx run faith-giving-api:typeorm:run-migrations
