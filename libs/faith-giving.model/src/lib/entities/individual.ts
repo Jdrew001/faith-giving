@@ -21,10 +21,10 @@ export class Individual {
     phone: string;
 
     @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)" })
-    public created_at: Date;
+    public created_at?: Date;
 
     @UpdateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)", onUpdate: "CURRENT_TIMESTAMP(6)" })
-    public updated_at: Date;
+    public updated_at?: Date;
 
     @OneToMany(() => Giving, (giving) => giving.individual)
     givings?: Array<Giving>;
