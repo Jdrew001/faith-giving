@@ -59,6 +59,10 @@ jobs:
 
       - name: Copy UI to Server
         if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_UI)
+        env:
+          USERNAME: ${{ secrets.USERNAME }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+          HOST: ${{ secrets.HOST }}
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.HOST }}
