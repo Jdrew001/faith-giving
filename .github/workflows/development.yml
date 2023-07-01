@@ -57,16 +57,28 @@ jobs:
           name: faith_giving_ui
           path: ui_project
 
-      - name: Copy files using scp with username and password
-        env:
-          USERNAME: ${{ secrets.USERNAME }}
-          PASSWORD: ${{ secrets.PASSWORD }}
-          HOST: ${{ secrets.HOST }}
-        run: |
-          expect -c '
-            spawn scp -r ui_project/ $env(USERNAME)@$env(HOST):/root/projects/test
-            expect "password:"
-            send "$env(PASSWORD)\r"
-            interact
-          '
+      - name: scp files
+        image: appleboy/drone-scp
+        settings:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: 22
+          command_timeout: 2m
+          target: ui_project/
+          source:
+            - /root/projects/testing
+
+      # - name: Copy files using scp with username and password
+      #   env:
+      #     USERNAME: ${{ secrets.USERNAME }}
+      #     PASSWORD: ${{ secrets.PASSWORD }}
+      #     HOST: ${{ secrets.HOST }}
+      #   run: |
+      #     expect -c '
+      #       spawn scp -r ui_project/ $env(USERNAME)@$env(HOST):/root/projects/test
+      #       expect "password:"
+      #       send "$env(PASSWORD)\r"
+      #       interact
+      #     '
       
