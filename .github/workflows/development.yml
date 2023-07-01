@@ -65,7 +65,8 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           source: ui_project/
-          target: /root/projects/faith-giving-ui/
+          target: /projects/faith-giving-ui/
+          ROOT_PATH: /root/
           recursive: true
           strip_components: 1
 
