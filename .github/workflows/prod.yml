@@ -108,6 +108,11 @@ jobs:
           recursive: true
           strip_components: 1
 
+      - name: Run Database Migrations
+        if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
+        run: |
+          npx nx run faith-giving-api:typeorm:run-migrations
+
       - name: Install deps
         if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
         uses: appleboy/ssh-action@v0.1.10
