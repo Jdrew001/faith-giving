@@ -58,16 +58,12 @@ jobs:
           path: ui_project
 
       - name: Copy UI to Server
-        if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_UI)
-        env:
-          USERNAME: ${{ secrets.USERNAME }}
-          PASSWORD: ${{ secrets.PASSWORD }}
-          HOST: ${{ secrets.HOST }}
+        if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_UI)azqszsaœ
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
-          kpassword: ${{ secrets.PASSWORD }}
+          password: ${{ secrets.PASSWORD }}
           source: ui_project/
           target: /root/projects/faith-giving-ui/
           recursive: true
