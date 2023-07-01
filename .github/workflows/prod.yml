@@ -127,7 +127,7 @@ jobs:
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
-          kpassword: ${{ secrets.PASSWORD }}
+          password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
           script: |
             pm2 restart faith-giving-api
@@ -145,7 +145,7 @@ jobs:
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
-          kpassword: ${{ secrets.PASSWORD }}
+          password: ${{ secrets.PASSWORD }}
           source: ui_project/
           target: /root/projects/faith-giving-ui/
           recursive: true
