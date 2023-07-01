@@ -22,7 +22,7 @@ import { Role } from 'libs/faith-giving.model/src/lib/entities/role';
         PaymentMethod,
         Role
       ],
-      synchronize: true, // Don't use this in the production
+      synchronize: false
     }), 
   ]
 })
