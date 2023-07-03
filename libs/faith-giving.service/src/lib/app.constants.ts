@@ -13,6 +13,8 @@ export class AppConstants {
         "processing_error": "Oops, there was an error processing your card",
         "incorrect_number": "Oops, looks like your card number was incorrect"
     }
+
+    public static GENERIC_ERROR = 'Oops, an error occurred'
 }
 
 interface ErrorMessages {

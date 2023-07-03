@@ -48,6 +48,12 @@ import { ClientSessionService } from './client-session/client-session.service';
     HttpModule,
     FaithGivingMapperModule,
   ],
-  exports: [UserService, ReferenceService, GivingService, ClientSessionService],
+  exports: [
+    UserService,
+    ReferenceService,
+    GivingService,
+    ClientSessionService,
+    IndividualService
+  ],
 })
 export class FaithGivingServiceModule {}

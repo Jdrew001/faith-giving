@@ -8,10 +8,12 @@ import { HttpModule } from '@nestjs/axios';
 import { CorsMiddleware } from './middleware/cors.middleware';
 import { FaithGivingDataModule } from '@faith-giving/faith-giving.data';
 import { FaithGivingServiceModule } from '@faith-giving/faith-giving.service';
+import { IndividualModule } from './individual/individual.module';
 
 @Module({
   imports: [
     GivingModule,
+    IndividualModule,
     ConfigModule.forRoot({
       envFilePath: '.env',
     }),

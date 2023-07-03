@@ -1,7 +1,7 @@
 import { CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Individual } from "./individual";
 
-@Entity('client_session')
+@Entity()
 export class ClientSession {
     
     @PrimaryGeneratedColumn("uuid")
@@ -13,7 +13,9 @@ export class ClientSession {
     @UpdateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)", onUpdate: "CURRENT_TIMESTAMP(6)" })
     public updated_at?: Date;
 
-    @OneToOne(() => Individual)
+    @OneToOne(() => Individual, {
+        cascade: true
+    })
     @JoinColumn()
     public individual: Individual
 }

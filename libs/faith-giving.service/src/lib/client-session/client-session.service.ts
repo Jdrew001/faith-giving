@@ -14,15 +14,15 @@ export class ClientSessionService {
     ) {
     }
 
-    async findClientSessionByIndividualEmail(email: string) {
-        return await this.clientSessionRepo.findBy({individual: { email: email }});
+    async findClientSessionByIndividualId(id: string | undefined) {
+        return id ? await this.clientSessionRepo.findOneBy({individual: { id: id }}): null;
     }
 
     async saveNewClientSession(individualEmail: string): Promise<ClientSession | null> {
         let result;
         try {
-            let existingClientSession = await this.findClientSessionByIndividualEmail(individualEmail);
             let individualData = await this.individualService.findIndividualByEmail(individualEmail);
+            let existingClientSession = await this.findClientSessionByIndividualId(individualData?.id);
             Logger.log('Setting up individual client session');
             if (!individualData) return null;
     

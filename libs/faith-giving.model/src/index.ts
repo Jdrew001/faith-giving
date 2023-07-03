@@ -11,3 +11,4 @@ export * from './lib/dto/common/value-label';
 export * from './lib/email/email.model';
 export * from './lib/entities/client-session';
 export * from './lib/dto/client-session.dto';
+export * from './lib/dto/individual.dto';

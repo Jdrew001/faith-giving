@@ -6,11 +6,7 @@ export class ClientSessionMapperService {
     mapEntityToDTO(clientSession: ClientSession): ClientSessionDTO {
         return {
             sessionId: clientSession.id,
-            individualId: clientSession.individual.id,
-            firstname: clientSession.individual.firstname,
-            lastname: clientSession.individual.lastname,
-            email: clientSession.individual.email,
-            phone: clientSession.individual.phone
+            individualId: clientSession.individual.id
         }
     }
 }
