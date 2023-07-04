@@ -58,6 +58,24 @@ i:hover {
     margin: auto;
 }
 
+:host ::ng-deep .icon-container button.p-button {
+    background-color: transparent !important;
+    color: #e02e2e !important;
+    padding: unset !important;
+}
+
+:host ::ng-deep .icon-container button.p-button:hover  {
+    box-shadow: none;
+    outline: none;
+    color: black
+}
+
+:host ::ng-deep .icon-container button.p-button:focus {
+    box-shadow: none;
+    outline: none;
+    color: black
+}
+
 @media (max-width: 900px) {
     :host ::ng-deep p-card {
         width: 95%;

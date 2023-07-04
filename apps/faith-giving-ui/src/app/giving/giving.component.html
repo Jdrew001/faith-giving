@@ -6,12 +6,19 @@
                 <ng-container 
                     *ngSwitchCase="0">
                     <div class="row mb-2">
-                        <h5 class="mb-0">Your Details</h5>
+                        <div class="flex">
+                            <h5 class="mb-0">Individual</h5>
+                            <div class="icon-container">
+                                <p-button label="Edit" icon="pi pi-user-edit" styleClass="p-button-sm"></p-button>
+                            </div>
+                        </div>
+                        
                     </div>
-                    <faith-giving-user-details [formSubmitted]="formSubmitted"></faith-giving-user-details>
+                    <!-- <faith-giving-user-details [formSubmitted]="formSubmitted"></faith-giving-user-details> -->
+                    <faith-giving-user-details-session></faith-giving-user-details-session>
 
                     <div class="row mb-2">
-                        <h5 class="mb-0">Tithe Details</h5>
+                        <h5 class="mb-0">Tithe</h5>
                     </div>
 
                     <faith-giving-giving-details [formSubmitted]="formSubmitted"></faith-giving-giving-details>
@@ -47,7 +54,7 @@
                 <ng-container 
                     *ngSwitchCase="1">
                     <div class="row mb-2">
-                        <h5 class="mb-0">Card Details</h5>
+                        <h5 class="mb-0">Card</h5>
                     </div>
 
                     <faith-giving-card-details
