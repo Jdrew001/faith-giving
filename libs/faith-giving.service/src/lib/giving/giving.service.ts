@@ -58,7 +58,7 @@ export class GivingService {
 
   async saveGivingInformation(giving: Giving) {
     try {
-      const individual = await this.individualService.findIndividualByEmail(giving.individual.email);
+      const individual = await this.individualService.findIndividualByNameEmailPhone(giving.individual);
 
       if (individual) {
         giving.individual = individual;
