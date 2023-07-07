@@ -10,7 +10,7 @@ export class GivingMapperService {
             individual: {
                 firstname: giving.firstName,
                 lastname: giving.lastName,
-                email: giving.email,
+                email: giving.email.toLowerCase(),
                 phone: giving.phone
             },
             feeCovered: giving.feeCovered,
