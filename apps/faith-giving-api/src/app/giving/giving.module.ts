@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { HttpModule } from '@nestjs/axios';
 import { AppService } from '../app.service';
 import { FaithGivingServiceModule } from '@faith-giving/faith-giving.service';
+import { FaithGivingMapperModule } from '@faith-giving/faith-giving.mapper';
 
 @Module({
   imports: [
@@ -11,7 +12,8 @@ import { FaithGivingServiceModule } from '@faith-giving/faith-giving.service';
       envFilePath: '.env',
     }),
     HttpModule,
-    FaithGivingServiceModule
+    FaithGivingServiceModule,
+    FaithGivingMapperModule
   ],
   controllers: [GivingController],
   providers: [AppService],

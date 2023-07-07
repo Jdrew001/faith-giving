@@ -1,4 +1,4 @@
-import { Giving, Individual, Offering, OfferingType, PaymentMethod, User } from '@faith-giving/faith-giving.model';
+import { ClientSession, Giving, Individual, Offering, OfferingType, PaymentMethod, User } from '@faith-giving/faith-giving.model';
 import { Logger, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Role } from 'libs/faith-giving.model/src/lib/entities/role';
@@ -20,7 +20,8 @@ import { Role } from 'libs/faith-giving.model/src/lib/entities/role';
         OfferingType,
         User,
         PaymentMethod,
-        Role
+        Role,
+        ClientSession
       ],
       synchronize: false
     }), 

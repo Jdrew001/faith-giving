@@ -5,10 +5,10 @@ import { Reference } from '../models/reference.model';
 import { catchError, debounceTime, distinctUntilChanged } from 'rxjs';
 import { GiveConstants } from '../giving.constants';
 import { GrowlService } from '../../core/growl.service';
-import { PaymentIntent } from '../models/giving.model';
-import { StripeElementsOptions } from '@stripe/stripe-js';
+import { PaymentIntent, UserDetails } from '../models/giving.model';
 import { GivingFormService } from './giving-form.service';
 import { FormArray } from '@angular/forms';
+import { CookieService } from 'ngx-cookie-service';
 
 @Injectable()
 export class GivingService extends BaseService {
@@ -21,6 +21,14 @@ export class GivingService extends BaseService {
   get paymentIntent() { return this._paymentIntent; }
   set paymentIntent(value) { this._paymentIntent = value; }
 
+  private _individualInfo: UserDetails;
+  get individualInfo() { return this._individualInfo; }
+  set individualInfo(value) { this._individualInfo = value; }
+
+  private _userEdit: boolean = true;
+  get userEdit() { return this._userEdit; }
+  set userEdit(value) { this._userEdit = value; }
+
   activeIndex = 0;
   formSubmitted = false;
   requestInit = false;
@@ -29,9 +37,21 @@ export class GivingService extends BaseService {
   constructor(
     private http: HttpClient,
     protected override growlService: GrowlService,
-    private formService: GivingFormService
+    private formService: GivingFormService,
+    private cookieService: CookieService
   ) {
     super(growlService);
+  }
+
+  fetchIndividual() {
+    const url = this.getApiUrl(GiveConstants.FETCH_INDIVIDUAL);
+    this.http.get(url, { withCredentials: true })
+      .subscribe((result: {success: boolean, data: UserDetails}) => {
+        if (!result.data) return;
+        this.individualInfo = result.data;
+        this.userEdit = false;
+        this.formService.updateUserFields(this.individualInfo);
+      });
   }
 
   generatePaymentIntent(body: any) {
@@ -133,12 +153,13 @@ export class GivingService extends BaseService {
   private processPayment(paymentMethod: any) {
     let body = this.generateBodyForPayment(paymentMethod);
     const url = this.getApiUrl(GiveConstants.GIVE_PAYMENT_PATH);
-    this.http.post(url, body)
+    this.http.post(url, body, { observe: 'response', withCredentials: true })
       .pipe(catchError((err) => {this.requestInit = false; return this.handleError(err)}))
-      .subscribe((result: any) => {
+      .subscribe((response: any) => {
+        this.fetchIndividual();
         this.requestInit = false;
         this.giveTotal = 0;
-        this.handlePaymentSuccess(result);
+        this.handlePaymentSuccess(response?.body);
       });
   }
 
