@@ -1,5 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { GivingFormService } from '../services/giving-form.service';
+import { bufferCount } from 'rxjs';
 
 @Component({
   selector: 'faith-giving-user-details',
@@ -9,6 +10,7 @@ import { GivingFormService } from '../services/giving-form.service';
 export class UserDetailsComponent {
 
   @Input() formSubmitted: boolean;
+  @Output() onChange$: EventEmitter<any> = new EventEmitter();
 
   get givingForm() { return this.formService.givingForm; }
 
@@ -17,5 +19,9 @@ export class UserDetailsComponent {
   ) { }
 
   ngOnInit() {
+  }
+
+  userChanged() {
+    this.onChange$.next(true);
   }
 }

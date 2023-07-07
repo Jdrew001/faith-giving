@@ -1,10 +1,11 @@
-import { AfterViewInit, Component, ElementRef, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChildren } from '@angular/core';
 import { GivingFormService } from './services/giving-form.service';
 import { GivingService } from './services/giving.service';
 import { GrowlService } from '../core/growl.service';
 import { GiveConstants } from './giving.constants';
-import { combineLatest, zip } from 'rxjs';
 import { UserDetails } from './models/giving.model';
+import { ConfirmDialog } from 'primeng/confirmdialog';
+import { ConfirmationService } from 'primeng/api';
 
 declare var Stripe;
 
@@ -15,6 +16,8 @@ declare var Stripe;
 })
 export class GivingComponent implements OnInit {
 
+  @ViewChildren('confirmDialog') confirmDialog: ConfirmDialog;
+
   get givingForm() { return this.formService.givingForm; }
   get formSubmitted() { return this.giveService.formSubmitted; }
   get activeFormIndex() { return this.giveService.activeIndex; }
@@ -23,13 +26,15 @@ export class GivingComponent implements OnInit {
   get giveTotal() { return this.giveService.giveTotal; }
   get userDetails() { return this.giveService.individualInfo; }
   get userEdit() { return this.giveService.userEdit; }
+  userEdited = false;
 
   stripe;
 
   constructor(
     private formService: GivingFormService,
     private growlService: GrowlService,
-    public giveService: GivingService
+    public giveService: GivingService,
+    private confirmService: ConfirmationService
   ) {}
 
   ngOnInit() {
@@ -51,6 +56,7 @@ export class GivingComponent implements OnInit {
 
   async submitForm(data: {number: ElementRef, zipCode: number}) {
     await this.giveService.submitPayment(this.stripe, data.number, data.zipCode);
+    this.userEdited = false;
   }
 
   handleFormError() {
@@ -82,6 +88,29 @@ export class GivingComponent implements OnInit {
   }
 
   cancelEdit() {
+    // if user edited, Are you sure you want to cancel?
+    if (this.userEdited) {
+      this.confirmService.confirm({
+        header: 'Confirmation',
+        icon: 'pi pi-exclamation-triangle',
+        accept: () => {
+          this.userEdited = false;
+          this.giveService.userEdit = false;
+          this.formService.updateUserFields(this.giveService.individualInfo);
+        }
+      })
+      return;
+    }
     this.giveService.userEdit = false;
+  }
+
+  userInputChange() {
+    this.userEdited = true;
+  }
+
+  onConfirm() {
+    this.userEdited = false;
+    this.giveService.userEdit = false;
+    this.formService.updateUserFields(this.giveService.individualInfo);
   }
 }

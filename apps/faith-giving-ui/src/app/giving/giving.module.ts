@@ -21,7 +21,8 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { UserDetailsSessionComponent } from './user-details-session/user-details-session.component';
 import { AvatarModule } from 'primeng/avatar';
-
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService } from 'primeng/api';
 
 @NgModule({
   declarations: [
@@ -48,10 +49,13 @@ import { AvatarModule } from 'primeng/avatar';
     SkeletonModule,
     ProgressSpinnerModule,
     AvatarModule,
+    ConfirmDialogModule,
     NgxStripeModule.forRoot(
       'pk_test_51IWOf3A0DJoBf0VzbZR7l3xohneGilLnLoYtjesw2BED5SqjGsV8TZa2Xx9d68RCFlmAN87ErPgQhx9UMT1yrC1400omCjotV3'
     ),
   ],
-  providers: [GivingFormService, GivingService, provideNgxMask()],
+  providers: [GivingFormService, 
+    GivingService, provideNgxMask(), ConfirmationService
+  ],
 })
 export class GivingModule {}
