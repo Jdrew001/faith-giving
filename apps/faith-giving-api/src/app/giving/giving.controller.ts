@@ -23,13 +23,16 @@ export class GivingController {
     async submitPayment(@Body() body: PaymentDTO, @Res() res: Response) {
         let givingResult = await this.givingService.submitPayment(body);
         let individual = givingResult.individual;
+        const twoMonths = 60 * 60 * 24 * 60 * 1000; // 2 months in milliseconds
+        const expirationDate = new Date(Date.now() + twoMonths);
 
         let session = await this.clientSessionService.saveNewClientSession(individual);
         let mapped = this.clientSessionMapper.mapEntityToDTO(session);
         let encryptedData = this.cryptService.encrypt(mapped);
         res.cookie('client_data', encryptedData.toString() ,{
             httpOnly: true,
-            secure: !this.isDevelopment
+            secure: !this.isDevelopment,
+            expires: expirationDate
         });
         return res.status(200).json({ success: true, message: 'Giving submitted successfully' });
     }
