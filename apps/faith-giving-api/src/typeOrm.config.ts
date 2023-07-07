@@ -1,7 +1,6 @@
 import { ConfigService } from '@nestjs/config';
 import { config } from 'dotenv';
 import { DataSource } from 'typeorm';
-// import { Giving, Individual, Offering, OfferingType, PaymentMethod, Role, User } from '@faith-giving/faith-giving.model';
 
 config();
 
