@@ -7,18 +7,27 @@
                     *ngSwitchCase="0">
                     <div class="row mb-2">
                         <div class="flex">
-                            <h5 class="mb-0">Individual</h5>
-                            <div class="icon-container">
-                                <p-button label="Edit" icon="pi pi-user-edit" styleClass="p-button-sm"></p-button>
+                            <div class="flex-1 flex">
+                                <h5 class="mb-0">Your Details</h5>
+                            </div>
+                            <div *ngIf="userDetails && giveService.userEdit" class="flex">
+                                <div class="icon-container">
+                                    <p-button (click)="cancelEdit()" label="Cancel" icon="pi pi-times" styleClass="p-button-sm"></p-button>
+                                </div>
                             </div>
                         </div>
-                        
                     </div>
-                    <!-- <faith-giving-user-details [formSubmitted]="formSubmitted"></faith-giving-user-details> -->
-                    <faith-giving-user-details-session></faith-giving-user-details-session>
+                    <ng-container *ngIf="userDetails && !giveService.userEdit">
+                        <faith-giving-user-details-session
+                            [userDetails]="giveService.individualInfo"
+                            (editClicked$)="onEdit($event)"></faith-giving-user-details-session>
+                    </ng-container>
+                    <ng-container *ngIf="giveService.userEdit">
+                        <faith-giving-user-details [formSubmitted]="formSubmitted"></faith-giving-user-details>
+                    </ng-container>
 
                     <div class="row mb-2">
-                        <h5 class="mb-0">Tithe</h5>
+                        <h5 class="mb-0">Tithing</h5>
                     </div>
 
                     <faith-giving-giving-details [formSubmitted]="formSubmitted"></faith-giving-giving-details>

@@ -18,16 +18,19 @@ export class ClientSessionService {
         return id ? await this.clientSessionRepo.findOneBy({individual: { id: id }}): null;
     }
 
-    async saveNewClientSession(individualEmail: string): Promise<ClientSession | null> {
+    async saveNewClientSession(data: {firstname: string, lastname: string, email: string, phone: string}): Promise<ClientSession | null> {
         let result;
         try {
-            let individualData = await this.individualService.findIndividualByEmail(individualEmail);
+            let individualData = await this.individualService.findIndividualByNameEmailPhone(data);
             let existingClientSession = await this.findClientSessionByIndividualId(individualData?.id);
             Logger.log('Setting up individual client session');
             if (!individualData) return null;
     
             //If an existing session exists, then we want to return because we don't need to update it..
-            if (existingClientSession) return null;
+            if (existingClientSession) {
+                existingClientSession.individual = individualData;
+                return existingClientSession;
+            };
             let newClientSession = new ClientSession();
             newClientSession.individual = individualData;
     

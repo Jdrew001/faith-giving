@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -23,6 +23,7 @@ import { IndividualModule } from './individual/individual.module';
   ],
   controllers: [AppController],
   providers: [AppService],
+  
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {

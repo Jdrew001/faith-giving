@@ -20,6 +20,7 @@ import { ConfigModule } from '@nestjs/config';
 import { HttpModule } from '@nestjs/axios';
 import { IndividualService } from './individual/individual.service';
 import { ClientSessionService } from './client-session/client-session.service';
+import { CryptService } from './crypt/crypt.service';
 
 @Module({
   providers: [
@@ -31,6 +32,7 @@ import { ClientSessionService } from './client-session/client-session.service';
     EmailService,
     IndividualService,
     ClientSessionService,
+    CryptService,
   ],
   imports: [
     TypeOrmModule.forFeature([
@@ -40,7 +42,7 @@ import { ClientSessionService } from './client-session/client-session.service';
       OfferingType,
       User,
       PaymentMethod,
-      ClientSession
+      ClientSession,
     ]),
     ConfigModule.forRoot({
       envFilePath: '.env',
@@ -53,7 +55,8 @@ import { ClientSessionService } from './client-session/client-session.service';
     ReferenceService,
     GivingService,
     ClientSessionService,
-    IndividualService
+    IndividualService,
+    CryptService
   ],
 })
 export class FaithGivingServiceModule {}
