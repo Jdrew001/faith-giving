@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray, Validators } from '@angular/forms';
 import { GiveFormValidator } from '../validators/give-validator';
+import { UserDetails } from '../models/giving.model';
 
 @Injectable()
 export class GivingFormService {
@@ -20,6 +21,13 @@ export class GivingFormService {
   constructor(
     private fb: FormBuilder
   ) { }
+
+  updateUserFields(userDetails: UserDetails) {
+    this.firstName.setValue(userDetails?.firstname);
+    this.lastName.setValue(userDetails?.lastname);
+    this.email.setValue(userDetails?.email);
+    this.phone.setValue(userDetails?.phone);
+  }
 
   createGivingForm() {
     this.givingForm = new FormGroup({

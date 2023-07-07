@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
-import { CalulateTotalDto, Giving, GivingReceipt, GivingReportDto, Offering, OfferingType, PaymentDTO } from '@faith-giving/faith-giving.model';
+import { CalulateTotalDto, Giving, GivingReceipt, GivingReportDto, Offering, OfferingType, PaymentDTO, User } from '@faith-giving/faith-giving.model';
 import { GivingMapperService } from '@faith-giving/faith-giving.mapper';
 import { StripeService } from '../stripe/stripe.service';
 import { EmailService } from '../email/email.service';
@@ -51,28 +51,14 @@ export class GivingService {
         Sentry.captureException(`Giving information upload failed: ${uploadResult}, Details: ${givingEntity}`);
         return;
       }
+      this.communicateGivingSuccess(givingEntity, body, total);
 
-      let refData = await this.referenceService.findAll();
-      let GivingReportDto = await this.generateGivingReport(givingEntity, refData, total);
-      let givingReceptDTO = await this.generateGivingRecept(givingEntity, refData, total);
-      let admins = await this.userService.findAdmins();
-
-      //Send give report to admins
-      Logger.log('Sending email to admins')
-      admins.forEach(async user => {
-          await this.emailService.sendEmailToTemplate<any>(user.email, EmailConstant.GIVING_REPORT_SUBJECT, EmailConstant.GIVING_REPORT, GivingReportDto);
-      });
-
-      //Send give recept to giver
-      Logger.log(`Sending email to giver: ${body.giveDetails.email} ${body.giveDetails.firstName} ${body.giveDetails.lastName}`);
-      await this.emailService.sendEmailToTemplate<any>(body.giveDetails.email, EmailConstant.GIVING_RECIEPT_SUBJECT, EmailConstant.GIVING_RECIEPT_TEMPLATE, givingReceptDTO);
-      await this.textingService.sendText(`+1${body.giveDetails.phone}`, 
-          `Thank you for giving $${total.toFixed(2)} to Faith Tabernacle. A reciept has been sent to your email. If you have trouble viewing it, it might be in your spam folder. God Bless!`);
+      return uploadResult;
   }
 
   async saveGivingInformation(giving: Giving) {
     try {
-      const individual = await this.individualService.findIndividualByEmail(giving.individual.email);
+      const individual = await this.individualService.findIndividualByNameEmailPhone(giving.individual);
 
       if (individual) {
         giving.individual = individual;
@@ -140,5 +126,24 @@ private async generateGivingReport(data: Giving, refData: Array<OfferingType>, t
     });
 
     return remappedOfferings;
+  }
+
+  private async communicateGivingSuccess(givingEntity: Giving, body: PaymentDTO, total: number) {
+    let refData = await this.referenceService.findAll();
+    let GivingReportDto = await this.generateGivingReport(givingEntity, refData, total);
+    let givingReceptDTO = await this.generateGivingRecept(givingEntity, refData, total);
+    let admins = await this.userService.findAdmins();
+
+    //Send give report to admins
+    Logger.log('Sending email to admins')
+    admins.forEach(async user => {
+        await this.emailService.sendEmailToTemplate<any>(user.email, EmailConstant.GIVING_REPORT_SUBJECT, EmailConstant.GIVING_REPORT, GivingReportDto);
+    });
+
+    //Send give recept to giver
+    Logger.log(`Sending email to giver: ${body.giveDetails.email} ${body.giveDetails.firstName} ${body.giveDetails.lastName}`);
+    await this.emailService.sendEmailToTemplate<any>(body.giveDetails.email, EmailConstant.GIVING_RECIEPT_SUBJECT, EmailConstant.GIVING_RECIEPT_TEMPLATE, givingReceptDTO);
+    await this.textingService.sendText(`+1${body.giveDetails.phone}`, 
+        `Thank you for giving $${total.toFixed(2)} to Faith Tabernacle. A reciept has been sent to your email. If you have trouble viewing it, it might be in your spam folder. God Bless!`);
   }
 }

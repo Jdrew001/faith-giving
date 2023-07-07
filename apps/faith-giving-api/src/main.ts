@@ -3,6 +3,7 @@ import { NestFactory } from '@nestjs/core';
 
 import { AppModule } from './app/app.module';
 import { ConfigService } from '@nestjs/config';
+import cookieParser from 'cookie-parser';
 
 // Import firebase-admin
 import { initializeApp } from "firebase/app";
@@ -33,8 +34,10 @@ async function bootstrap() {
 
   const port = process.env.PORT || 3000;
   app.enableCors({
-    origin: ["http://localhost:4200", "https://discoverfaitharlington.org"]
+    origin: ["http://localhost:4200", "https://discoverfaitharlington.org"],
+    credentials: true
   });
+  app.use(cookieParser());
   await app.listen(port);
   Logger.log(
     `🚀 Application is running on: http://localhost:${port}/${globalPrefix}`

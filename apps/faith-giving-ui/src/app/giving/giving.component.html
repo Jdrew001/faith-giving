@@ -6,12 +6,30 @@
                 <ng-container 
                     *ngSwitchCase="0">
                     <div class="row mb-2">
-                        <h5 class="mb-0">Your Details</h5>
+                        <div class="flex">
+                            <div class="flex-1 flex">
+                                <h5 class="mb-0">Your Details</h5>
+                            </div>
+                            <div *ngIf="userDetails && giveService.userEdit" class="flex">
+                                <div class="icon-container">
+                                    <p-button (click)="cancelEdit()" label="Cancel" icon="pi pi-times" styleClass="p-button-sm"></p-button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <faith-giving-user-details [formSubmitted]="formSubmitted"></faith-giving-user-details>
+                    <ng-container *ngIf="userDetails && !giveService.userEdit">
+                        <faith-giving-user-details-session
+                            [userDetails]="giveService.individualInfo"
+                            (editClicked$)="onEdit($event)"></faith-giving-user-details-session>
+                    </ng-container>
+                    <ng-container *ngIf="giveService.userEdit">
+                        <faith-giving-user-details 
+                            [formSubmitted]="formSubmitted"
+                            (onChange$)="userInputChange()"></faith-giving-user-details>
+                    </ng-container>
 
                     <div class="row mb-2">
-                        <h5 class="mb-0">Tithe Details</h5>
+                        <h5 class="mb-0">Tithing</h5>
                     </div>
 
                     <faith-giving-giving-details [formSubmitted]="formSubmitted"></faith-giving-giving-details>
@@ -47,7 +65,7 @@
                 <ng-container 
                     *ngSwitchCase="1">
                     <div class="row mb-2">
-                        <h5 class="mb-0">Card Details</h5>
+                        <h5 class="mb-0">Card</h5>
                     </div>
 
                     <faith-giving-card-details
@@ -64,3 +82,10 @@
 <div *ngIf="requestInit" class="loader-overlay">
     <p-progressSpinner class="spinner"></p-progressSpinner>
 </div>
+<p-confirmDialog #confirmDialog 
+    [message]="'Are you sure you want to cancel?'"
+    acceptLabel="Yes"
+    rejectLabel="No"
+    acceptButtonStyleClass="p-button-sm"
+    rejectButtonStyleClass="p-button-sm"
+    (acceptEvent)="onConfirm()"></p-confirmDialog>

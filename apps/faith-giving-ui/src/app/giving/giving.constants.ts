@@ -1,4 +1,5 @@
 export class GiveConstants {
+    public static FETCH_INDIVIDUAL = 'api/individual/individualBySession'
     public static GIVE_REFERENCE_PATH = 'api/reference';
     public static CALCULATE_TOTAL = 'api/giving/calculateTotal';
     public static GIVE_PAYMENT_INTENT_PATH = 'api/giving/createPaymentIntent';
