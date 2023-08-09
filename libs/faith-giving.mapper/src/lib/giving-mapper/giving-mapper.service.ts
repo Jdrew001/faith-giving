@@ -11,7 +11,7 @@ export class GivingMapperService {
                 firstname: giving.firstName,
                 lastname: giving.lastName,
                 email: giving.email.toLowerCase(),
-                phone: giving.phone
+                phone: giving.phone.replace(/[\s\-()]/g, "")
             },
             feeCovered: giving.feeCovered,
             offerings: this.mapOfferingToEntity(giving.offerings)
