@@ -5,4 +5,5 @@ export * from './lib/giving/giving.service';
 export * from './lib/stripe/stripe.service';
 export * from './lib/texting/texting.service';
 export * from './lib/email/email.service';
+export * from './lib/chmeeting/chmeeting.service';
 export * from './lib/utils/utils';
