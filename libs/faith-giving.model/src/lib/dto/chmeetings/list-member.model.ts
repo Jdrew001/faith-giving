@@ -16,7 +16,7 @@ export class ListMemberRequest {
     MarriageTo: any
     MarriageFrom: any
     UserRolesIds: any[] = []
-    CreatedSinceDays: number = 1;
+    CreatedSinceDays: number = 2;
     CreationDateFrom: any
     CreationDateTo: any
     MinistrySearchType: number

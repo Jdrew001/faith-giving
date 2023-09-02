@@ -7,6 +7,9 @@ import { CHMeetingConstant } from './chmeeting.constant';
 import * as Sentry from '@sentry/node';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { EmailService } from '../email/email.service';
+import { EmailConstant } from '../email/email.constant';
+import { Cron } from '@nestjs/schedule';
 
 
 @Injectable()
@@ -21,6 +24,7 @@ export class ChmeetingService {
     constructor(
         private readonly configService: ConfigService,
         private httpService: HttpService,
+        private emailService: EmailService,
         @InjectRepository(Token) private tokenRepo: Repository<Token>
     ) {}
 
@@ -88,7 +92,7 @@ export class ChmeetingService {
     }
 
     // get new people added to system
-    async getNewPeople() {
+    async getNewPeople(): Promise<Array<{CleanedFullName: string, Email: string, Phone: string}>> {
         await this.handleTokenFetch();
         const url = `${CHMeetingConstant.BASE_URL}${this.churchId}/${CHMeetingConstant.LIST_MEMBER}`;
         const request = new ListMemberRequest();
@@ -104,6 +108,20 @@ export class ChmeetingService {
         );
 
         return result.data['Data'];
+    }
+
+    @Cron('0 0 13 ? * THU,SUN *')
+    async sendGreetingToGuests() {
+        try {
+            Logger.log('Sending Greeting to Guests', new Date(), new Date().getTime());
+            const guests = await this.getNewPeople();
+            guests.forEach(item => {
+                this.emailService.sendEmailToTemplate(item.Email, EmailConstant.GREETING_SUBJECT, EmailConstant.GREETING_TEMPLATE, {fullName: item.CleanedFullName});
+            });
+        } catch (err) {
+            Logger.log('ERROR: Cron Job Send Greeting to Guests');
+            Sentry.captureException('ERROR: Cron Job Send Greeting To Guests');
+        }
     }
 
     private handleError(err: any, method: string) {

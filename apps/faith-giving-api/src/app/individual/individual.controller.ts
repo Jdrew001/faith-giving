@@ -29,10 +29,4 @@ export class IndividualController {
         if (!individual) return { success: false, message: 'Unable to local individual' };
         return { success: true, data: this.individualMapper.entityToIndividualDTO(individual) }
     }
-
-    @Get('getAllPeople')
-    async fetchAllPeople(@Req() request: Request) {
-        let data = await this.chMeetingService.getNewPeople();
-        return {success: true, data: data};
-    }
 }
