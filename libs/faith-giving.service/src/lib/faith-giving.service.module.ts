@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { CacheModule } from '@nestjs/cache-manager';
 import { UserService } from './user/user.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import {
@@ -8,6 +9,7 @@ import {
   Offering,
   OfferingType,
   PaymentMethod,
+  Token,
   User,
 } from '@faith-giving/faith-giving.model';
 import { ReferenceService } from './reference/reference.service';
@@ -21,6 +23,7 @@ import { HttpModule } from '@nestjs/axios';
 import { IndividualService } from './individual/individual.service';
 import { ClientSessionService } from './client-session/client-session.service';
 import { CryptService } from './crypt/crypt.service';
+import { ChmeetingService } from './chmeeting/chmeeting.service';
 
 @Module({
   providers: [
@@ -33,6 +36,7 @@ import { CryptService } from './crypt/crypt.service';
     IndividualService,
     ClientSessionService,
     CryptService,
+    ChmeetingService,
   ],
   imports: [
     TypeOrmModule.forFeature([
@@ -43,11 +47,15 @@ import { CryptService } from './crypt/crypt.service';
       User,
       PaymentMethod,
       ClientSession,
+      Token
     ]),
     ConfigModule.forRoot({
       envFilePath: '.env',
     }),
     HttpModule,
+    CacheModule.register({
+      ttl: 3600
+    }),
     FaithGivingMapperModule,
   ],
   exports: [
@@ -56,7 +64,8 @@ import { CryptService } from './crypt/crypt.service';
     GivingService,
     ClientSessionService,
     IndividualService,
-    CryptService
+    CryptService,
+    ChmeetingService
   ],
 })
 export class FaithGivingServiceModule {}
