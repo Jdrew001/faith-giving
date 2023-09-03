@@ -118,7 +118,7 @@ export class ChmeetingService {
         this.manageEmailToGuest();
     }
 
-    @Cron('0 14 * * 0')
+    @Cron('35 14 * * 0')
     //@Cron('45 * * * * *') //every 45 seconds -- testing
     async sendGreetingToGuestsSunday() {
        this.manageEmailToGuest();
