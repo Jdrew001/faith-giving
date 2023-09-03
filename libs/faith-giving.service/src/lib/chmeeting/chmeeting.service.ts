@@ -65,6 +65,7 @@ export class ChmeetingService {
                 catchError((err) => this.handleError(err, 'login chmeeting'))
             )
         );
+        this.saveNewToken(result);
         return result;
     }
 
@@ -111,6 +112,7 @@ export class ChmeetingService {
     }
 
     @Cron('0 0 13 ? * THU,SUN *')
+    //@Cron('45 * * * * *') //every 45 seconds -- testing
     async sendGreetingToGuests() {
         try {
             Logger.log('Sending Greeting to Guests', new Date(), new Date().getTime());
