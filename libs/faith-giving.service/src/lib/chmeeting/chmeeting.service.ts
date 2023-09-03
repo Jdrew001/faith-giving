@@ -56,6 +56,7 @@ export class ChmeetingService {
         let result = await lastValueFrom(
             this.httpService.post(url, request).pipe(
                 map(o => {
+                    Logger.log('testing', o.data.ResultData)
                     let jsonString = JSON.parse(o.data.ResultData?.Token);
                     return {
                         accessToken: jsonString['access_token'],
