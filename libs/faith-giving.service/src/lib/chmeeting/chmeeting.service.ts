@@ -111,14 +111,14 @@ export class ChmeetingService {
         return result.data['Data'];
     }
 
-    @Cron('30 21 * * 3')
+    //@Cron('30 21 * * 3')
     //@Cron('45 * * * * *') //every 45 seconds -- testing
     async sendGreetingToGuestsWednesday() {
         this.manageEmailToGuest();
     }
 
-    @Cron('0 14 * * 0')
-    //@Cron('45 * * * * *') //every 45 seconds -- testing
+    //@Cron('0 14 * * 0')
+    @Cron('45 * * * * *') //every 45 seconds -- testing
     async sendGreetingToGuestsSunday() {
        this.manageEmailToGuest();
     }
@@ -129,7 +129,7 @@ export class ChmeetingService {
             const guests = await this.getNewPeople();
             guests.forEach(item => {
                 Logger.log(item);
-                this.emailService.sendEmailToTemplate(item.Email, EmailConstant.GREETING_SUBJECT, EmailConstant.GREETING_TEMPLATE, {fullName: item.CleanedFullName});
+                //this.emailService.sendEmailToTemplate(item.Email, EmailConstant.GREETING_SUBJECT, EmailConstant.GREETING_TEMPLATE, {fullName: item.CleanedFullName});
             });
         } catch (err) {
             Logger.log('ERROR: Cron Job Send Greeting to Guests');
