@@ -111,13 +111,24 @@ export class ChmeetingService {
         return result.data['Data'];
     }
 
-    @Cron('0 0 13 ? * THU,SUN *')
+    @Cron('30 21 * * 3')
     //@Cron('45 * * * * *') //every 45 seconds -- testing
-    async sendGreetingToGuests() {
+    async sendGreetingToGuestsWednesday() {
+        this.manageEmailToGuest();
+    }
+
+    @Cron('0 14 * * 0')
+    //@Cron('45 * * * * *') //every 45 seconds -- testing
+    async sendGreetingToGuestsSunday() {
+       this.manageEmailToGuest();
+    }
+
+    private async manageEmailToGuest() {
         try {
             Logger.log('Sending Greeting to Guests', new Date(), new Date().getTime());
             const guests = await this.getNewPeople();
             guests.forEach(item => {
+                Logger.log(item);
                 this.emailService.sendEmailToTemplate(item.Email, EmailConstant.GREETING_SUBJECT, EmailConstant.GREETING_TEMPLATE, {fullName: item.CleanedFullName});
             });
         } catch (err) {
