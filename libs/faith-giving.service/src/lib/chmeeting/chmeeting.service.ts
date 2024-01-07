@@ -112,13 +112,13 @@ export class ChmeetingService {
         return result.data['Data'];
     }
 
-    @Cron('30 21 * * 3')
+    //@Cron('30 21 * * 3')
     //@Cron('45 * * * * *') //every 45 seconds -- testing
     async sendGreetingToGuestsWednesday() {
         this.manageEmailToGuest();
     }
 
-    @Cron('35 14 * * 0')
+    //@Cron('35 14 * * 0')
     //@Cron('45 * * * * *') //every 45 seconds -- testing
     async sendGreetingToGuestsSunday() {
        this.manageEmailToGuest();
