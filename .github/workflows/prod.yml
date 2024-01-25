@@ -105,7 +105,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: api_project/
           target: /root/projects/faith-giving-api/
-          recursive: true
           strip_components: 1
 
       - name: Run Database Migrations
@@ -153,7 +152,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: ui_project/
           target: /root/projects/faith-giving-ui/
-          recursive: true
           strip_components: 1
 
       - name: Copy UI www to Server
@@ -165,5 +163,4 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: ui_project/
           target: /var/www/faith-giving
-          recursive: true
           strip_components: 1

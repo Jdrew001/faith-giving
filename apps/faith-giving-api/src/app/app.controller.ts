@@ -18,7 +18,7 @@ export class AppController {
   @Get("reference")
   async getReferenceData() {
     return await this.refService.findAll();
-  }///
+  }
 
   @Get('environment')
   getEnv() {
