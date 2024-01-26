@@ -108,7 +108,7 @@ jobs:
           path: api_project
 
       - name: Copy Files to Server
-        run: scp -r api_project/* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/root/projects/faith-giving-api/
+        run: scp -r api_project/* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/root/projects/faith-giving-api
         env:
           SSH_AUTH_SOCK: /dev/null  # Disable SSH agent usage
 
