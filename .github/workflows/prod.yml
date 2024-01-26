@@ -14,165 +14,153 @@ env:
   DB_PASSWORD: ${{secrets.DB_PASSWORD}}
 
 jobs:
-    test:
-      runs-on: ubuntu-latest
-      steps:
-        - name: Restart API
-          uses: appleboy/ssh-action@v0.1.10
-          with:
-            host: ${{ secrets.HOST }}
-            username: ${{ secrets.USERNAME }}
-            key: ${{ secrets.SSH_PRIVATE_KEY }}
-            port: ${{ secrets.PORT }}
-            script: |
-              pm2 restart faith-giving-api
-  # build:
-  #   permissions: write-all
-  #   name: Building Applications
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #       with:
-  #         fetch-depth: 0
+  build:
+    permissions: write-all
+    name: Building Applications
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       
-  #     - name: Set up Node.js
-  #       uses: actions/setup-node@v2
-  #       with:
-  #         node-version: 14
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
 
-  #     - name: Install Nx CLI
-  #       run: npm install -g @nrwl/cli
+      - name: Install Nx CLI
+        run: npm install -g @nrwl/cli
 
-  #     - uses: nrwl/nx-set-shas@v3
-  #       with: 
-  #         main-branch-name: 'master'
+      - uses: nrwl/nx-set-shas@v3
+        with: 
+          main-branch-name: 'master'
           
-  #     - run: npm i --force
-  #     - run: npm --prefix api-gateway --omit=dev -f install
-  #     - run: npx nx affected -t build --parallel=3
+      - run: npm i --force
+      - run: npm --prefix api-gateway --omit=dev -f install
+      - run: npx nx affected -t build --parallel=3
 
-  #     - name: Check affected projects
-  #       id: affected-projects
-  #       run: |
-  #         affected_projects=$(npx nx print-affected --base=${{ github.event.before }} --head=${{ github.sha }} --select=projects)
-  #         echo "::set-output name=projects::$affected_projects"
-  #         echo "Workspace: ${{ github.workspace }}"
+      - name: Check affected projects
+        id: affected-projects
+        run: |
+          affected_projects=$(npx nx print-affected --base=${{ github.event.before }} --head=${{ github.sha }} --select=projects)
+          echo "::set-output name=projects::$affected_projects"
+          echo "Workspace: ${{ github.workspace }}"
           
-  #     - name: Upload Faith-Giving-Api Files
-  #       if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
-  #       uses: actions/upload-artifact@v3
-  #       with:
-  #         name: faith_giving_api
-  #         path: dist/apps/faith-giving-api
+      - name: Upload Faith-Giving-Api Files
+        if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
+        uses: actions/upload-artifact@v3
+        with:
+          name: faith_giving_api
+          path: dist/apps/faith-giving-api
 
-  #     - name: Upload Faith-Giving-UI Files
-  #       if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_UI)
-  #       uses: actions/upload-artifact@v3
-  #       with:
-  #         name: faith_giving_ui
-  #         path: dist/apps/faith-giving-ui
+      - name: Upload Faith-Giving-UI Files
+        if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_UI)
+        uses: actions/upload-artifact@v3
+        with:
+          name: faith_giving_ui
+          path: dist/apps/faith-giving-ui
 
-  # deploy:
-  #   permissions: write-all
-  #   name: Deploy Applications
-  #   needs: build
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #       with:
-  #         fetch-depth: 0
+  deploy:
+    permissions: write-all
+    name: Deploy Applications
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       
-  #     - name: Set up Node.js
-  #       uses: actions/setup-node@v2
-  #       with:
-  #         node-version: 14
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
 
-  #     - name: Install Nx CLI
-  #       run: npm install -g @nrwl/cli
+      - name: Install Nx CLI
+        run: npm install -g @nrwl/cli
 
-  #     - uses: nrwl/nx-set-shas@v3
-  #       with: 
-  #         main-branch-name: 'master'
+      - uses: nrwl/nx-set-shas@v3
+        with: 
+          main-branch-name: 'master'
           
-  #     - run: npm i --force
+      - run: npm i --force
 
-  #     - name: Check affected projects
-  #       id: affected-projects
-  #       run: |
-  #         affected_projects=$(npx nx print-affected --base=${{ github.event.before }} --head=${{ github.sha }} --select=projects)
-  #         echo "::set-output name=projects::$affected_projects"
-  #     - name: Download API Files
-  #       if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
-  #       uses: actions/download-artifact@v2
-  #       with:
-  #         name: faith_giving_api
-  #         path: api_project
+      - name: Check affected projects
+        id: affected-projects
+        run: |
+          affected_projects=$(npx nx print-affected --base=${{ github.event.before }} --head=${{ github.sha }} --select=projects)
+          echo "::set-output name=projects::$affected_projects"
+      - name: Download API Files
+        if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
+        uses: actions/download-artifact@v2
+        with:
+          name: faith_giving_api
 
-  #     - name: Copy Backend to Server
-  #       if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
-  #       uses: appleboy/scp-action@master
-  #       with:
-  #         host: ${{ secrets.HOST }}
-  #         username: ${{ secrets.USERNAME }}
-  #         key: ${{ secrets.SSH_PRIVATE_KEY }}
-  #         source: api_project/
-  #         target: /root/projects/faith-giving-api/
-  #         strip_components: 1
+      - name: Copy Backend to Server
+        if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: api_project/
+          target: /root/projects/faith-giving-api/
+          recursive: true
+          strip_components: 1
 
-  #     - name: Run Database Migrations
-  #       if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
-  #       run: |
-  #         npx nx run faith-giving-api:typeorm:run-migrations
+      - name: Run Database Migrations
+        if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
+        run: |
+          npx nx run faith-giving-api:typeorm:run-migrations
 
-  #     - name: Install deps
-  #       if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
-  #       uses: appleboy/ssh-action@v0.1.10
-  #       with:
-  #         host: ${{ secrets.HOST }}
-  #         username: ${{ secrets.USERNAME }}
-  #         key: ${{ secrets.SSH_PRIVATE_KEY }}
-  #         port: ${{ secrets.PORT }}
-  #         script: |
-  #           cd /root/projects/faith-giving-api
-  #           npm install --omit=dev --verbose
-  #           npm install tslib --verbose
+      - name: Install deps
+        if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd /root/projects/faith-giving-api
+            npm install --omit=dev --verbose
+            npm install tslib --verbose
 
-  #     - name: Restart API
-  #       if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
-  #       uses: appleboy/ssh-action@v0.1.10
-  #       with:
-  #         host: ${{ secrets.HOST }}
-  #         username: ${{ secrets.USERNAME }}
-  #         key: ${{ secrets.SSH_PRIVATE_KEY }}
-  #         port: ${{ secrets.PORT }}
-  #         script: |
-  #           pm2 restart faith-giving-api
+      - name: Restart API
+        if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            pm2 restart faith-giving-api
 
-  #     - name: Download UI Files
-  #       if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_UI)
-  #       uses: actions/download-artifact@v2
-  #       with:
-  #         name: faith_giving_ui
-  #         path: ui_project
+      - name: Download UI Files
+        if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_UI)
+        uses: actions/download-artifact@v2
+        with:
+          name: faith_giving_ui
 
-  #     - name: Copy UI to Server
-  #       if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_UI)
-  #       uses: appleboy/scp-action@master
-  #       with:
-  #         host: ${{ secrets.HOST }}
-  #         username: ${{ secrets.USERNAME }}
-  #         key: ${{ secrets.SSH_PRIVATE_KEY }}
-  #         source: ui_project/
-  #         target: /root/projects/faith-giving-ui/
-  #         strip_components: 1
+      - name: Copy UI to Server
+        if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_UI)
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: ui_project/
+          target: /root/projects/faith-giving-ui/
+          strip_components: 1
 
-  #     - name: Copy UI www to Server
-  #       if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_UI)
-  #       uses: appleboy/scp-action@master
-  #       with:
-  #         host: ${{ secrets.HOST }}
-  #         username: ${{ secrets.USERNAME }}
-  #         key: ${{ secrets.SSH_PRIVATE_KEY }}
-  #         source: ui_project/
-  #         target: /var/www/faith-giving
-  #         strip_components: 1
+      - name: Copy UI www to Server
+        if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_UI)
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: ui_project/
+          target: /var/www/faith-giving
+          recursive: true
+          strip_components: 1
