@@ -94,6 +94,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: faith_giving_api
+          path: api_project
 
       - name: Copy Backend to Server
         if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
@@ -106,6 +107,7 @@ jobs:
           target: /root/projects/faith-giving-api/
           recursive: true
           strip_components: 1
+          debug: true
 
       - name: Run Database Migrations
         if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
@@ -141,6 +143,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: faith_giving_ui
+          path: ui_project
 
       - name: Copy UI to Server
         if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_UI)
