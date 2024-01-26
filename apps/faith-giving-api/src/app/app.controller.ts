@@ -15,6 +15,11 @@ export class AppController {
     return await this.userService.findAdmins();
   }
 
+  @Get("test")
+  async getTestData() {
+    return "deployed!"
+  }
+
   @Get("reference")
   async getReferenceData() {
     return await this.refService.findAll();
