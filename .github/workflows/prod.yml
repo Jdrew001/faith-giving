@@ -75,12 +75,15 @@ jobs:
         with:
           node-version: 14
       
-      - name: Setup SSH Key
+      - name: Set up SSH key
         run: |
-          mkdir -p ~/.ssh/
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
-          cd ~/.ssh
-          ls -al
+          mkdir -p $HOME/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > $HOME/.ssh/id_rsa
+          chmod 600 $HOME/.ssh/id_rsa
+          ssh-keyscan -t rsa ${{ secrets.HOST }} >> $HOME/.ssh/known_hosts
+        env:
+          SSH_AUTH_SOCK: /dev/null  # Disable SSH agent usage
+          HOME: /home/runner  # Set the home directory explicitly
 
       - name: Install Nx CLI
         run: npm install -g @nrwl/cli
@@ -104,15 +107,10 @@ jobs:
           name: faith_giving_api
           path: api_project
 
-      - name: Set up SSH key
-        run: |
-          mkdir -p $HOME/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > $HOME/.ssh/id_rsa
-          chmod 600 $HOME/.ssh/id_rsa
-          ssh-keyscan -t rsa ${{ secrets.HOST }} >> $HOME/.ssh/known_hosts
+      - name: Copy Files to Server
+        run: scp -r api_project/* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/root/projects/faith-giving-api/
         env:
           SSH_AUTH_SOCK: /dev/null  # Disable SSH agent usage
-          HOME: /home/runner  # Set the home directory explicitly
 
       # - name: Copy Backend to Server
       #   if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
