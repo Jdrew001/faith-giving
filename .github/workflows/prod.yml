@@ -79,6 +79,8 @@ jobs:
         run: |
           mkdir -p ~/.ssh/
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
+          cd ~./ssh
+          ls -al
 
       - name: Install Nx CLI
         run: npm install -g @nrwl/cli
