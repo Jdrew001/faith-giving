@@ -33,10 +33,10 @@ async function bootstrap() {
   app.setGlobalPrefix(globalPrefix);
 
   const port = process.env.PORT || 3000;
-  // app.enableCors({
-  //   origin: ["http://localhost:4200", "https://discoverfaitharlington.org"],
-  //   credentials: true
-  // });
+  app.enableCors({
+    origin: ["http://localhost:4200", "https://discoverfaitharlington.org"],
+    credentials: true
+  });
   app.use(cookieParser());
   await app.listen(port);
   Logger.log(
