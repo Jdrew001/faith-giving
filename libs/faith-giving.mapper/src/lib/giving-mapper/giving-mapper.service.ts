@@ -8,10 +8,10 @@ export class GivingMapperService {
         return {
             tithe: giving.tithe,
             individual: {
-                firstname: giving.firstName,
-                lastname: giving.lastName,
-                email: giving.email.toLowerCase(),
-                phone: giving.phone.replace(/[\s\-()]/g, "")
+                firstname: giving.firstName.trimEnd(),
+                lastname: giving.lastName.trimEnd(),
+                email: giving.email.toLowerCase().trimEnd(),
+                phone: giving.phone.replace(/[\s\-()]/g, "").trimEnd()
             },
             feeCovered: giving.feeCovered,
             offerings: this.mapOfferingToEntity(giving.offerings)
