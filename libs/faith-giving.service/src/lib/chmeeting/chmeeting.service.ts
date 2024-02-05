@@ -56,6 +56,7 @@ export class ChmeetingService {
         let result = await lastValueFrom(
             this.httpService.post(url, request).pipe(
                 map(o => {
+                    Logger.log('testing', o.data.ResultData)
                     let jsonString = JSON.parse(o.data.ResultData?.Token);
                     return {
                         accessToken: jsonString['access_token'],
@@ -111,13 +112,13 @@ export class ChmeetingService {
         return result.data['Data'];
     }
 
-    @Cron('30 21 * * 3')
+    //@Cron('30 21 * * 3')
     //@Cron('45 * * * * *') //every 45 seconds -- testing
     async sendGreetingToGuestsWednesday() {
         this.manageEmailToGuest();
     }
 
-    @Cron('0 14 * * 0')
+    //@Cron('35 14 * * 0')
     //@Cron('45 * * * * *') //every 45 seconds -- testing
     async sendGreetingToGuestsSunday() {
        this.manageEmailToGuest();
