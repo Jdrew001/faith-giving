@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import twilio from 'twilio';
 import * as Sentry from '@sentry/node';
@@ -27,6 +27,7 @@ export class TextingService {
                 Sentry.captureException(`Texting to: ${to} have failed: ${result.errorMessage}; code: ${result.errorCode}`);
             }
         } catch(error) {
+            Logger.error(`Texting to: ${to} have failed: ${error}`);
             Sentry.captureException(`Texting to: ${to} have failed: ${error}`);
         }
     }

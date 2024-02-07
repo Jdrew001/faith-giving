@@ -15,3 +15,4 @@ export * from './lib/dto/individual.dto';
 export * from './lib/dto/chmeetings/login.model';
 export * from './lib/dto/chmeetings/list-member.model';
 export * from './lib/entities/token';
+export * from './lib/dto/chmeetings/message.model';
