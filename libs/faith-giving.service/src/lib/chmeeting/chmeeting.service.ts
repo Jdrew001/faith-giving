@@ -150,8 +150,8 @@ export class ChmeetingService {
 // "2024-01-29T00:00"
 //     }
 
-    //@Cron('30 21 * * 3')
-    @Cron('45 * * * * *') //every 45 seconds -- testing
+    @Cron('30 21 * * 3')
+    //@Cron('45 * * * * *') //every 45 seconds -- testing
     async sendGreetingToGuestsWednesday() {
         const newPeople = await this.getNewPeople();
         Logger.log('sending', newPeople);
@@ -164,7 +164,7 @@ export class ChmeetingService {
         });
     }
 
-    //@Cron('35 14 * * 0')
+    @Cron('35 14 * * 0')
     //@Cron('45 * * * * *') //every 45 seconds -- testing
     async sendGreetingToGuestsSunday() {
         const newPeople = await this.getNewPeople();
