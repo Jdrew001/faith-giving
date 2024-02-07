@@ -1,4 +1,4 @@
-import { CHLoginRequestModel, ListMemberRequest, Token, TokenData } from '@faith-giving/faith-giving.model';
+import { CHLoginRequestModel, ListMemberRequest, MessageModel, Token, TokenData } from '@faith-giving/faith-giving.model';
 import { HttpService } from '@nestjs/axios';
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -10,6 +10,9 @@ import { Repository } from 'typeorm';
 import { EmailService } from '../email/email.service';
 import { EmailConstant } from '../email/email.constant';
 import { Cron } from '@nestjs/schedule';
+import { TextingService } from '../texting/texting.service';
+import { GroupmeService } from '../groupme/groupme.service';
+import moment from 'moment';
 
 
 @Injectable()
@@ -19,12 +22,16 @@ export class ChmeetingService {
     get password() { return this.configService.get<string>('CHMEETING_PASSWORD')}
     get churchId() { return this.configService.get<string>('CHMEETING_ID'); }
 
+    get adminNumber() { return this.configService.get<string>('ADMIN_NUMBER'); }
+
     private tokens: Token | null;
 
     constructor(
         private readonly configService: ConfigService,
         private httpService: HttpService,
         private emailService: EmailService,
+        private readonly textService: TextingService,
+        private readonly groupMeService: GroupmeService,
         @InjectRepository(Token) private tokenRepo: Repository<Token>
     ) {}
 
@@ -94,7 +101,7 @@ export class ChmeetingService {
     }
 
     // get new people added to system
-    async getNewPeople(): Promise<Array<{CleanedFullName: string, Email: string, Phone: string}>> {
+    async getNewPeople(): Promise<Array<{CleanedFullName: string, Email: string, Mobile: string, Id: number}>> {
         await this.handleTokenFetch();
         const url = `${CHMeetingConstant.BASE_URL}${this.churchId}/${CHMeetingConstant.LIST_MEMBER}`;
         const request = new ListMemberRequest();
@@ -112,35 +119,93 @@ export class ChmeetingService {
         return result.data['Data'];
     }
 
+    async sendChMeetingText(message: string, numbers: number[]) {
+        await this.handleTokenFetch();
+        const url = `${CHMeetingConstant.BASE_URL}${this.churchId}/${CHMeetingConstant.SEND_SMS}`;
+        const request = new MessageModel(message, numbers.map(o => ({MemberId: o})));
+        return await lastValueFrom(
+            this.httpService.post(url, request, {
+                headers: {
+                    Authorization: `Bearer ${this.tokens?.accessToken}`,
+                    'Content-Type': 'application/json'
+                }
+            }).pipe(
+                catchError((err) => this.handleError(err, 'CHMeeting Send CHMeeting Sms'))
+            )
+        ) as {Type: 'string', Message: 'string'};
+    }
+
+//     async getPeopleAddedTwoWeeks(): Promise<Array<{CleanedFullName: string, Email: string, Mobile: string}>> {
+//         await this.handleTokenFetch();
+//         const url = `${CHMeetingConstant.BASE_URL}${this.churchId}/${CHMeetingConstant.LIST_MEMBER}`;
+//         const request = new ListMemberRequest();
+//         request.CreatedSinceDays = null as any;
+//         request.CreationDateTo =  
+
+//         CreationDateFrom
+// : 
+// "2024-01-23T00:00"
+// CreationDateTo
+// : 
+// "2024-01-29T00:00"
+//     }
+
     //@Cron('30 21 * * 3')
-    //@Cron('45 * * * * *') //every 45 seconds -- testing
+    @Cron('45 * * * * *') //every 45 seconds -- testing
     async sendGreetingToGuestsWednesday() {
-        this.manageEmailToGuest();
+        const newPeople = await this.getNewPeople();
+        Logger.log('sending', newPeople);
+        newPeople.forEach(async item => {
+            this.sendChMeetingText(`Hi ${this.capitalizeWords(item.CleanedFullName)}, ${CHMeetingConstant.WELCOME_TEXT}`, [item.Id]);
+            await this.sendWelcomeEmail(item);
+            await this.groupMeService.sendMessageToGroup(
+                `Welcome Text/Email sent\n${this.capitalizeWords(item.CleanedFullName)}\n${item.Mobile}\n${item.Email}`
+            );
+        });
     }
 
     //@Cron('35 14 * * 0')
     //@Cron('45 * * * * *') //every 45 seconds -- testing
     async sendGreetingToGuestsSunday() {
-       this.manageEmailToGuest();
+        const newPeople = await this.getNewPeople();
+        Logger.log('sending for sunday', newPeople);
+        newPeople.forEach(async item => {
+            this.sendChMeetingText(`Hi ${this.capitalizeWords(item.CleanedFullName)}, ${CHMeetingConstant.WELCOME_TEXT}`, [item.Id]);
+            await this.sendWelcomeEmail(item);
+            await this.groupMeService.sendMessageToGroup(
+                `Welcome Text/Email sent\n${this.capitalizeWords(item.CleanedFullName)}\n${item.Mobile}\n${item.Email}`
+            );
+        });
     }
 
-    private async manageEmailToGuest() {
+    private async sendWelcomeEmail(data:{
+        CleanedFullName: string;
+        Email: string;
+        Mobile: string;
+    }) {
         try {
-            Logger.log('Sending Greeting to Guests', new Date(), new Date().getTime());
-            const guests = await this.getNewPeople();
-            guests.forEach(item => {
-                Logger.log(item);
-                this.emailService.sendEmailToTemplate(item.Email, EmailConstant.GREETING_SUBJECT, EmailConstant.GREETING_TEMPLATE, {fullName: item.CleanedFullName});
-            });
+            if (data?.Email === null) return;
+            Logger.log('Sending Greeting to Guests - Email', new Date(), new Date().getTime());
+            this.emailService.sendEmailToTemplate(data.Email, EmailConstant.GREETING_SUBJECT, EmailConstant.GREETING_TEMPLATE, {fullName: this.capitalizeWords(data.CleanedFullName)});
         } catch (err) {
-            Logger.log('ERROR: Cron Job Send Greeting to Guests');
-            Sentry.captureException('ERROR: Cron Job Send Greeting To Guests');
+            Logger.log('ERROR: Cron Job Send Greeting Email to Guests');
+            Sentry.captureException('ERROR: Cron Job Send Greeting Email To Guests');
+            throw err;
         }
+    }
+
+    private capitalizeWords(str: string) {
+        return str
+            .split(' ') // Split the string into an array of words
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) // Capitalize the first letter of each word and make the rest lowercase
+            .join(' '); // Join the words back into a string
     }
 
     private handleError(err: any, method: string) {
         Logger.log('ERROR: ', err);
         Sentry.captureException(`ERROR - ${method}: ${err}`);
+        throw err;
+
         return EMPTY;
     }
 }

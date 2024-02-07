@@ -25,6 +25,7 @@ import { IndividualService } from './individual/individual.service';
 import { ClientSessionService } from './client-session/client-session.service';
 import { CryptService } from './crypt/crypt.service';
 import { ChmeetingService } from './chmeeting/chmeeting.service';
+import { GroupmeService } from './groupme/groupme.service';
 
 @Module({
   providers: [
@@ -38,6 +39,7 @@ import { ChmeetingService } from './chmeeting/chmeeting.service';
     ClientSessionService,
     CryptService,
     ChmeetingService,
+    GroupmeService
   ],
   imports: [
     TypeOrmModule.forFeature([
@@ -48,7 +50,7 @@ import { ChmeetingService } from './chmeeting/chmeeting.service';
       User,
       PaymentMethod,
       ClientSession,
-      Token
+      Token,
     ]),
     ScheduleModule.forRoot(),
     ConfigModule.forRoot({
@@ -56,7 +58,7 @@ import { ChmeetingService } from './chmeeting/chmeeting.service';
     }),
     HttpModule,
     CacheModule.register({
-      ttl: 3600
+      ttl: 3600,
     }),
     FaithGivingMapperModule,
   ],
@@ -67,7 +69,8 @@ import { ChmeetingService } from './chmeeting/chmeeting.service';
     ClientSessionService,
     IndividualService,
     CryptService,
-    ChmeetingService
+    ChmeetingService,
+    GroupmeService
   ],
 })
 export class FaithGivingServiceModule {}
