@@ -23,8 +23,11 @@ export class ChmeetingService {
     get churchId() { return this.configService.get<string>('CHMEETING_ID'); }
 
     get adminNumber() { return this.configService.get<string>('ADMIN_NUMBER'); }
+    get ApiKey() { return this.configService.get<string>('API_KEY'); }
 
     private tokens: Token | null;
+    private page: number = 1;
+    private pageSize: number = 500;
 
     constructor(
         private readonly configService: ConfigService,
@@ -102,13 +105,11 @@ export class ChmeetingService {
 
     // get new people added to system
     async getNewPeople(): Promise<Array<{CleanedFullName: string, Email: string, Mobile: string, Id: number}>> {
-        await this.handleTokenFetch();
-        const url = `${CHMeetingConstant.BASE_URL}${this.churchId}/${CHMeetingConstant.LIST_MEMBER}`;
-        const request = new ListMemberRequest();
+        const url = `https://api.chmeetings.com/api/v1/people?page=${this.page}&page_size=${this.pageSize}`;
         let result = await lastValueFrom(
-            this.httpService.post(url, request, {
+            this.httpService.get(url, {
                 headers: {
-                    Authorization: `Bearer ${this.tokens?.accessToken}`,
+                    ApiKey: this.ApiKey,
                     'Content-Type': 'application/json'
                 }
             }).pipe(
@@ -116,7 +117,7 @@ export class ChmeetingService {
             )
         );
 
-        return result.data['Data'];
+        return result.data;
     }
 
     async sendChMeetingText(message: string, numbers: number[]) {
@@ -150,18 +151,18 @@ export class ChmeetingService {
 // "2024-01-29T00:00"
 //     }
 
-    @Cron('30 21 * * 3')
-    //@Cron('45 * * * * *') //every 45 seconds -- testing
+    //@Cron('30 21 * * 3')
+    @Cron('45 * * * * *') //every 45 seconds -- testing
     async sendGreetingToGuestsWednesday() {
         const newPeople = await this.getNewPeople();
         Logger.log('sending', newPeople);
-        newPeople.forEach(async item => {
-            this.sendChMeetingText(`Hi ${this.capitalizeWords(item.CleanedFullName)}, ${CHMeetingConstant.WELCOME_TEXT}`, [item.Id]);
-            await this.sendWelcomeEmail(item);
-            await this.groupMeService.sendMessageToGroup(
-                `Welcome Text/Email sent\n${this.capitalizeWords(item.CleanedFullName)}\n${item.Mobile}\n${item.Email}`
-            );
-        });
+        // newPeople.forEach(async item => {
+        //     this.sendChMeetingText(`Hi ${this.capitalizeWords(item.CleanedFullName)}, ${CHMeetingConstant.WELCOME_TEXT}`, [item.Id]);
+        //     await this.sendWelcomeEmail(item);
+        //     await this.groupMeService.sendMessageToGroup(
+        //         `Welcome Text/Email sent\n${this.capitalizeWords(item.CleanedFullName)}\n${item.Mobile}\n${item.Email}`
+        //     );
+        // });
     }
 
     @Cron('35 14 * * 0')
