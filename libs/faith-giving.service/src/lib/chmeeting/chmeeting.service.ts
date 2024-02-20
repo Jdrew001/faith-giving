@@ -144,6 +144,8 @@ export class ChmeetingService {
             if (!item.do_not_email) {
                 await this.sendWelcomeEmail(item);
             }
+
+            if (!item.do_not_text && !item.do_not_email) return;
             await this.groupMeService.sendMessageToGroup(
                 `Welcome Text/Email sent\n${item.first_name}\n${item.mobile}\n${item.email}`
             );
@@ -156,8 +158,14 @@ export class ChmeetingService {
         const newPeople = await this.getNewPeople();
         Logger.log('sending for sunday', newPeople);
         newPeople.forEach(async item => {
-            this.sendChMeetingText(`Hi ${item.first_name}, ${CHMeetingConstant.WELCOME_TEXT}`, [item.id]);
-            await this.sendWelcomeEmail(item);
+            if (!item.do_not_text) {
+                this.sendChMeetingText(`Hi ${item.first_name}, ${CHMeetingConstant.WELCOME_TEXT}`, [item.id]);
+            }
+            if (!item.do_not_email) {
+                await this.sendWelcomeEmail(item);
+            }
+
+            if (!item.do_not_text && !item.do_not_email) return;
             await this.groupMeService.sendMessageToGroup(
                 `Welcome Text/Email sent\n${item.first_name}\n${item.mobile}\n${item.email}`
             );
