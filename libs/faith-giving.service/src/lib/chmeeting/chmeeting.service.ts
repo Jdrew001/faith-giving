@@ -1,4 +1,4 @@
-import { CHLoginRequestModel, ListMemberRequest, MessageModel, Token, TokenData } from '@faith-giving/faith-giving.model';
+import { CHLoginRequestModel, ListMemberRequest, MessageModel, PeopleModel, Token, TokenData } from '@faith-giving/faith-giving.model';
 import { HttpService } from '@nestjs/axios';
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -23,8 +23,11 @@ export class ChmeetingService {
     get churchId() { return this.configService.get<string>('CHMEETING_ID'); }
 
     get adminNumber() { return this.configService.get<string>('ADMIN_NUMBER'); }
+    get ApiKey() { return this.configService.get<string>('API_KEY'); }
 
     private tokens: Token | null;
+    private page: number = 1;
+    private pageSize: number = 500;
 
     constructor(
         private readonly configService: ConfigService,
@@ -36,13 +39,9 @@ export class ChmeetingService {
     ) {}
 
     async handleTokenFetch() {
-        this.tokens = (await this.tokenRepo.find())[0];
         if (!this.tokens) {
             this.tokens = await this.loginChMeeting();
-            return;
         }
-
-        this.tokens = await this.refreshToken(this.tokens);
     }
 
     async saveNewToken(data: Token) {
@@ -87,7 +86,7 @@ export class ChmeetingService {
         let result = await lastValueFrom(
             this.httpService.post(url, request).pipe(
                 map(o => {
-                    let jsonString = JSON.parse(o.data.ResultData);
+                    let jsonString = JSON.parse(o.data.ResultData?.Token);
                     return {
                         accessToken: jsonString['access_token'],
                         refreshToken: jsonString['refresh_token']
@@ -101,14 +100,12 @@ export class ChmeetingService {
     }
 
     // get new people added to system
-    async getNewPeople(): Promise<Array<{CleanedFullName: string, Email: string, Mobile: string, Id: number}>> {
-        await this.handleTokenFetch();
-        const url = `${CHMeetingConstant.BASE_URL}${this.churchId}/${CHMeetingConstant.LIST_MEMBER}`;
-        const request = new ListMemberRequest();
+    async getNewPeople(): Promise<Array<PeopleModel>> {
+        const url = `${CHMeetingConstant.BASE_URL}api/v1/people?page=${this.page}&page_size=${this.pageSize}`;
         let result = await lastValueFrom(
-            this.httpService.post(url, request, {
+            this.httpService.get(url, {
                 headers: {
-                    Authorization: `Bearer ${this.tokens?.accessToken}`,
+                    ApiKey: this.ApiKey,
                     'Content-Type': 'application/json'
                 }
             }).pipe(
@@ -116,7 +113,7 @@ export class ChmeetingService {
             )
         );
 
-        return result.data['Data'];
+        return result.data.data as Array<PeopleModel>;
     }
 
     async sendChMeetingText(message: string, numbers: number[]) {
@@ -135,31 +132,16 @@ export class ChmeetingService {
         ) as {Type: 'string', Message: 'string'};
     }
 
-//     async getPeopleAddedTwoWeeks(): Promise<Array<{CleanedFullName: string, Email: string, Mobile: string}>> {
-//         await this.handleTokenFetch();
-//         const url = `${CHMeetingConstant.BASE_URL}${this.churchId}/${CHMeetingConstant.LIST_MEMBER}`;
-//         const request = new ListMemberRequest();
-//         request.CreatedSinceDays = null as any;
-//         request.CreationDateTo =  
-
-//         CreationDateFrom
-// : 
-// "2024-01-23T00:00"
-// CreationDateTo
-// : 
-// "2024-01-29T00:00"
-//     }
-
-    @Cron('30 21 * * 3')
-    //@Cron('45 * * * * *') //every 45 seconds -- testing
+    //@Cron('30 21 * * 3')
+    @Cron('45 * * * * *') //every 45 seconds -- testing
     async sendGreetingToGuestsWednesday() {
-        const newPeople = await this.getNewPeople();
+        const newPeople = (await this.getNewPeople()).filter(o => this.filterNewPeople(o.created_on));
         Logger.log('sending', newPeople);
         newPeople.forEach(async item => {
-            this.sendChMeetingText(`Hi ${this.capitalizeWords(item.CleanedFullName)}, ${CHMeetingConstant.WELCOME_TEXT}`, [item.Id]);
+            this.sendChMeetingText(`Hi ${item.first_name}, ${CHMeetingConstant.WELCOME_TEXT}`, [item.id]);
             await this.sendWelcomeEmail(item);
             await this.groupMeService.sendMessageToGroup(
-                `Welcome Text/Email sent\n${this.capitalizeWords(item.CleanedFullName)}\n${item.Mobile}\n${item.Email}`
+                `Welcome Text/Email sent\n${item.first_name}\n${item.mobile}\n${item.email}`
             );
         });
     }
@@ -170,23 +152,19 @@ export class ChmeetingService {
         const newPeople = await this.getNewPeople();
         Logger.log('sending for sunday', newPeople);
         newPeople.forEach(async item => {
-            this.sendChMeetingText(`Hi ${this.capitalizeWords(item.CleanedFullName)}, ${CHMeetingConstant.WELCOME_TEXT}`, [item.Id]);
+            this.sendChMeetingText(`Hi ${item.first_name}, ${CHMeetingConstant.WELCOME_TEXT}`, [item.id]);
             await this.sendWelcomeEmail(item);
             await this.groupMeService.sendMessageToGroup(
-                `Welcome Text/Email sent\n${this.capitalizeWords(item.CleanedFullName)}\n${item.Mobile}\n${item.Email}`
+                `Welcome Text/Email sent\n${item.first_name}\n${item.mobile}\n${item.email}`
             );
         });
     }
 
-    private async sendWelcomeEmail(data:{
-        CleanedFullName: string;
-        Email: string;
-        Mobile: string;
-    }) {
+    private async sendWelcomeEmail(data: PeopleModel) {
         try {
-            if (data?.Email === null) return;
+            if (data?.email === null) return;
             Logger.log('Sending Greeting to Guests - Email', new Date(), new Date().getTime());
-            this.emailService.sendEmailToTemplate(data.Email, EmailConstant.GREETING_SUBJECT, EmailConstant.GREETING_TEMPLATE, {fullName: this.capitalizeWords(data.CleanedFullName)});
+            this.emailService.sendEmailToTemplate(data.email, EmailConstant.GREETING_SUBJECT, EmailConstant.GREETING_TEMPLATE, {fullName: data.first_name});
         } catch (err) {
             Logger.log('ERROR: Cron Job Send Greeting Email to Guests');
             Sentry.captureException('ERROR: Cron Job Send Greeting Email To Guests');
@@ -207,5 +185,16 @@ export class ChmeetingService {
         throw err;
 
         return EMPTY;
+    }
+
+    private filterNewPeople(date: string) {
+
+        // Create Moment objects
+        const currentDate = moment(); // Moment object for the current date and time
+        const dateToCompare = moment(date); // Moment object for your date variable, parsed including timezone
+        const formattedCurrentDate = currentDate.format('YYYY-MM-DD');
+        const formattedDateToCompare = dateToCompare.format('YYYY-MM-DD');
+
+        return formattedDateToCompare == formattedCurrentDate;
     }
 }
