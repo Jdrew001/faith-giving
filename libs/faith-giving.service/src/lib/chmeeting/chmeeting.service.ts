@@ -132,8 +132,8 @@ export class ChmeetingService {
         ) as {Type: 'string', Message: 'string'};
     }
 
-    //@Cron('30 21 * * 3')
-    @Cron('45 * * * * *') //every 45 seconds -- testing
+    @Cron('30 21 * * 3')
+    //@Cron('45 * * * * *') //every 45 seconds -- testing
     async sendGreetingToGuestsWednesday() {
         const newPeople = (await this.getNewPeople()).filter(o => this.filterNewPeople(o.created_on));
         Logger.log('sending', newPeople);
