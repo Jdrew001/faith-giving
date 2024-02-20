@@ -1,4 +1,4 @@
-import { CHLoginRequestModel, ListMemberRequest, MessageModel, Token, TokenData } from '@faith-giving/faith-giving.model';
+import { CHLoginRequestModel, ListMemberRequest, MessageModel, PeopleModel, Token, TokenData } from '@faith-giving/faith-giving.model';
 import { HttpService } from '@nestjs/axios';
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -104,8 +104,8 @@ export class ChmeetingService {
     }
 
     // get new people added to system
-    async getNewPeople(): Promise<Array<{CleanedFullName: string, Email: string, Mobile: string, Id: number}>> {
-        const url = `https://api.chmeetings.com/api/v1/people?page=${this.page}&page_size=${this.pageSize}`;
+    async getNewPeople(): Promise<Array<PeopleModel>> {
+        const url = `${CHMeetingConstant.BASE_URL}api/v1/people?page=${this.page}&page_size=${this.pageSize}`;
         let result = await lastValueFrom(
             this.httpService.get(url, {
                 headers: {
@@ -117,7 +117,7 @@ export class ChmeetingService {
             )
         );
 
-        return result.data;
+        return result.data as Array<PeopleModel>;
     }
 
     async sendChMeetingText(message: string, numbers: number[]) {
