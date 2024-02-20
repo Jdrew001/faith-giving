@@ -39,13 +39,9 @@ export class ChmeetingService {
     ) {}
 
     async handleTokenFetch() {
-        this.tokens = (await this.tokenRepo.find())[0];
         if (!this.tokens) {
             this.tokens = await this.loginChMeeting();
-            return;
         }
-
-        this.tokens = await this.refreshToken(this.tokens);
     }
 
     async saveNewToken(data: Token) {
@@ -90,7 +86,7 @@ export class ChmeetingService {
         let result = await lastValueFrom(
             this.httpService.post(url, request).pipe(
                 map(o => {
-                    let jsonString = JSON.parse(o.data.ResultData);
+                    let jsonString = JSON.parse(o.data.ResultData?.Token);
                     return {
                         accessToken: jsonString['access_token'],
                         refreshToken: jsonString['refresh_token']
@@ -135,21 +131,6 @@ export class ChmeetingService {
             )
         ) as {Type: 'string', Message: 'string'};
     }
-
-//     async getPeopleAddedTwoWeeks(): Promise<Array<{CleanedFullName: string, Email: string, Mobile: string}>> {
-//         await this.handleTokenFetch();
-//         const url = `${CHMeetingConstant.BASE_URL}${this.churchId}/${CHMeetingConstant.LIST_MEMBER}`;
-//         const request = new ListMemberRequest();
-//         request.CreatedSinceDays = null as any;
-//         request.CreationDateTo =  
-
-//         CreationDateFrom
-// : 
-// "2024-01-23T00:00"
-// CreationDateTo
-// : 
-// "2024-01-29T00:00"
-//     }
 
     //@Cron('30 21 * * 3')
     @Cron('45 * * * * *') //every 45 seconds -- testing
