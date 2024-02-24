@@ -3,6 +3,7 @@ export class CHMeetingConstant {
     public static LOGIN_URL = 'Account/Signin/';
     public static REFRESH_TOKEN = 'Account/RefreshUserToken';
     public static LIST_MEMBER = 'Core/Member/ListMembers';
+    public static FOLLOWUP_URL = 'Core/FollowUp/Create';
     public static SEND_SMS = 'Core/Communication/SendSms';
 
     // Welcome Text

@@ -17,3 +17,4 @@ export * from './lib/dto/chmeetings/list-member.model';
 export * from './lib/entities/token';
 export * from './lib/dto/chmeetings/message.model';
 export * from './lib/dto/chmeetings/people.model';
+export * from './lib/dto/chmeetings/followup.model';
