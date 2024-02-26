@@ -149,7 +149,7 @@ export class ChmeetingService {
     @Cron('35 14 * * 0')
     //@Cron('45 * * * * *') //every 45 seconds -- testing
     async sendGreetingToGuestsSunday() {
-        const newPeople = await this.getNewPeople();
+        const newPeople = (await this.getNewPeople()).filter(o => this.filterNewPeople(o.created_on));
         Logger.log('sending for sunday', newPeople);
         newPeople.forEach(async item => {
             this.sendChMeetingText(`Hi ${item.first_name}, ${CHMeetingConstant.WELCOME_TEXT}`, [item.id]);
