@@ -78,9 +78,9 @@ jobs:
       - name: Set up SSH key
         run: |
           mkdir -p $HOME/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > $HOME/.ssh/id_rsa
-          chmod 600 $HOME/.ssh/id_rsa
-          ssh-keyscan -t rsa ${{ secrets.HOST }} >> $HOME/.ssh/known_hosts
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > $HOME/.ssh/id_ed25519
+          chmod 600 $HOME/.ssh/id_ed25519
+          ssh-keyscan -t ed25519 ${{ secrets.HOST }} >> $HOME/.ssh/known_hosts
         env:
           SSH_AUTH_SOCK: /dev/null  # Disable SSH agent usage
           HOME: /home/runner  # Set the home directory explicitly
