@@ -161,25 +161,12 @@ jobs:
           name: faith_giving_ui
           path: ui_project
 
-      - name: Copy UI to Server
-        if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_UI)
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: ui_project/
-          target: /root/projects/faith-giving-ui/
-          strip_components: 1
+      - name: Copy UI Files to Server Project DIR
+        run: scp -r -vvv ui_project/* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/root/projects/faith-giving-ui/
+        env:
+          SSH_AUTH_SOCK: /dev/null  # Disable SSH agent usage
 
-      - name: Copy UI www to Server
-        if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_UI)
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: ui_project/
-          target: /var/www/faith-giving
-          recursive: true
-          strip_components: 1
+      - name: Copy UI Files to Server WWW DIR
+        run: scp -r -vvv ui_project/* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/var/www/faith-giving/
+        env:
+          SSH_AUTH_SOCK: /dev/null  # Disable SSH agent usage
