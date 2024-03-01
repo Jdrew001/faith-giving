@@ -21,4 +21,4 @@ import { CoreModule } from "./core/core.module";
   providers: [],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule {}//

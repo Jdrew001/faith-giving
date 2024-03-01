@@ -27,6 +27,6 @@ import { IndividualModule } from './individual/individual.module';
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(CorsMiddleware).forRoutes('*');
+    consumer.apply(CorsMiddleware).forRoutes('*');//
   }
 }
