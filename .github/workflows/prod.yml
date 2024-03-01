@@ -162,11 +162,11 @@ jobs:
           path: ui_project
 
       - name: Copy UI Files to Server Project DIR
-        run: scp -r -vvv ui_project/* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/root/projects/faith-giving-ui/
+        run: scp -r -vvv ui_project/* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/root/projects/faith-giving-ui
         env:
           SSH_AUTH_SOCK: /dev/null  # Disable SSH agent usage
 
       - name: Copy UI Files to Server WWW DIR
-        run: scp -r -vvv ui_project/* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/var/www/faith-giving/
+        run: scp -r -vvv ui_project/* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/var/www/faith-giving
         env:
           SSH_AUTH_SOCK: /dev/null  # Disable SSH agent usage
