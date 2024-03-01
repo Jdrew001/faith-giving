@@ -107,23 +107,27 @@ jobs:
           name: faith_giving_api
           path: api_project
 
+      - name: Download UI Files
+        if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_UI)
+        uses: actions/download-artifact@v2
+        with:
+          name: faith_giving_ui
+          path: ui_project
+
       - name: Copy Files to Server
-        run: scp -r -vvv api_project/* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/root/projects/faith-giving-api
+        run: sudo scp -r -vvv api_project/* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/root/projects/faith-giving-api
         env:
           SSH_AUTH_SOCK: /dev/null  # Disable SSH agent usage
 
-      # - name: Copy Backend to Server
-      #   if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
-      #   uses: appleboy/scp-action@master
-      #   with:
-      #     host: ${{ secrets.HOST }}
-      #     username: ${{ secrets.USERNAME }}
-      #     key: ${{ secrets.SSH_PRIVATE_KEY }}
-      #     source: api_project/
-      #     target: /root/projects/faith-giving-api/
-      #     recursive: true
-      #     strip_components: 1
-      #     debug: true
+      - name: Copy UI Files to Server Project DIR
+        run: sudo scp -r -vvv ui_project/* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/root/projects/faith-giving-ui
+        env:
+          SSH_AUTH_SOCK: /dev/null  # Disable SSH agent usage
+
+      - name: Copy UI Files to Server WWW DIR
+        run: sudo scp -r -vvv ui_project/* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/var/www/faith-giving
+        env:
+          SSH_AUTH_SOCK: /dev/null  # Disable SSH agent usage
 
       - name: Run Database Migrations
         if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
@@ -153,20 +157,3 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             pm2 restart faith-giving-api
-
-      - name: Download UI Files
-        if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_UI)
-        uses: actions/download-artifact@v2
-        with:
-          name: faith_giving_ui
-          path: ui_project
-
-      - name: Copy UI Files to Server Project DIR
-        run: scp -r -vvv ui_project/* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/root/projects/faith-giving-ui
-        env:
-          SSH_AUTH_SOCK: /dev/null  # Disable SSH agent usage
-
-      - name: Copy UI Files to Server WWW DIR
-        run: scp -r -vvv ui_project/* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/var/www/faith-giving
-        env:
-          SSH_AUTH_SOCK: /dev/null  # Disable SSH agent usage
