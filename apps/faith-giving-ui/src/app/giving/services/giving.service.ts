@@ -2,7 +2,7 @@ import { ElementRef, EnvironmentInjector, Injectable } from '@angular/core';
 import { BaseService } from '../../utils/base.service';
 import { HttpClient } from '@angular/common/http';
 import { Reference } from '../models/reference.model';
-import { catchError, debounceTime, distinctUntilChanged } from 'rxjs';
+import { catchError, debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
 import { GiveConstants } from '../giving.constants';
 import { GrowlService } from '../../core/growl.service';
 import { PaymentIntent, UserDetails } from '../models/giving.model';
@@ -98,37 +98,48 @@ export class GivingService extends BaseService {
     });
   }
 
-  calculateTotal(tithe, offering: {amount: string}[]) {
-    const url = this.getApiUrl(GiveConstants.CALCULATE_TOTAL);
-    let convertedTithe = this.convertToNumber(tithe);
-    let covertedOfferings = offering.map(o => 
-      {return {amount: this.convertToNumber(o.amount)}}
-    )
-    this.http.post(url, {tithe: convertedTithe, offerings: covertedOfferings, feeCovered: this.formService.feeCovered.value})
-      .pipe(
-        debounceTime(800),
-        distinctUntilChanged()
-        )
-      .subscribe((value: {success: boolean, data: number}) => {
-        if (value.success) {
-          this.giveTotal = value.data;
-        } else {
-          console.error("ERROR: Fetching the total from service!!!");
-        }
-      })
-  }
-
   registerTitheOfferingChanges() {
     let offerings$ = this.formService.offerings?.valueChanges;
     let tithe$ = this.formService.tithe?.valueChanges;
     let feeCovered$ = this.formService.feeCovered?.valueChanges;
 
-    tithe$.subscribe(() => this.calculateTotal(this.formService.tithe.value, this.formService.offerings.value));
-    offerings$.subscribe(() => {
-      this.calculateTotal(this.formService.tithe.value, this.formService.offerings.value);
-      this.updateRefDataState();
+    tithe$.pipe(
+        debounceTime(800),
+        distinctUntilChanged()
+    ).subscribe(() => this.calculateTotal());
+
+    offerings$.pipe(
+        debounceTime(800),
+        distinctUntilChanged()
+    ).subscribe(() => {
+        this.calculateTotal();
+        this.updateRefDataState();
     });
-    feeCovered$.subscribe(() => this.calculateTotal(this.formService.tithe.value, this.formService.offerings.value));
+
+    feeCovered$.pipe(
+        debounceTime(800),
+        distinctUntilChanged()
+    ).subscribe(() => this.calculateTotal());
+  }
+
+  calculateTotal() {
+      const url = this.getApiUrl(GiveConstants.CALCULATE_TOTAL);
+      let convertedTithe = this.convertToNumber(this.formService.tithe.value);
+      let covertedOfferings = this.formService.offerings.value.map(o => ({ amount: this.convertToNumber(o.amount) }));
+
+      // Make sure to import 'HttpClient' if not already imported
+      this.http.post(url, { tithe: convertedTithe, offerings: covertedOfferings, feeCovered: this.formService.feeCovered.value })
+        .pipe(
+            switchMap((value: { success: boolean, data: number }) => {
+                if (value.success) {
+                    this.giveTotal = value.data;
+                } else {
+                    console.error("ERROR: Fetching the total from service!!!");
+                }
+                return []; // Return an empty observable to complete the chain
+            })
+        )
+        .subscribe();
   }
 
   updateRefDataState() {
