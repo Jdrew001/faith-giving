@@ -22,7 +22,7 @@ async function bootstrap() {
     appId: configService.get<string>('FIREBASE_APP_ID'),
     measurementId: configService.get<string>('FIREBASE_MEASUREMENT_ID')
   }
-  initializeApp(firebaseConfig);//
+  initializeApp(firebaseConfig);////
 
   Sentry.init({
     dsn: process.env.SENTRY_URL,
