@@ -16,6 +16,8 @@ import { IndividualService } from '../individual/individual.service';
 @Injectable()
 export class GivingService {
 
+  get isDevelopment() { return process.env['NODE_ENV'] == 'development' }
+
   constructor(
     private givingMapper: GivingMapperService,
     private stripeService: StripeService,
@@ -51,8 +53,9 @@ export class GivingService {
         Sentry.captureException(`Giving information upload failed: ${uploadResult}, Details: ${givingEntity}`);
         return;
       }
-      this.communicateGivingSuccess(givingEntity, body, total);
 
+      this.communicateGivingSuccess(givingEntity, body, total);
+      
       return uploadResult;
   }
 
@@ -122,7 +125,9 @@ private async generateGivingReport(data: Giving, refData: Array<OfferingType>, t
     let remappedOfferings: Array<any> = [];
     offerings.forEach(item => {
         let label = refData.find(o => o.id == item.type)?.label;
-        remappedOfferings.push({label: label, amount: (item.amount).toFixed(2)});
+        let name = label == 'Other' ? `${label} - ${item.other}` : `${label}`;
+
+        remappedOfferings.push({label: name, amount: (item.amount).toFixed(2)});
     });
 
     return remappedOfferings;

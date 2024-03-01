@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import Stripe from 'stripe';
 import * as Sentry from '@sentry/node';
-import { CreatePaymentIntentDto, GiveDetails, PaymentDTO } from '@faith-giving/faith-giving.model';
+import { GiveDetails, PaymentDTO } from '@faith-giving/faith-giving.model';
 
 @Injectable()
 export class StripeService {

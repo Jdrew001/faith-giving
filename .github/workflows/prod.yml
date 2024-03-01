@@ -60,100 +60,100 @@ jobs:
           name: faith_giving_ui
           path: dist/apps/faith-giving-ui
 
-  deploy:
-    permissions: write-all
-    name: Deploy Applications
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+  # deploy:
+  #   permissions: write-all
+  #   name: Deploy Applications
+  #   needs: build
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #       with:
+  #         fetch-depth: 0
       
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: 14
+  #     - name: Set up Node.js
+  #       uses: actions/setup-node@v2
+  #       with:
+  #         node-version: 14
       
-      - name: Set up SSH key
-        run: |
-          mkdir -p $HOME/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > $HOME/.ssh/id_ed25519
-          chmod 600 $HOME/.ssh/id_ed25519
-          ssh-keyscan -t ed25519 ${{ secrets.HOST }} >> $HOME/.ssh/known_hosts
-        env:
-          SSH_AUTH_SOCK: /dev/null  # Disable SSH agent usage
-          HOME: /home/runner  # Set the home directory explicitly
+  #     - name: Set up SSH key
+  #       run: |
+  #         mkdir -p $HOME/.ssh
+  #         echo "${{ secrets.SSH_PRIVATE_KEY }}" > $HOME/.ssh/id_ed25519
+  #         chmod 600 $HOME/.ssh/id_ed25519
+  #         ssh-keyscan -t ed25519 ${{ secrets.HOST }} >> $HOME/.ssh/known_hosts
+  #       env:
+  #         SSH_AUTH_SOCK: /dev/null  # Disable SSH agent usage
+  #         HOME: /home/runner  # Set the home directory explicitly
 
-      - name: Install Nx CLI
-        run: npm install -g @nrwl/cli
+  #     - name: Install Nx CLI
+  #       run: npm install -g @nrwl/cli
 
-      - uses: nrwl/nx-set-shas@v3
-        with: 
-          main-branch-name: 'master'
+  #     - uses: nrwl/nx-set-shas@v3
+  #       with: 
+  #         main-branch-name: 'master'
           
-      - run: npm i --force
+  #     - run: npm i --force
 
-      - name: Check affected projects
-        id: affected-projects
-        run: |
-          affected_projects=$(npx nx print-affected --base=${{ github.event.before }} --head=${{ github.sha }} --select=projects)
-          echo "::set-output name=projects::$affected_projects"
+  #     - name: Check affected projects
+  #       id: affected-projects
+  #       run: |
+  #         affected_projects=$(npx nx print-affected --base=${{ github.event.before }} --head=${{ github.sha }} --select=projects)
+  #         echo "::set-output name=projects::$affected_projects"
 
-      - name: Download API Files
-        if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
-        uses: actions/download-artifact@v2
-        with:
-          name: faith_giving_api
-          path: api_project
+  #     - name: Download API Files
+  #       if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
+  #       uses: actions/download-artifact@v2
+  #       with:
+  #         name: faith_giving_api
+  #         path: api_project
 
-      - name: Download UI Files
-        if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_UI)
-        uses: actions/download-artifact@v2
-        with:
-          name: faith_giving_ui
-          path: ui_project
+  #     - name: Download UI Files
+  #       if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_UI)
+  #       uses: actions/download-artifact@v2
+  #       with:
+  #         name: faith_giving_ui
+  #         path: ui_project
 
-      - name: Copy Files to Server
-        run: scp -r -vvv api_project/* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/root/projects/faith-giving-api
-        env:
-          SSH_AUTH_SOCK: /dev/null  # Disable SSH agent usage
+  #     - name: Copy Files to Server
+  #       run: scp -r -vvv api_project/* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/root/projects/faith-giving-api
+  #       env:
+  #         SSH_AUTH_SOCK: /dev/null  # Disable SSH agent usage
 
-      - name: Copy UI Files to Server Project DIR
-        run: scp -r -vvv ui_project/* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/root/projects/faith-giving-ui
-        env:
-          SSH_AUTH_SOCK: /dev/null  # Disable SSH agent usage
+  #     - name: Copy UI Files to Server Project DIR
+  #       run: scp -r -vvv ui_project/* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/root/projects/faith-giving-ui
+  #       env:
+  #         SSH_AUTH_SOCK: /dev/null  # Disable SSH agent usage
 
-      - name: Copy UI Files to Server WWW DIR
-        run: scp -r -vvv ui_project/* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/var/www/faith-giving
-        env:
-          SSH_AUTH_SOCK: /dev/null  # Disable SSH agent usage
+  #     - name: Copy UI Files to Server WWW DIR
+  #       run: scp -r -vvv ui_project/* ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/var/www/faith-giving
+  #       env:
+  #         SSH_AUTH_SOCK: /dev/null  # Disable SSH agent usage
 
-      - name: Run Database Migrations
-        if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
-        run: |
-          npx nx run faith-giving-api:typeorm:run-migrations
+  #     - name: Run Database Migrations
+  #       if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
+  #       run: |
+  #         npx nx run faith-giving-api:typeorm:run-migrations
 
-      - name: Install deps
-        if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
-        uses: appleboy/ssh-action@v0.1.10
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.PORT }}
-          script: |
-            cd /root/projects/faith-giving-api
-            npm install --omit=dev --verbose
-            npm install tslib --verbose
+  #     - name: Install deps
+  #       if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
+  #       uses: appleboy/ssh-action@v0.1.10
+  #       with:
+  #         host: ${{ secrets.HOST }}
+  #         username: ${{ secrets.USERNAME }}
+  #         key: ${{ secrets.SSH_PRIVATE_KEY }}
+  #         port: ${{ secrets.PORT }}
+  #         script: |
+  #           cd /root/projects/faith-giving-api
+  #           npm install --omit=dev --verbose
+  #           npm install tslib --verbose
 
-      - name: Restart API
-        if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
-        uses: appleboy/ssh-action@v0.1.10
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.PORT }}
-          script: |
-            pm2 restart faith-giving-api
+  #     - name: Restart API
+  #       if: contains(steps.affected-projects.outputs.projects, env.FAITH_GIVING_API)
+  #       uses: appleboy/ssh-action@v0.1.10
+  #       with:
+  #         host: ${{ secrets.HOST }}
+  #         username: ${{ secrets.USERNAME }}
+  #         key: ${{ secrets.SSH_PRIVATE_KEY }}
+  #         port: ${{ secrets.PORT }}
+  #         script: |
+  #           pm2 restart faith-giving-api

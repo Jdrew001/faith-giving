@@ -20,6 +20,7 @@ export class IndividualController {
 
     @Get('individualBySession')
     async fetchIndividualWithSession(@Req() request: Request) {
+        if (!request.cookies['client_data']) return { success: false, message: 'Session expired' }
         let data = this.cryptService.decrypt(request.cookies['client_data']) as ClientSessionDTO;
         
         let session = await this.sessionService.findClientSessionByIndividualId(data.individualId);
