@@ -43,6 +43,8 @@ export class GivingComponent implements OnInit {
     this.giveService.fetchIndividual();
     this.formService.createGivingForm();
     this.giveService.registerTitheOfferingChanges();
+
+    console.log('DEPLOYMENT!!!');
   }
 
   payWithStripe() {
