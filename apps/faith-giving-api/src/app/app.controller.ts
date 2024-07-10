@@ -17,7 +17,7 @@ export class AppController {
 
   @Get("test")
   async getTestData() {
-    return "deployed!"
+    return "deployed!@@"
   }
 
   @Get("reference")
