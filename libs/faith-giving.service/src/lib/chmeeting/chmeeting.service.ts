@@ -132,7 +132,7 @@ export class ChmeetingService {
         ) as {Type: 'string', Message: 'string'};
     }
 
-    @Cron('30 21 * * 3')
+    //@Cron('30 21 * * 3')
     //@Cron('45 * * * * *') //every 45 seconds -- testing
     async sendGreetingToGuestsWednesday() {
         const newPeople = (await this.getNewPeople()).filter(o => this.filterNewPeople(o.created_on));
@@ -146,7 +146,7 @@ export class ChmeetingService {
         });
     }
 
-    @Cron('35 14 * * 0')
+    //@Cron('35 14 * * 0')
     //@Cron('45 * * * * *') //every 45 seconds -- testing
     async sendGreetingToGuestsSunday() {
         const newPeople = (await this.getNewPeople()).filter(o => this.filterNewPeople(o.created_on));
