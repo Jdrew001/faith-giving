@@ -25,6 +25,7 @@
           "node_modules/primeicons/primeicons.css",
           "node_modules/primeflex/primeflex.css",
           "node_modules/bootstrap/dist/css/bootstrap.min.css",
+          "apps/faith-giving-ui/src/theme.css",
           "apps/faith-giving-ui/src/styles.css"
         ],
         "scripts": []

@@ -34,23 +34,22 @@ export class CardDetailsComponent implements AfterViewInit {
 
   elementStyles = {
     base: {
-      color: 'black',
-      fontFamily: 'Source Code Pro, Consolas, Menlo, monospace',
-      fontSize: '18px',
+      color: '#1a1b21',
+      fontFamily: 'Plus Jakarta Sans, sans-serif',
+      fontSize: '16px',
       fontSmoothing: 'antialiased',
-      borderBottom: '1px solid #DEDEDE',
 
       '::placeholder': {
-        color: '#6C757D',
+        color: '#76777b',
       },
       ':-webkit-autofill': {
-        color: 'black',
+        color: '#1a1b21',
       },
     },
     invalid: {
-      color: '#E25950',
+      color: '#ba1a1a',
       '::placeholder': {
-        color: 'black',
+        color: '#76777b',
       },
     },
   };
