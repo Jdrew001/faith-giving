@@ -1,71 +1,65 @@
 <div class="give-page" [formGroup]="givingForm">
-    <div class="flex justify-content-center align-content-center" [ngSwitch]="activeFormIndex">
-        <p-card class="">
-            
+    <div class="page-header">
+        <h1>Online Giving</h1>
+        <p>Securely give your tithes and offerings.</p>
+    </div>
+
+    <div class="card-wrapper" [ngSwitch]="activeFormIndex">
+        <div class="giving-card">
+            <div class="progress-bar">
+                <div class="progress-fill" [style.width]="activeFormIndex === 0 ? '50%' : '100%'"></div>
+            </div>
+
             <div class="card-container">
-                <ng-container 
-                    *ngSwitchCase="0">
-                    <div class="row mb-2">
-                        <div class="flex">
-                            <div class="flex-1 flex">
-                                <h5 class="mb-0">Your Details</h5>
-                            </div>
-                            <div *ngIf="userDetails && giveService.userEdit" class="flex">
-                                <div class="icon-container">
-                                    <p-button (click)="cancelEdit()" label="Cancel" icon="pi pi-times" styleClass="p-button-sm"></p-button>
-                                </div>
-                            </div>
+                <ng-container *ngSwitchCase="0">
+                    <div class="section-header">
+                        <h5>Your Details</h5>
+                        <div *ngIf="userDetails && giveService.userEdit" class="cancel-action">
+                            <a (click)="cancelEdit()" class="cancel-link">
+                                <i class="pi pi-times"></i> Cancel
+                            </a>
                         </div>
                     </div>
+
                     <ng-container *ngIf="userDetails && !giveService.userEdit">
                         <faith-giving-user-details-session
                             [userDetails]="giveService.individualInfo"
                             (editClicked$)="onEdit($event)"></faith-giving-user-details-session>
                     </ng-container>
                     <ng-container *ngIf="giveService.userEdit">
-                        <faith-giving-user-details 
+                        <faith-giving-user-details
                             [formSubmitted]="formSubmitted"
                             (onChange$)="userInputChange()"></faith-giving-user-details>
                     </ng-container>
 
-                    <div class="row mb-2">
-                        <h5 class="mb-0">Tithing</h5>
-                    </div>
+                    <hr class="section-divider">
 
                     <faith-giving-giving-details [formSubmitted]="formSubmitted"></faith-giving-giving-details>
 
-                    <div class="row mb-3">
+                    <hr class="section-divider">
+
+                    <div class="fee-container">
                         <p-checkbox name="groupname" [binary]="true" formControlName="feeCovered" label="Help cover the card processing fee?"></p-checkbox>
-                        <label><em style="font-size: 10px">Total + (2.2% + $0.30)</em></label>
-                    </div>
-    
-                    <div class="row mb-3">
-                        <p>Giving Total: {{giveTotal | currency}}</p>
-                    </div>
-    
-                    <div class="row">
-                        <hr>
-                    </div>
-    
-                    <div class="row mb-4">
-                        <button (click)="payWithStripe()" style="width: 100%" pButton type="button" class="p-button-raised p-button-sm" icon="pi pi-credit-card" iconPos="right">Pay with Stripe</button>
+                        <span class="fee-note">Total + (2.2% + $0.30)</span>
                     </div>
 
-                    <div class="row">
-                        <div class="col-md-12 p-0 text-center">
-                            <a (click)="clearFields()" class="clear-btn">Clear</a>
-                        </div>
+                    <div class="giving-total-row">
+                        <span class="total-label">Giving Total:</span>
+                        <span class="total-amount">{{giveTotal | currency}}</span>
                     </div>
 
-                    <div class="row">
-                        <img class="stripe-image mt-2" src="http://cdn.mcauto-images-production.sendgrid.net/df8f02344b758210/acade95b-fac1-4685-a60b-880f176b6859/450x220.png" />
+                    <button (click)="payWithStripe()" class="pay-button" type="button">
+                        <i class="pi pi-lock"></i> Pay with Stripe
+                    </button>
+
+                    <div class="clear-row">
+                        <a (click)="clearFields()" class="clear-btn">Clear form</a>
                     </div>
                 </ng-container>
 
-                <ng-container 
-                    *ngSwitchCase="1">
-                    <div class="row mb-2">
-                        <h5 class="mb-0">Card</h5>
+                <ng-container *ngSwitchCase="1">
+                    <div class="section-header">
+                        <h5>Card Details</h5>
                     </div>
 
                     <faith-giving-card-details
@@ -75,14 +69,14 @@
                         (backToPrevious$)="previous()"></faith-giving-card-details>
                 </ng-container>
             </div>
-        </p-card>
+        </div>
     </div>
 </div>
 <p-toast position="bottom-center"></p-toast>
 <div *ngIf="requestInit" class="loader-overlay">
     <p-progressSpinner class="spinner"></p-progressSpinner>
 </div>
-<p-confirmDialog #confirmDialog 
+<p-confirmDialog #confirmDialog
     [message]="'Are you sure you want to cancel?'"
     acceptLabel="Yes"
     rejectLabel="No"

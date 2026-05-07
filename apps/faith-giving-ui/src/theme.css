@@ -1,0 +1,28 @@
+:root {
+  --font-family: 'Plus Jakarta Sans', sans-serif;
+  --primary: #0A0C11;
+  --on-primary: #ffffff;
+  --secondary: #505f76;
+  --background: #f9f9ff;
+  --surface: #ffffff;
+  --surface-container: #ededf5;
+  --surface-container-low: #f3f3fb;
+  --surface-container-high: #e8e7ef;
+  --on-surface: #1a1b21;
+  --on-surface-variant: #46464b;
+  --outline: #76777b;
+  --outline-variant: #c7c6cb;
+  --error: #ba1a1a;
+  --on-error: #ffffff;
+  --rounded-sm: 0.25rem;
+  --rounded: 0.5rem;
+  --rounded-md: 0.75rem;
+  --rounded-lg: 1rem;
+  --rounded-xl: 1.5rem;
+  --container-max: 600px;
+  --gutter: 1.5rem;
+  --section-gap: 4rem;
+  --stack-sm: 0.5rem;
+  --stack-md: 1rem;
+  --stack-lg: 2rem;
+}
