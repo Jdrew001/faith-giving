@@ -92,15 +92,18 @@ export class CardDetailsComponent implements AfterViewInit {
     const elements = this.stripe.elements();
     this.number = elements.create('cardNumber', {
       style: this.elementStyles,
-      classes: this.elementClasses
+      classes: this.elementClasses,
+      placeholder: '1234 1234 1234 1234'
     });
     this.exp = elements.create('cardExpiry', {
       style: this.elementStyles,
-      classes: this.elementClasses
+      classes: this.elementClasses,
+      placeholder: 'MM / YY'
     });
     this.cvv = elements.create('cardCvc', {
       style: this.elementStyles,
-      classes: this.elementClasses
+      classes: this.elementClasses,
+      placeholder: 'CVC'
     });
     this.number.mount(this.numberElement.nativeElement);
     this.exp.mount(this.expElement.nativeElement);

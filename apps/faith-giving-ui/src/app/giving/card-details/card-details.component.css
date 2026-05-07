@@ -7,9 +7,7 @@
     font-size: 14px;
     font-weight: 600;
     line-height: 1.2;
-    letter-spacing: 0.05em;
     color: var(--on-surface);
-    text-transform: uppercase;
     margin-bottom: var(--stack-sm);
     display: block;
 }
@@ -35,7 +33,7 @@ p.error {
     background: var(--primary);
     color: var(--on-primary);
     border: none;
-    border-radius: var(--rounded);
+    border-radius: var(--rounded-md);
     width: 100%;
     padding: 14px;
     font-family: var(--font-family);
@@ -92,4 +90,8 @@ p.error {
 .back-link i {
     font-size: 12px;
     color: inherit;
+}
+
+.form-control {
+    display: block !important;
 }

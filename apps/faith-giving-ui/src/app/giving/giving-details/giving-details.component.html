@@ -6,12 +6,11 @@
     </div>
 
     <div class="offering-section">
-        <div class="offering-header">
-            <div class="offering-header-text">
-                <label class="field-label">Offering</label>
-                <p class="offering-hint">(General Offering, Building Fund, etc)</p>
-                <span class="error" *ngIf="givingForm.errors && givingForm.errors['oneRequired'] && formSubmitted">Tithe or Offering must be provided</span>
-            </div>
+        <label class="field-label">Offering</label>
+        <span class="error" *ngIf="givingForm.errors && givingForm.errors['oneRequired'] && formSubmitted">Tithe or Offering must be provided</span>
+
+        <div class="offering-input-row" *ngIf="offerings.controls.length === 0">
+            <input type="text" class="form-control offering-input" placeholder="$0.00" readonly (click)="addOffering()">
             <button type="button" class="add-offering-btn" (click)="addOffering()">
                 <i class="pi pi-plus"></i>
             </button>
@@ -51,6 +50,12 @@
                     </div>
                 </div>
             </ng-container>
+        </div>
+
+        <div class="add-more-row" *ngIf="offerings.controls.length > 0">
+            <button type="button" class="add-offering-btn add-offering-btn-inline" (click)="addOffering()">
+                <i class="pi pi-plus"></i>
+            </button>
         </div>
     </div>
 </ng-container>

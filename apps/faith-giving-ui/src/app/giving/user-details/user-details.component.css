@@ -27,9 +27,7 @@ span.error {
     font-size: 14px;
     font-weight: 600;
     line-height: 1.2;
-    letter-spacing: 0.05em;
     color: var(--on-surface);
-    text-transform: uppercase;
     margin-bottom: var(--stack-sm);
     display: block;
 }

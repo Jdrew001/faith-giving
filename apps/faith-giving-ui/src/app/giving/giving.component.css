@@ -1,3 +1,8 @@
+:host {
+    display: block;
+    width: 100%;
+}
+
 .give-page {
     padding: var(--section-gap) var(--gutter) var(--stack-lg);
     max-width: var(--container-max);
@@ -106,7 +111,7 @@
 
 .fee-container {
     background: var(--surface-container-low);
-    border-radius: var(--rounded);
+    border-radius: var(--rounded-md);
     padding: var(--stack-md) var(--gutter);
     margin-bottom: var(--stack-lg);
 }
@@ -130,14 +135,14 @@
 
 .total-label {
     font-family: var(--font-family);
-    font-size: 18px;
-    font-weight: 400;
+    font-size: 24px;
+    font-weight: 600;
     color: var(--on-surface);
 }
 
 .total-amount {
     font-family: var(--font-family);
-    font-size: 24px;
+    font-size: 40px;
     font-weight: 700;
     color: var(--on-surface);
 }
@@ -146,7 +151,7 @@
     background: var(--primary);
     color: var(--on-primary);
     border: none;
-    border-radius: var(--rounded);
+    border-radius: var(--rounded-md);
     width: 100%;
     padding: 14px;
     font-family: var(--font-family);

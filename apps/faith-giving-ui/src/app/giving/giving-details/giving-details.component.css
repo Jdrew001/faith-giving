@@ -7,9 +7,7 @@
     font-size: 14px;
     font-weight: 600;
     line-height: 1.2;
-    letter-spacing: 0.05em;
     color: var(--on-surface);
-    text-transform: uppercase;
     margin-bottom: var(--stack-sm);
     display: block;
 }
@@ -18,46 +16,37 @@
     margin-bottom: var(--stack-md);
 }
 
-.offering-header {
+.offering-input-row {
     display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    margin-bottom: var(--stack-md);
+    align-items: center;
+    gap: var(--stack-sm);
+    margin-bottom: var(--stack-sm);
 }
 
-.offering-header-text {
+.offering-input {
     flex: 1;
 }
 
-.offering-hint {
-    font-family: var(--font-family);
-    font-size: 13px;
-    color: var(--on-surface-variant);
-    font-style: italic;
-    margin: 0;
-}
-
 .add-offering-btn {
-    background: transparent;
-    border: 1px solid var(--outline-variant);
-    border-radius: var(--rounded);
-    width: 40px;
-    height: 40px;
+    background: var(--primary);
+    border: none;
+    border-radius: var(--rounded-md);
+    width: 48px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: border-color 0.2s ease, background-color 0.2s ease;
+    transition: opacity 0.2s ease;
     flex-shrink: 0;
 }
 
 .add-offering-btn:hover {
-    border-color: var(--on-surface);
-    background-color: var(--surface-container-low);
+    opacity: 0.85;
 }
 
 .add-offering-btn i {
-    color: var(--on-surface);
+    color: var(--on-primary);
     font-size: 14px;
 }
 
