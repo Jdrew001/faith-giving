@@ -115,17 +115,34 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           envs: API_IMAGE,UI_IMAGE
           script: |
+            set -ex
+            echo "::group::Environment"
+            whoami
+            hostname
+            pwd
+            echo "::endgroup::"
+
+            echo "::group::cd to project"
             cd /home/teamcity/projects/faith-giving
+            ls -la
+            echo "::endgroup::"
 
             # Image tags exported via `envs` above
             export API_IMAGE=${{ needs.affected.outputs.image_api }}:latest
             export UI_IMAGE=${{ needs.affected.outputs.image_ui }}:latest
+            echo "API_IMAGE=$API_IMAGE"
+            echo "UI_IMAGE=$UI_IMAGE"
 
-            # Pull latest images (only updated ones are re-pulled)
+            echo "::group::docker compose pull"
             sudo -E docker compose pull
+            echo "::endgroup::"
 
-            # Restart containers with zero-downtime rolling update
+            echo "::group::docker compose up"
             sudo -E docker compose up -d --remove-orphans
+            echo "::endgroup::"
 
-            # Clean up old dangling images to free disk space
+            echo "::group::docker image prune"
             sudo docker image prune -f
+            echo "::endgroup::"
+
+            echo "✅ Deploy succeeded"
