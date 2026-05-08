@@ -1,51 +1,130 @@
-.offering-container {
-    border-color: #e0e0e0!important;
-    box-shadow: 0 2px 5px 0 rgba(0,0,0,.1),0 2px 10px 0 rgba(0,0,0,.01)!important;
-    padding: 15px;
+.field-group {
+    margin-bottom: var(--stack-lg);
 }
 
-:host ::ng-deep .dropdown {
-    width: 100%;
-    font-size: 1rem;
-    font-weight: 400;
-    line-height: 0.7rem;
-    color: #212529;
-    background-color: transparent;
-    background-clip: padding-box;
-    border: 1px solid #ced4da;
-    -webkit-appearance: none;
-    appearance: none;
-    border-radius: 0.375rem;
-    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+.field-label {
+    font-family: var(--font-family);
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--on-surface);
+    margin-bottom: var(--stack-sm);
+    display: block;
+}
+
+.offering-section {
+    margin-bottom: var(--stack-md);
+}
+
+.offering-input-row {
+    display: flex;
+    align-items: center;
+    gap: var(--stack-sm);
+    margin-bottom: var(--stack-sm);
+}
+
+.offering-input {
+    flex: 1;
+}
+
+.add-offering-btn {
+    background: var(--primary);
+    border: none;
+    border-radius: var(--rounded-md);
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+    flex-shrink: 0;
+}
+
+.add-offering-btn:hover {
+    opacity: 0.85;
+}
+
+.add-offering-btn i {
+    color: var(--on-primary);
+    font-size: 14px;
+}
+
+.offering-container {
+    border: 1px solid var(--outline-variant);
+    border-radius: var(--rounded);
+    padding: var(--stack-md);
+    margin-bottom: var(--stack-md);
+    background: var(--surface);
+}
+
+.offering-item-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--stack-sm);
+}
+
+.offering-label {
+    font-family: var(--font-family);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--on-surface);
+}
+
+.remove-offering {
+    cursor: pointer;
+    color: var(--on-surface-variant);
+    transition: color 0.2s ease;
+}
+
+.remove-offering:hover {
+    color: var(--error);
+}
+
+.remove-offering i {
+    font-size: 14px;
+    color: inherit;
 }
 
 i {
-    color: #e02e2e;
+    color: var(--on-surface);
 }
 
 i:hover {
     cursor: pointer;
-    color: #851c1c;
+    color: var(--secondary);
 }
 
-:host ::ng-deep .p-button-icon {
-    margin-left: 10px;
+:host ::ng-deep .dropdown {
+    width: 100%;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--on-surface);
+    background-color: var(--surface);
+    border: 1px solid var(--outline-variant);
+    border-radius: var(--rounded);
+    transition: border-color 0.2s ease;
 }
 
 p.error {
-    color: red !important;
+    color: var(--error) !important;
     text-align: left !important;
     text-transform: none !important;
     padding: 0px !important;
-    margin: 0px !important;
-    font-size: 10px;
+    margin: 4px 0 0 !important;
+    font-size: 12px;
+    font-family: var(--font-family);
 }
 
 span.error {
-    color: red !important;
+    color: var(--error) !important;
     text-align: left !important;
     text-transform: none !important;
     padding: 0px !important;
-    margin: 0px !important;
-    font-size: 10px;
+    margin: 4px 0 0 !important;
+    font-size: 12px;
+    font-family: var(--font-family);
+    display: block;
 }

@@ -1,27 +1,27 @@
 <ng-container [formGroup]="givingForm">
-    <div class="row mb-3">
-        <div class="col-md-12">
-            <input type="email" formControlName="email" class="form-control" id="exampleFormControlInput1" placeholder="Email" (keyup)="userChanged()">
-            <p class="error" style="font-size: 10px;" *ngIf="givingForm.get('email').invalid && formSubmitted">E-mail required</p>
-        </div>
+    <div class="field-group">
+        <label class="field-label">Email</label>
+        <input type="email" formControlName="email" class="form-control" placeholder="your@email.com" (keyup)="userChanged()">
+        <p class="error" *ngIf="givingForm.get('email').invalid && formSubmitted">E-mail required</p>
     </div>
-    
+
     <div class="row mb-3">
         <div class="col-md-6 mb-3">
-            <input type="text" formControlName="firstName" class="form-control" id="exampleFormControlInput1" placeholder="First Name" (keyup)="userChanged()">
-            <p class="error" style="font-size: 10px;" *ngIf="givingForm.get('firstName').invalid && formSubmitted">First Name required</p>
+            <label class="field-label">First Name</label>
+            <input type="text" formControlName="firstName" class="form-control" placeholder="First Name" (keyup)="userChanged()">
+            <p class="error" *ngIf="givingForm.get('firstName').invalid && formSubmitted">First Name required</p>
         </div>
-    
+
         <div class="col-md-6">
-            <input type="text" formControlName="lastName" class="form-control" id="exampleFormControlInput1" placeholder="Last Name" (keyup)="userChanged()">
-            <p class="error" style="font-size: 10px;" *ngIf="givingForm.get('lastName').invalid && formSubmitted">Last Name required</p>
+            <label class="field-label">Last Name</label>
+            <input type="text" formControlName="lastName" class="form-control" placeholder="Last Name" (keyup)="userChanged()">
+            <p class="error" *ngIf="givingForm.get('lastName').invalid && formSubmitted">Last Name required</p>
         </div>
     </div>
-    
-    <div class="row mb-5">
-        <div class="col-md-12">
-            <input mask="(000) 000-0000" type="text" formControlName="phone" class="form-control" id="exampleFormControlInput1" placeholder="Phone" (keyup)="userChanged()">
-            <p class="error" style="font-size: 10px;" *ngIf="givingForm.get('phone').invalid && formSubmitted">Phone required</p>
-        </div>
+
+    <div class="field-group">
+        <label class="field-label">Phone</label>
+        <input mask="(000) 000-0000" type="text" formControlName="phone" class="form-control" placeholder="(555) 000-0000" (keyup)="userChanged()">
+        <p class="error" *ngIf="givingForm.get('phone').invalid && formSubmitted">Phone required</p>
     </div>
 </ng-container>

@@ -8,11 +8,13 @@ import { ToastModule } from 'primeng/toast';
 import { StripeService } from './services/stripe.service';
 import { CurrencyMaskDirective } from './directives/currency-mask.directive';
 import { CookieService } from 'ngx-cookie-service';
+import { HeaderComponent } from './header/header.component';
+import { FooterComponent } from './footer/footer.component';
 
 @NgModule({
-  declarations: [CurrencyMaskDirective],
+  declarations: [CurrencyMaskDirective, HeaderComponent, FooterComponent],
   imports: [CommonModule, MessagesModule, MessageModule, ToastModule],
   providers: [GrowlService, MessageService, StripeService, CookieService],
-  exports: [MessagesModule, MessageModule, ToastModule, CurrencyMaskDirective],
+  exports: [MessagesModule, MessageModule, ToastModule, CurrencyMaskDirective, HeaderComponent, FooterComponent],
 })
 export class CoreModule {}

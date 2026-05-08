@@ -34,23 +34,22 @@ export class CardDetailsComponent implements AfterViewInit {
 
   elementStyles = {
     base: {
-      color: 'black',
-      fontFamily: 'Source Code Pro, Consolas, Menlo, monospace',
-      fontSize: '18px',
+      color: '#1a1b21',
+      fontFamily: 'Plus Jakarta Sans, sans-serif',
+      fontSize: '16px',
       fontSmoothing: 'antialiased',
-      borderBottom: '1px solid #DEDEDE',
 
       '::placeholder': {
-        color: '#6C757D',
+        color: '#76777b',
       },
       ':-webkit-autofill': {
-        color: 'black',
+        color: '#1a1b21',
       },
     },
     invalid: {
-      color: '#E25950',
+      color: '#ba1a1a',
       '::placeholder': {
-        color: 'black',
+        color: '#76777b',
       },
     },
   };
@@ -93,15 +92,18 @@ export class CardDetailsComponent implements AfterViewInit {
     const elements = this.stripe.elements();
     this.number = elements.create('cardNumber', {
       style: this.elementStyles,
-      classes: this.elementClasses
+      classes: this.elementClasses,
+      placeholder: '1234 1234 1234 1234'
     });
     this.exp = elements.create('cardExpiry', {
       style: this.elementStyles,
-      classes: this.elementClasses
+      classes: this.elementClasses,
+      placeholder: 'MM / YY'
     });
     this.cvv = elements.create('cardCvc', {
       style: this.elementStyles,
-      classes: this.elementClasses
+      classes: this.elementClasses,
+      placeholder: 'CVC'
     });
     this.number.mount(this.numberElement.nativeElement);
     this.exp.mount(this.expElement.nativeElement);
