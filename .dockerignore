@@ -1,0 +1,32 @@
+# Dependencies — let Docker install these fresh inside the container
+node_modules
+**/node_modules
+
+# Nx and Angular caches — large and not needed in container
+.nx
+.angular
+
+# Build outputs — built inside the container
+dist
+
+# Git
+.git
+.gitignore
+
+# Docker files themselves
+.dockerignore
+docker-compose.yml
+
+# Local env files — never bake secrets into an image
+.env
+.env.*
+!.env.example
+
+# IDE / OS noise
+.DS_Store
+.vscode
+.idea
+*.log
+
+# Test output
+coverage

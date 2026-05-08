@@ -1,0 +1,42 @@
+services:
+
+  # ── NestJS API (pm2 cluster) ─────────────────────────────────────────────
+  api:
+    image: ${API_IMAGE:-faith-giving-api:latest}
+    build:
+      context: .
+      dockerfile: apps/faith-giving-api/Dockerfile
+    restart: unless-stopped
+    ports:
+      # Bind to loopback only — host nginx proxies port 9000 → 127.0.0.1:3000
+      - "127.0.0.1:3000:3000"
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      # `host.docker.internal` resolves to the Docker host on macOS/Windows by
+      # default, and on Linux thanks to the `extra_hosts` mapping below.
+      DB_HOST: host.docker.internal
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - faith-giving
+
+  # ── Angular UI (nginx) ───────────────────────────────────────────────────
+  ui:
+    image: ${UI_IMAGE:-faith-giving-ui:latest}
+    build:
+      context: .
+      dockerfile: apps/faith-giving-ui/Dockerfile
+    restart: unless-stopped
+    ports:
+      # Bind to loopback only — host nginx proxies /give/ → 127.0.0.1:8080
+      - "127.0.0.1:8080:80"
+    depends_on:
+      - api
+    networks:
+      - faith-giving
+
+networks:
+  faith-giving:
+    driver: bridge

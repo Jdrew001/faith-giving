@@ -45,3 +45,5 @@ package-lock.json
 apps/faith-giving-api/.env
 
 .nx/
+
+.env
