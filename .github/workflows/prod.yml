@@ -115,7 +115,7 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           envs: API_IMAGE,UI_IMAGE
           script: |
-            cd /root/projects/faith-giving
+            cd /home/teamcity/projects/faith-giving
 
             # Image tags exported via `envs` above
             export API_IMAGE=${{ needs.affected.outputs.image_api }}:latest
