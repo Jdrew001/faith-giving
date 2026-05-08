@@ -107,7 +107,7 @@ jobs:
           ssh-keyscan -t ed25519 ${{ secrets.HOST }} >> $HOME/.ssh/known_hosts
 
       - name: Deploy via SSH
-        uses: appleboy/ssh-action@v1
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
@@ -115,34 +115,28 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           envs: API_IMAGE,UI_IMAGE
           script: |
-            set -ex
-            echo "::group::Environment"
-            whoami
-            hostname
-            pwd
-            echo "::endgroup::"
+            set -e
+            DEPLOY_DIR="/home/teamcity/projects/faith-giving"
 
-            echo "::group::cd to project"
-            cd /home/teamcity/projects/faith-giving
-            ls -la
-            echo "::endgroup::"
+            echo "→ Switching to $DEPLOY_DIR"
+            cd "$DEPLOY_DIR"
 
-            # Image tags exported via `envs` above
-            export API_IMAGE=${{ needs.affected.outputs.image_api }}:latest
-            export UI_IMAGE=${{ needs.affected.outputs.image_ui }}:latest
-            echo "API_IMAGE=$API_IMAGE"
-            echo "UI_IMAGE=$UI_IMAGE"
+            echo "→ Setting image tags"
+            export API_IMAGE="${{ needs.affected.outputs.image_api }}:latest"
+            export UI_IMAGE="${{ needs.affected.outputs.image_ui }}:latest"
+            echo "  API_IMAGE=$API_IMAGE"
+            echo "  UI_IMAGE=$UI_IMAGE"
 
-            echo "::group::docker compose pull"
+            echo "→ Pulling latest images"
             sudo -E docker compose pull
-            echo "::endgroup::"
 
-            echo "::group::docker compose up"
+            echo "→ Recreating containers"
             sudo -E docker compose up -d --remove-orphans
-            echo "::endgroup::"
 
-            echo "::group::docker image prune"
+            echo "→ Pruning dangling images"
             sudo docker image prune -f
-            echo "::endgroup::"
 
-            echo "✅ Deploy succeeded"
+            echo "→ Running containers:"
+            sudo docker ps --filter "name=faith-giving" --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+
+            echo "✓ Deploy complete"
