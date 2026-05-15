@@ -12,8 +12,3 @@ export * from './lib/email/email.model';
 export * from './lib/entities/client-session';
 export * from './lib/dto/client-session.dto';
 export * from './lib/dto/individual.dto';
-export * from './lib/dto/chmeetings/login.model';
-export * from './lib/dto/chmeetings/list-member.model';
-export * from './lib/entities/token';
-export * from './lib/dto/chmeetings/message.model';
-export * from './lib/dto/chmeetings/people.model';
