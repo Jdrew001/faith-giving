@@ -5,7 +5,6 @@ import { ClientSessionService } from 'libs/faith-giving.service/src/lib/client-s
 import { IndividualService } from 'libs/faith-giving.service/src/lib/individual/individual.service';
 import { Request } from 'express';
 import { CryptService } from 'libs/faith-giving.service/src/lib/crypt/crypt.service';
-import { ChmeetingService } from '@faith-giving/faith-giving.service';
 
 @Controller('individual')
 export class IndividualController {
@@ -15,7 +14,6 @@ export class IndividualController {
         private individualMapper: IndividualMapperService,
         private individualService: IndividualService,
         private cryptService: CryptService,
-        private chMeetingService: ChmeetingService
     ) {}
 
     @Get('individualBySession')

@@ -40,8 +40,8 @@ Thumbs.db
 
 .angular
 
-package-lock.json
-
 apps/faith-giving-api/.env
 
 .nx/
+
+.env
