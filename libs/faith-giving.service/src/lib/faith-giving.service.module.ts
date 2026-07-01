@@ -10,7 +10,6 @@ import {
   Offering,
   OfferingType,
   PaymentMethod,
-  Token,
   User,
 } from '@faith-giving/faith-giving.model';
 import { ReferenceService } from './reference/reference.service';
@@ -24,7 +23,6 @@ import { HttpModule } from '@nestjs/axios';
 import { IndividualService } from './individual/individual.service';
 import { ClientSessionService } from './client-session/client-session.service';
 import { CryptService } from './crypt/crypt.service';
-import { ChmeetingService } from './chmeeting/chmeeting.service';
 import { GroupmeService } from './groupme/groupme.service';
 
 @Module({
@@ -38,7 +36,6 @@ import { GroupmeService } from './groupme/groupme.service';
     IndividualService,
     ClientSessionService,
     CryptService,
-    ChmeetingService,
     GroupmeService
   ],
   imports: [
@@ -50,7 +47,6 @@ import { GroupmeService } from './groupme/groupme.service';
       User,
       PaymentMethod,
       ClientSession,
-      Token,
     ]),
     ScheduleModule.forRoot(),
     ConfigModule.forRoot({
@@ -69,7 +65,6 @@ import { GroupmeService } from './groupme/groupme.service';
     ClientSessionService,
     IndividualService,
     CryptService,
-    ChmeetingService,
     GroupmeService
   ],
 })
