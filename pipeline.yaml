@@ -1,0 +1,127 @@
+version: 1
+name: Faith Giving Build And Deploy
+
+on:
+  push:
+    branches:
+      - master
+    platforms:
+      - web
+      - nodejs
+
+web:
+  steps:
+    - id: install
+      name: Install dependencies
+      type: install
+
+    - id: build_ui
+      name: Build Faith Giving UI
+      run: npx nx build faith-giving-ui --configuration=production
+
+    - id: package_ui
+      name: Package Faith Giving UI
+      type: package
+      inputs:
+        source: dist/apps/faith-giving-ui
+        output: faith-giving-ui.tar.gz
+
+    - id: upload_ui
+      name: Upload Faith Giving UI archive
+      type: upload_ssh
+      inputs:
+        source: $PACKAGE_PATH
+        target: $FAITH_GIVING_WEB_UPLOAD_PATH
+        host: $FAITH_GIVING_DEPLOY_HOST
+        user: $FAITH_GIVING_DEPLOY_USER
+        keyPath: $FAITH_GIVING_DEPLOY_KEY_PATH
+        port: $FAITH_GIVING_DEPLOY_PORT
+
+    - id: deploy_ui
+      name: Deploy Faith Giving UI
+      type: deploy_ssh
+      inputs:
+        host: $FAITH_GIVING_DEPLOY_HOST
+        user: $FAITH_GIVING_DEPLOY_USER
+        keyPath: $FAITH_GIVING_DEPLOY_KEY_PATH
+        port: $FAITH_GIVING_DEPLOY_PORT
+        script: |
+          mkdir -p "$FAITH_GIVING_WEB_DIR"
+          find "$FAITH_GIVING_WEB_DIR" -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+          tar -xzf "$FAITH_GIVING_WEB_UPLOAD_PATH" -C "$FAITH_GIVING_WEB_DIR"
+
+nodejs:
+  steps:
+    - id: install
+      name: Install dependencies
+      type: install
+
+    - id: build_api
+      name: Build Faith Giving API
+      run: npx nx build faith-giving-api --configuration=production
+
+    - id: prepare_api_package
+      name: Prepare Faith Giving API package
+      run: |
+        cp apps/faith-giving-api/ecosystem.config.js dist/apps/faith-giving-api/ecosystem.config.js
+        mkdir -p dist/apps/faith-giving-api/migrations
+        npx tsc apps/faith-giving-api/migrations/*.ts --outDir dist/apps/faith-giving-api/migrations --module commonjs --target es2018 --esModuleInterop --skipLibCheck
+        cat > dist/apps/faith-giving-api/migration-data-source.js <<'EOF'
+        const { DataSource } = require('typeorm');
+        require('dotenv').config();
+
+        const dataSource = new DataSource({
+          type: 'postgres',
+          host: process.env.DB_HOST,
+          port: Number(process.env.DB_PORT || 5432),
+          database: process.env.DB_NAME || 'faith-giving',
+          username: process.env.DB_USER,
+          password: process.env.DB_PASSWORD,
+          migrations: ['migrations/*.js'],
+        });
+
+        module.exports = dataSource;
+        module.exports.default = dataSource;
+        EOF
+
+    - id: package_api
+      name: Package Faith Giving API
+      type: package
+      inputs:
+        source: dist/apps/faith-giving-api
+        output: faith-giving-api.tar.gz
+
+    - id: upload_api
+      name: Upload Faith Giving API archive
+      type: upload_ssh
+      inputs:
+        source: $PACKAGE_PATH
+        target: $FAITH_GIVING_API_UPLOAD_PATH
+        host: $FAITH_GIVING_DEPLOY_HOST
+        user: $FAITH_GIVING_DEPLOY_USER
+        keyPath: $FAITH_GIVING_DEPLOY_KEY_PATH
+        port: $FAITH_GIVING_DEPLOY_PORT
+
+    - id: deploy_api
+      name: Deploy Faith Giving API
+      type: deploy_ssh
+      inputs:
+        host: $FAITH_GIVING_DEPLOY_HOST
+        user: $FAITH_GIVING_DEPLOY_USER
+        keyPath: $FAITH_GIVING_DEPLOY_KEY_PATH
+        port: $FAITH_GIVING_DEPLOY_PORT
+        script: |
+          mkdir -p "$FAITH_GIVING_SERVICE_DIR"
+          if [ -f "$FAITH_GIVING_SERVICE_DIR/.env" ]; then
+            cp "$FAITH_GIVING_SERVICE_DIR/.env" /tmp/faith-giving-api.env
+          fi
+          find "$FAITH_GIVING_SERVICE_DIR" -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+          tar -xzf "$FAITH_GIVING_API_UPLOAD_PATH" -C "$FAITH_GIVING_SERVICE_DIR"
+          if [ -f /tmp/faith-giving-api.env ]; then
+            mv /tmp/faith-giving-api.env "$FAITH_GIVING_SERVICE_DIR/.env"
+          fi
+          cd "$FAITH_GIVING_SERVICE_DIR"
+          npm install --omit=dev --force
+          npx typeorm migration:run -d migration-data-source.js
+          pm2 reload ecosystem.config.js --env production || pm2 start ecosystem.config.js --env production
+          pm2 save
