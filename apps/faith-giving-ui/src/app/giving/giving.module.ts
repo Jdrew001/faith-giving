@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { GivingComponent } from './giving.component';
 import { GivingRoutingModule } from './giving-routing.module';
 import { ButtonModule } from 'primeng/button';
@@ -43,6 +44,7 @@ import { ConfirmationService } from 'primeng/api';
     ReactiveFormsModule,
     CheckboxModule,
     CoreModule,
+    RouterModule,
     HttpClientModule,
     NgxMaskDirective,
     NgxMaskPipe,

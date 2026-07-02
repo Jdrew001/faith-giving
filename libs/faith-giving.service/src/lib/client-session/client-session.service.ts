@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ClientSession } from '@faith-giving/faith-giving.model';
+import { ClientSession, Individual } from '@faith-giving/faith-giving.model';
 import { IndividualService } from '../individual/individual.service';
 
 @Injectable()
@@ -17,7 +17,7 @@ export class ClientSessionService {
         return id ? await this.clientSessionRepo.findOneBy({individual: { id: id }}): null;
     }
 
-    async saveNewClientSession(data: {firstname: string, lastname: string, email: string, phone: string}): Promise<ClientSession | null> {
+    async saveNewClientSession(data: Individual | {firstname: string, lastname: string, email: string, phone: string}): Promise<ClientSession | null> {
         let result;
         try {
             let individualData = await this.individualService.findIndividualByNameEmailPhone(data);

@@ -1,8 +1,20 @@
 <div class="give-page" [formGroup]="givingForm">
-    <div class="page-header">
-        <h1>Online Giving</h1>
-        <p>Securely give your tithes and offerings.</p>
-    </div>
+
+    <!-- ── Authenticated header ── -->
+    <ng-container *ngIf="isAuthenticated && !isGuest">
+        <div class="welcome-header">
+            <h1 class="welcome-title">Welcome back, {{ individual?.firstname }}!</h1>
+            <a class="sign-out-link" (click)="signOut()">Not you? Sign out</a>
+        </div>
+    </ng-container>
+
+    <!-- ── Guest header ── -->
+    <ng-container *ngIf="isGuest">
+        <div class="page-header">
+            <h1>Online Giving</h1>
+            <p>Securely give your tithes and offerings.</p>
+        </div>
+    </ng-container>
 
     <div class="card-wrapper" [ngSwitch]="activeFormIndex">
         <div class="giving-card">
@@ -11,29 +23,25 @@
             </div>
 
             <div class="card-container">
+
+                <!-- ── Step 0: Giving form ── -->
                 <ng-container *ngSwitchCase="0">
-                    <div class="section-header">
-                        <h5>Your Details</h5>
-                        <div *ngIf="userDetails && giveService.userEdit" class="cancel-action">
-                            <a (click)="cancelEdit()" class="cancel-link">
-                                <i class="pi pi-times"></i> Cancel
+
+                    <!-- Guest only: personal info fields -->
+                    <ng-container *ngIf="isGuest">
+                        <div class="section-header">
+                            <h5>Your Details</h5>
+                            <a class="sign-in-inline" routerLink="/">
+                                <i class="pi pi-sign-in"></i> Sign in
                             </a>
                         </div>
-                    </div>
-
-                    <ng-container *ngIf="userDetails && !giveService.userEdit">
-                        <faith-giving-user-details-session
-                            [userDetails]="giveService.individualInfo"
-                            (editClicked$)="onEdit($event)"></faith-giving-user-details-session>
-                    </ng-container>
-                    <ng-container *ngIf="giveService.userEdit">
                         <faith-giving-user-details
                             [formSubmitted]="formSubmitted"
                             (onChange$)="userInputChange()"></faith-giving-user-details>
+                        <hr class="section-divider">
                     </ng-container>
 
-                    <hr class="section-divider">
-
+                    <!-- Amounts: shown for both authenticated and guest -->
                     <faith-giving-giving-details [formSubmitted]="formSubmitted"></faith-giving-giving-details>
 
                     <hr class="section-divider">
@@ -44,19 +52,25 @@
                     </div>
 
                     <div class="giving-total-row">
-                        <span class="total-label">Giving Total:</span>
-                        <span class="total-amount">{{giveTotal | currency}}</span>
+                        <span class="total-label">Giving Total</span>
+                        <span class="total-amount">{{ giveTotal | currency }}</span>
                     </div>
 
                     <button (click)="payWithStripe()" class="pay-button" type="button">
                         <i class="pi pi-lock"></i> Pay with Stripe
                     </button>
 
+                    <div class="secure-payment-note">
+                        <i class="pi pi-lock"></i>
+                        <span>SECURE PAYMENT</span>
+                    </div>
+
                     <div class="clear-row">
                         <a (click)="clearFields()" class="clear-btn">Clear form</a>
                     </div>
                 </ng-container>
 
+                <!-- ── Step 1: Card details ── -->
                 <ng-container *ngSwitchCase="1">
                     <div class="section-header">
                         <h5>Card Details</h5>
@@ -72,10 +86,13 @@
         </div>
     </div>
 </div>
+
 <p-toast position="bottom-center"></p-toast>
+
 <div *ngIf="requestInit" class="loader-overlay">
     <p-progressSpinner class="spinner"></p-progressSpinner>
 </div>
+
 <p-confirmDialog #confirmDialog
     [message]="'Are you sure you want to cancel?'"
     acceptLabel="Yes"

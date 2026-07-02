@@ -1,0 +1,55 @@
+<div class="verify-page">
+    <div class="verify-card" [formGroup]="verifyForm">
+
+        <div class="card-icon">
+            <i class="pi pi-envelope"></i>
+        </div>
+
+        <h1 class="card-title">Check your messages</h1>
+        <p class="card-subtitle">
+            We sent a 6-digit code to<br>
+            <strong>{{ maskedPhone }}</strong>
+        </p>
+
+        <div class="field-group">
+            <label class="field-label" for="code">Verification Code</label>
+            <input
+                id="code"
+                type="text"
+                pInputText
+                formControlName="code"
+                placeholder="000000"
+                maxlength="6"
+                class="code-input"
+                [class.input-error]="formSubmitted && code?.invalid"
+                inputmode="numeric"
+                autocomplete="one-time-code"
+            />
+            <small class="error-text" *ngIf="formSubmitted && code?.invalid">
+                Please enter the 6-digit code.
+            </small>
+        </div>
+
+        <button class="btn-primary" type="button" (click)="verify()" [disabled]="loading">
+            <span *ngIf="!loading">Verify <i class="pi pi-arrow-right"></i></span>
+            <span *ngIf="loading"><i class="pi pi-spin pi-spinner"></i> Verifying...</span>
+        </button>
+
+        <div class="resend-row">
+            <span>Didn't receive a code?</span>
+            <button class="btn-link" type="button" (click)="resendCode()" [disabled]="resending">
+                <span *ngIf="!resending">Resend Code</span>
+                <span *ngIf="resending">Sending...</span>
+            </button>
+        </div>
+
+        <a class="back-link" routerLink="/">
+            <i class="pi pi-arrow-left"></i> Back
+        </a>
+
+        <div class="secure-notice">
+            <i class="pi pi-shield"></i>
+            <span>Your connection is secure</span>
+        </div>
+    </div>
+</div>

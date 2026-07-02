@@ -54,6 +54,25 @@ export class GivingService extends BaseService {
       });
   }
 
+  fetchIndividualAsPromise(): Promise<UserDetails | null> {
+    const url = this.getApiUrl(GiveConstants.FETCH_INDIVIDUAL);
+    return new Promise(resolve => {
+      this.http.get<{success: boolean, data: UserDetails}>(url, { withCredentials: true })
+        .subscribe({
+          next: result => {
+            if (result?.data) {
+              this.individualInfo = result.data;
+              this.userEdit = false;
+              resolve(result.data);
+            } else {
+              resolve(null);
+            }
+          },
+          error: () => resolve(null)
+        });
+    });
+  }
+
   generatePaymentIntent(body: any) {
     const url = this.getApiUrl(GiveConstants.GIVE_PAYMENT_INTENT_PATH);
     this.http.post(url, body)

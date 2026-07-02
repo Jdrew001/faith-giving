@@ -9,11 +9,13 @@ import { CorsMiddleware } from './middleware/cors.middleware';
 import { FaithGivingDataModule } from '@faith-giving/faith-giving.data';
 import { FaithGivingServiceModule } from '@faith-giving/faith-giving.service';
 import { IndividualModule } from './individual/individual.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
     GivingModule,
     IndividualModule,
+    AuthModule,
     ConfigModule.forRoot({
       envFilePath: '.env',
     }),

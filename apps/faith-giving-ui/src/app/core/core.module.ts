@@ -1,6 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
+import { RouterModule } from '@angular/router';
 import { GrowlService } from './growl.service';
+import { AuthService } from './services/auth.service';
 import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
 import { MessageService } from 'primeng/api';
@@ -13,7 +16,7 @@ import { FooterComponent } from './footer/footer.component';
 
 @NgModule({
   declarations: [CurrencyMaskDirective, HeaderComponent, FooterComponent],
-  imports: [CommonModule, MessagesModule, MessageModule, ToastModule],
+  imports: [CommonModule, HttpClientModule, RouterModule, MessagesModule, MessageModule, ToastModule],
   providers: [GrowlService, MessageService, StripeService, CookieService],
   exports: [MessagesModule, MessageModule, ToastModule, CurrencyMaskDirective, HeaderComponent, FooterComponent],
 })

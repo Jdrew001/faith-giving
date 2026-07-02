@@ -1,0 +1,101 @@
+<div class="sign-in-page">
+    <div class="sign-in-card">
+
+        <div class="card-icon">
+            <i class="pi pi-lock"></i>
+        </div>
+
+        <h1 class="card-title">Sign in to give</h1>
+
+        <!-- Phone input state -->
+        <ng-container *ngIf="!codeSent">
+            <p class="card-subtitle">Enter your phone number to receive a secure login code.</p>
+
+            <div class="field-group" [formGroup]="signInForm">
+                <label class="field-label" for="phone">Phone Number</label>
+                <div class="phone-input-wrapper">
+                    <span class="country-code">+1</span>
+                    <input
+                        id="phone"
+                        type="tel"
+                        pInputText
+                        formControlName="phone"
+                        placeholder="(555) 000-0000"
+                        mask="(000) 000-0000"
+                        class="phone-input"
+                        [class.input-error]="formSubmitted && phoneControl?.invalid"
+                    />
+                </div>
+                <small class="error-text" *ngIf="formSubmitted && phoneControl?.invalid">
+                    Please enter a valid 10-digit phone number.
+                </small>
+            </div>
+
+            <button class="btn-primary" type="button" (click)="sendCode()" [disabled]="loading">
+                <span *ngIf="!loading">Send Code <i class="pi pi-arrow-right"></i></span>
+                <span *ngIf="loading"><i class="pi pi-spin pi-spinner"></i> Sending...</span>
+            </button>
+
+            <div class="inline-message" *ngIf="signInMessage">
+                {{ signInMessage }}
+            </div>
+
+            <div class="divider">
+                <span>or</span>
+            </div>
+
+            <button class="btn-secondary" type="button" (click)="continueAsGuest()">
+                Continue as Guest
+            </button>
+        </ng-container>
+
+        <!-- OTP input state -->
+        <ng-container *ngIf="codeSent">
+            <p class="card-subtitle">
+                We sent a 6-digit code to<br>
+                <strong>{{ maskedPhone }}</strong>
+            </p>
+
+            <div class="field-group" [formGroup]="verifyForm">
+                <label class="field-label" for="code">Verification Code</label>
+                <input
+                    id="code"
+                    type="text"
+                    pInputText
+                    formControlName="code"
+                    placeholder="000000"
+                    maxlength="6"
+                    class="code-input"
+                    [class.input-error]="formSubmitted && code?.invalid"
+                    inputmode="numeric"
+                    autocomplete="one-time-code"
+                />
+                <small class="error-text" *ngIf="formSubmitted && code?.invalid">
+                    Please enter the 6-digit code.
+                </small>
+            </div>
+
+            <button class="btn-primary" type="button" (click)="verify()" [disabled]="loading">
+                <span *ngIf="!loading">Verify <i class="pi pi-arrow-right"></i></span>
+                <span *ngIf="loading"><i class="pi pi-spin pi-spinner"></i> Verifying...</span>
+            </button>
+
+            <div class="resend-row">
+                <span>Didn't receive a code?</span>
+                <button class="btn-link" type="button" (click)="resendCode()" [disabled]="resending">
+                    <span *ngIf="!resending">Resend Code</span>
+                    <span *ngIf="resending">Sending...</span>
+                </button>
+            </div>
+
+            <a class="back-link" (click)="codeSent = false">
+                <i class="pi pi-arrow-left"></i> Back
+            </a>
+        </ng-container>
+
+        <div class="secure-notice">
+            <i class="pi pi-shield"></i>
+            <span>Your connection is secure</span>
+        </div>
+    </div>
+</div>

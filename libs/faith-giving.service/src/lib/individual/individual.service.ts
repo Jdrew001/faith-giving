@@ -52,4 +52,36 @@ export class IndividualService {
         }
         return result;
     }
+
+    async findIndividualByPhone(phone: string) {
+        let result;
+        try {
+            const normalizedInput = phone.replace(/\D/g, '');
+            const localInput = normalizedInput.length === 11 && normalizedInput.startsWith('1')
+                ? normalizedInput.substring(1)
+                : normalizedInput;
+
+            result = await this.individualRepo
+                .createQueryBuilder('individual')
+                .where('individual.phone = :phone', { phone })
+                .orWhere('regexp_replace(individual.phone, :pattern, :replacement, :flags) = :normalizedInput', {
+                    pattern: '[^0-9]',
+                    replacement: '',
+                    flags: 'g',
+                    normalizedInput
+                })
+                .orWhere('regexp_replace(individual.phone, :pattern, :replacement, :flags) = :localInput', {
+                    pattern: '[^0-9]',
+                    replacement: '',
+                    flags: 'g',
+                    localInput
+                })
+                .getOne();
+        } catch (error) {
+            Logger.error(`Find individual by phone error, ${error}`);
+            Sentry.captureException(`Find Individual by phone failed: ${error}`);
+            throw new BadRequestException('An error occurred', { cause: error, description: AppConstants.GENERIC_ERROR });
+        }
+        return result;
+    }
 }

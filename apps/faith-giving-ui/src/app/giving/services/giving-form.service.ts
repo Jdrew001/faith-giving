@@ -29,6 +29,28 @@ export class GivingFormService {
     this.phone.setValue(userDetails?.phone);
   }
 
+  disablePersonalFieldValidators() {
+    this.email.clearValidators();
+    this.firstName.clearValidators();
+    this.lastName.clearValidators();
+    this.phone.clearValidators();
+    this.email.updateValueAndValidity();
+    this.firstName.updateValueAndValidity();
+    this.lastName.updateValueAndValidity();
+    this.phone.updateValueAndValidity();
+  }
+
+  enablePersonalFieldValidators() {
+    this.email.setValidators([Validators.required, Validators.email]);
+    this.firstName.setValidators([Validators.required]);
+    this.lastName.setValidators([Validators.required]);
+    this.phone.setValidators([Validators.required]);
+    this.email.updateValueAndValidity();
+    this.firstName.updateValueAndValidity();
+    this.lastName.updateValueAndValidity();
+    this.phone.updateValueAndValidity();
+  }
+
   createGivingForm() {
     this.givingForm = new FormGroup({
       email: this.fb.control('', [Validators.required, Validators.email]),

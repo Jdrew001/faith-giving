@@ -9,6 +9,7 @@ import {
   Individual,
   Offering,
   OfferingType,
+  OtpCode,
   PaymentMethod,
   User,
 } from '@faith-giving/faith-giving.model';
@@ -24,6 +25,7 @@ import { IndividualService } from './individual/individual.service';
 import { ClientSessionService } from './client-session/client-session.service';
 import { CryptService } from './crypt/crypt.service';
 import { GroupmeService } from './groupme/groupme.service';
+import { OtpService } from './otp/otp.service';
 
 @Module({
   providers: [
@@ -36,7 +38,8 @@ import { GroupmeService } from './groupme/groupme.service';
     IndividualService,
     ClientSessionService,
     CryptService,
-    GroupmeService
+    GroupmeService,
+    OtpService
   ],
   imports: [
     TypeOrmModule.forFeature([
@@ -47,6 +50,7 @@ import { GroupmeService } from './groupme/groupme.service';
       User,
       PaymentMethod,
       ClientSession,
+      OtpCode,
     ]),
     ScheduleModule.forRoot(),
     ConfigModule.forRoot({
@@ -65,7 +69,8 @@ import { GroupmeService } from './groupme/groupme.service';
     ClientSessionService,
     IndividualService,
     CryptService,
-    GroupmeService
+    GroupmeService,
+    OtpService
   ],
 })
 export class FaithGivingServiceModule {}

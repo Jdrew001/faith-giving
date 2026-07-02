@@ -3,10 +3,16 @@ import { Route, RouterModule } from "@angular/router";
 
 export const appRoutes: Route[] = [
     {
-        path: "", redirectTo: '/', pathMatch: 'full'
+        path: '',
+        loadChildren: () => import('./sign-in/sign-in.module').then(m => m.SignInModule)
     },
     {
-        path: "", loadChildren: () => import('./giving/giving.module').then(m => m.GivingModule) 
+        path: 'give',
+        loadChildren: () => import('./giving/giving.module').then(m => m.GivingModule)
+    },
+    {
+        path: '**',
+        redirectTo: ''
     }
 ];
 
