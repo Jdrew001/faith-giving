@@ -17,6 +17,9 @@
     min-height: 44px;
     display: flex;
     align-items: center;
+    background-color: #fff;
+    color: #1a1b21;
+    -webkit-text-fill-color: #1a1b21;
 }
 
 p.error {

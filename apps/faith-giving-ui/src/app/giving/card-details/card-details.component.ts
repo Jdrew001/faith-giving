@@ -40,6 +40,7 @@ export class CardDetailsComponent implements AfterViewInit {
   elementStyles = {
     base: {
       color: '#1a1b21',
+      iconColor: '#1a1b21',
       fontFamily: 'Plus Jakarta Sans, sans-serif',
       fontSize: '16px',
       fontSmoothing: 'antialiased',
@@ -50,9 +51,13 @@ export class CardDetailsComponent implements AfterViewInit {
       ':-webkit-autofill': {
         color: '#1a1b21',
       },
+      '::-webkit-input-placeholder': {
+        color: '#76777b',
+      },
     },
     invalid: {
       color: '#ba1a1a',
+      iconColor: '#ba1a1a',
       '::placeholder': {
         color: '#76777b',
       },

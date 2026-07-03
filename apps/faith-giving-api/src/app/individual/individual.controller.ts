@@ -53,7 +53,31 @@ export class IndividualController {
         let session = await this.sessionService.findClientSessionByIndividualId(data.individualId);
         if (!session) return { success: false, message: 'Session expired' }
 
-        const paymentMethods = await this.paymentMethodService.findByIndividualId(data.individualId);
+        const individual = await this.individualService.findIndividualById(data.individualId);
+        if (!individual) return { success: false, message: 'Unable to locate individual' };
+
+        let paymentMethods = await this.paymentMethodService.findByIndividualId(data.individualId);
+
+        if (individual.stripeCustomerId) {
+            const stripePaymentMethods = await this.stripeService.listPaymentMethods(individual.stripeCustomerId);
+
+            for (const stripePaymentMethod of stripePaymentMethods) {
+                const card = stripePaymentMethod.card;
+                if (!card) continue;
+
+                await this.paymentMethodService.savePaymentMethod({
+                    paymentMethodId: stripePaymentMethod.id,
+                    brand: card.brand,
+                    last4: card.last4,
+                    expMonth: card.exp_month,
+                    expYear: card.exp_year,
+                    individualId: data.individualId
+                });
+            }
+
+            paymentMethods = await this.paymentMethodService.findByIndividualId(data.individualId);
+        }
+
         const mappedMethods = paymentMethods.map(pm => this.individualMapper.entityToPaymentMethodDTO(pm));
         return { success: true, data: mappedMethods };
     }
