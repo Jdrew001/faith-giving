@@ -134,15 +134,19 @@ nodejs:
           if [ -f "$FAITH_GIVING_SERVICE_DIR/.env" ]; then
             cp "$FAITH_GIVING_SERVICE_DIR/.env" /tmp/faith-giving-api.env
           fi
+          if [ -d "$FAITH_GIVING_SERVICE_DIR/node_modules" ]; then
+            mv "$FAITH_GIVING_SERVICE_DIR/node_modules" /tmp/faith-giving-api-node_modules
+          fi
           find "$FAITH_GIVING_SERVICE_DIR" -mindepth 1 -maxdepth 1 -exec rm -rf {} +
           echo "→ Extracting API archive"
           tar --warning=no-unknown-keyword -xzf "$FAITH_GIVING_API_UPLOAD_PATH" -C "$FAITH_GIVING_SERVICE_DIR"
           if [ -f /tmp/faith-giving-api.env ]; then
             mv /tmp/faith-giving-api.env "$FAITH_GIVING_SERVICE_DIR/.env"
           fi
+          if [ -d /tmp/faith-giving-api-node_modules ]; then
+            mv /tmp/faith-giving-api-node_modules "$FAITH_GIVING_SERVICE_DIR/node_modules"
+          fi
           cd "$FAITH_GIVING_SERVICE_DIR"
-          echo "→ Installing API production dependencies"
-          timeout 300 npm install --omit=dev --force --no-audit --no-fund --loglevel=error
           echo "→ Running API migrations"
           timeout 120 ./node_modules/.bin/typeorm migration:run -d migration-data-source.js
           echo "→ Restarting API with PM2"
