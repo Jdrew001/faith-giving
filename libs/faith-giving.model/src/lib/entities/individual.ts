@@ -20,6 +20,9 @@ export class Individual {
     @Column()
     phone: string;
 
+    @Column({ nullable: true })
+    stripeCustomerId: string | null;
+
     @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)" })
     public created_at?: Date;
 

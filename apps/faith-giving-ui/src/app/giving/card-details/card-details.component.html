@@ -29,12 +29,23 @@
     <p class="error" *ngIf="(zipCode === '') && formSubmitted">Please provide a zip code</p>
 </div>
 
+<div class="field-group" *ngIf="isAuthenticated">
+    <p-checkbox name="saveCard" [binary]="true" [(ngModel)]="savePaymentMethod" label="Save this card for future giving"></p-checkbox>
+</div>
+
 <button [disabled]="(!cardLoaded && !expLoaded && !cvvLoaded)" (click)="submit()" class="pay-button" type="button">
-    <i class="pi pi-lock"></i> Pay with Stripe
+    <i class="pi pi-lock"></i> Continue to Confirmation
 </button>
 
 <div class="back-row">
-    <a (click)="backToPrevious()" class="back-link">
-        <i class="pi pi-arrow-left"></i> Previous
+    <a *ngIf="hasSavedPaymentMethods" (click)="backToPaymentMethods()" class="back-link">
+        <i class="pi pi-arrow-left"></i> Back to payment methods
     </a>
+    <a *ngIf="!hasSavedPaymentMethods" (click)="backToPrevious()" class="back-link">
+        <i class="pi pi-arrow-left"></i> Back to amount selection
+    </a>
+</div>
+
+<div class="copyright-row">
+    <span class="copyright-text">© 2026 Faith Tabernacle. All rights reserved.</span>
 </div>

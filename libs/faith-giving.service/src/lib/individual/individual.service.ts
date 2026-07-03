@@ -84,4 +84,26 @@ export class IndividualService {
         }
         return result;
     }
+
+    async updateProfile(id: string, data: { firstname: string; lastname: string; email: string; phone: string }) {
+        let result;
+        try {
+            const individual = await this.individualRepo.findOneBy({ id });
+            if (!individual) {
+                throw new BadRequestException('Individual not found');
+            }
+
+            individual.firstname = data.firstname;
+            individual.lastname = data.lastname;
+            individual.email = data.email;
+            individual.phone = data.phone;
+
+            result = await this.individualRepo.save(individual);
+        } catch (error) {
+            Logger.error(`Update profile error, ${error}`);
+            Sentry.captureException(`Update profile failed: ${error}`);
+            throw new BadRequestException('An error occurred', { cause: error, description: AppConstants.GENERIC_ERROR });
+        }
+        return result;
+    }
 }

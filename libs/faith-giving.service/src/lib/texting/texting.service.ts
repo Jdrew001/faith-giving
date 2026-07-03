@@ -15,6 +15,14 @@ export class TextingService {
     ) {}
 
     async sendText(to: string, body: string) {
+        const isDevelopment = this.configService.get<string>('NODE_ENV') === 'development' ||
+                              this.configService.get<string>('DISABLE_TEXTING') === 'true';
+
+        if (isDevelopment) {
+            Logger.log(`[DEV MODE] Texting skipped to: ${to} - Message: ${body}`);
+            return;
+        }
+
         const client = twilio(this.accountSID, this.auth);
         try {
             let result = await client.messages.create({
@@ -22,7 +30,7 @@ export class TextingService {
                 body: body,
                 from: this.number
             });
-    
+
             if (result.errorMessage) {
                 Sentry.captureException(`Texting to: ${to} have failed: ${result.errorMessage}; code: ${result.errorCode}`);
             }

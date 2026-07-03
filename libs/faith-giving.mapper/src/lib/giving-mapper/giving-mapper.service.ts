@@ -11,7 +11,8 @@ export class GivingMapperService {
                 firstname: giving.firstName.trimEnd(),
                 lastname: giving.lastName.trimEnd(),
                 email: giving.email.toLowerCase().trimEnd(),
-                phone: giving.phone.replace(/[\s\-()]/g, "").trimEnd()
+                phone: giving.phone.replace(/[\s\-()]/g, "").trimEnd(),
+                stripeCustomerId: null
             },
             feeCovered: giving.feeCovered,
             offerings: this.mapOfferingToEntity(giving.offerings)

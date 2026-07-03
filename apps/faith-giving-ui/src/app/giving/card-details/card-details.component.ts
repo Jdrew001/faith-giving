@@ -12,13 +12,17 @@ export class CardDetailsComponent implements AfterViewInit {
   @Input() formSubmitted: boolean;
   @Input() stripe;
   @Input() initRequest: boolean = false;
+  @Input() isAuthenticated: boolean = false;
+  @Input() hasSavedPaymentMethods: boolean = false;
 
   @ViewChild('numberElement') numberElement: ElementRef;
   @ViewChild('expElement') expElement: ElementRef;
   @ViewChild('cvvElement') cvvElement: ElementRef;
 
   @Output() submit$: EventEmitter<any> = new EventEmitter();
-  @Output() backToPrevious$: EventEmitter<any> = new EventEmitter(); 
+  @Output() backToPrevious$: EventEmitter<any> = new EventEmitter();
+  @Output() backToPaymentMethods$: EventEmitter<any> = new EventEmitter();
+  @Output() savePaymentMethodChange: EventEmitter<boolean> = new EventEmitter(); 
 
   cardLoaded = false;
   cvvLoaded = false;
@@ -31,6 +35,7 @@ export class CardDetailsComponent implements AfterViewInit {
   expErrors;
   cvvErrors;
   zipCode;
+  savePaymentMethod = false;
 
   elementStyles = {
     base: {
@@ -81,11 +86,15 @@ export class CardDetailsComponent implements AfterViewInit {
       this.growlService.showErrorMessage('Please fix the errors in the form before submitting.');
       return;
     }
-    this.submit$.next({number: this.number, zipCode: this.zipCode});
+    this.submit$.next({number: this.number, zipCode: this.zipCode, savePaymentMethod: this.savePaymentMethod});
   }
 
   backToPrevious() {
     this.backToPrevious$.next(true);
+  }
+
+  backToPaymentMethods() {
+    this.backToPaymentMethods$.next(true);
   }
 
   private initStripeElements() {

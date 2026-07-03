@@ -1,0 +1,71 @@
+<p-dialog [(visible)]="visible" [style]="{ width: '100vw', maxWidth: '500px', height: '100vh', maxHeight: '600px' }" 
+    [modal]="true" [closable]="true" [baseZIndex]="10000" [focusOnShow]="false"
+    (onHide)="dismiss()" header="Edit Profile">
+    
+    <div class="profile-modal-content" [formGroup]="profileForm">
+        
+        <div class="field-group">
+            <label class="field-label">First Name</label>
+            <input type="text" pInputText formControlName="firstName" class="form-control" />
+            <small class="error-text" *ngIf="formSubmitted && profileForm.get('firstName')?.invalid">
+                First name is required
+            </small>
+        </div>
+
+        <div class="field-group">
+            <label class="field-label">Last Name</label>
+            <input type="text" pInputText formControlName="lastName" class="form-control" />
+            <small class="error-text" *ngIf="formSubmitted && profileForm.get('lastName')?.invalid">
+                Last name is required
+            </small>
+        </div>
+
+        <div class="field-group">
+            <label class="field-label">Email</label>
+            <input type="email" pInputText formControlName="email" class="form-control" />
+            <small class="error-text" *ngIf="formSubmitted && profileForm.get('email')?.invalid">
+                Valid email is required
+            </small>
+        </div>
+
+        <div class="field-group">
+            <label class="field-label">Phone</label>
+            <input type="tel" pInputText formControlName="phone" mask="(000) 000-0000" class="form-control" readonly />
+            <small class="phone-note">Contact support to change your phone number</small>
+        </div>
+
+        <div class="payment-methods-section">
+            <div class="section-header">
+                <h6 class="section-title">Payment Methods</h6>
+            </div>
+
+            <p-skeleton *ngIf="loadingPaymentMethods" width="100%" height="3rem"></p-skeleton>
+
+            <div *ngIf="!loadingPaymentMethods && paymentMethods.length === 0" class="no-payment-methods">
+                No saved payment methods
+            </div>
+
+            <div *ngIf="!loadingPaymentMethods && paymentMethods.length > 0" class="payment-methods-list">
+                <div *ngFor="let pm of paymentMethods" class="payment-method-item">
+                    <div class="pm-details">
+                        <span class="pm-brand">{{ pm.brand }}</span>
+                        <span class="pm-last4">•••• {{ pm.last4 }}</span>
+                        <span class="pm-expiry">Exp {{ pm.expMonth }}/{{ pm.expYear.toString().slice(-2) }}</span>
+                    </div>
+                    <button pButton icon="pi pi-trash" class="p-button-text p-button-danger pm-delete-btn" (click)="deletePaymentMethod(pm.id)"></button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <ng-template pTemplate="footer">
+        <button pButton label="Cancel" class="p-button-secondary" (click)="dismiss()"></button>
+        <button pButton class="p-button-primary" (click)="saveProfile()" [disabled]="loading">
+            <i *ngIf="loading" class="pi pi-spin pi-spinner"></i>
+            <span *ngIf="!loading">Save Changes</span>
+            <span *ngIf="loading">Saving...</span>
+        </button>
+    </ng-template>
+
+</p-dialog>

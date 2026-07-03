@@ -10,7 +10,8 @@ export const AUTH_CONSTANTS = {
     REQUEST_OTP: 'api/auth/requestOtp',
     VERIFY_OTP: 'api/auth/verifyOtp',
     SIGN_OUT: 'api/auth/signOut',
-    FETCH_INDIVIDUAL: 'api/individual/individualBySession'
+    FETCH_INDIVIDUAL: 'api/individual/individualBySession',
+    UPDATE_PROFILE: 'api/individual/profile'
 };
 
 @Injectable({ providedIn: 'root' })
@@ -70,7 +71,20 @@ export class AuthService extends BaseService {
                 });
         });
     }
+updateProfile(data: { firstname: string; lastname: string; email: string; phone: string }): Observable<{ success: boolean; data: UserDetails }> {
+        const url = this.getApiUrl(AUTH_CONSTANTS.UPDATE_PROFILE);
+        return this.http.put<{ success: boolean; data: UserDetails }>(url, data, { withCredentials: true })
+            .pipe(
+                tap(result => {
+                    if (result.success) {
+                        this._individual.next(result.data);
+                    }
+                }),
+                catchError(err => { this.handleError(err); return EMPTY; })
+            );
+    }
 
+    
     signOut(): void {
         const url = this.getApiUrl(AUTH_CONSTANTS.SIGN_OUT);
         this.http.post(url, {}, { withCredentials: true })

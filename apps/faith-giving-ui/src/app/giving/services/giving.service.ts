@@ -33,6 +33,7 @@ export class GivingService extends BaseService {
   formSubmitted = false;
   requestInit = false;
   giveTotal = 0;
+  confirmationDetails: { total: number; date: Date; paymentMethod: string; items: { label: string; amount: number }[]; feeCovered: boolean; feeAmount: number } | null = null;
 
   constructor(
     private http: HttpClient,
@@ -73,6 +74,11 @@ export class GivingService extends BaseService {
     });
   }
 
+  fetchPaymentMethods() {
+    const url = this.getApiUrl(GiveConstants.PAYMENT_METHODS);
+    return this.http.get<{success: boolean, data: any[]}>(url, { withCredentials: true });
+  }
+
   generatePaymentIntent(body: any) {
     const url = this.getApiUrl(GiveConstants.GIVE_PAYMENT_INTENT_PATH);
     this.http.post(url, body)
@@ -87,7 +93,7 @@ export class GivingService extends BaseService {
     return await stripe.createPaymentMethod(this.generateBodyForPaymentMethod(number, zipCode));
   }
 
-  async submitPayment(stripe, element: ElementRef, zipCode: number) {
+  async submitPayment(stripe, element: ElementRef, zipCode: number, savePaymentMethod?: boolean) {
     this.requestInit = true;
     let paymentMethod = await this.createPaymentMethod(stripe, element, zipCode);
     console.log('paymentMethod', paymentMethod);
@@ -104,8 +110,13 @@ export class GivingService extends BaseService {
       return;
     }
 
-    this.processPayment(paymentMethod);
-    
+    this.processPayment(paymentMethod, savePaymentMethod);
+
+  }
+
+  async submitPaymentWithSavedMethod(paymentMethodId: string, savePaymentMethod?: boolean, paymentLabel = 'Saved card') {
+    this.requestInit = true;
+    this.processPaymentWithSavedMethod(paymentMethodId, savePaymentMethod, paymentLabel);
   }
 
   getCategoryReferenceData() {
@@ -180,16 +191,32 @@ export class GivingService extends BaseService {
     return parseFloat(value.replace(/[$,]/g, ""));
   }
 
-  private processPayment(paymentMethod: any) {
-    let body = this.generateBodyForPayment(paymentMethod);
+  private processPayment(paymentMethod: any, savePaymentMethod?: boolean) {
+    let body = this.generateBodyForPayment(paymentMethod, savePaymentMethod);
+    const paymentLabel = paymentMethod?.paymentMethod?.card?.last4 ? `•••• ${paymentMethod.paymentMethod.card.last4}` : 'Card';
     const url = this.getApiUrl(GiveConstants.GIVE_PAYMENT_PATH);
     this.http.post(url, body, { observe: 'response', withCredentials: true })
       .pipe(catchError((err) => {this.requestInit = false; return this.handleError(err)}))
       .subscribe((response: any) => {
         this.fetchIndividual();
         this.requestInit = false;
-        this.giveTotal = 0;
-        this.handlePaymentSuccess(response?.body);
+        this.handlePaymentSuccess(response?.body, paymentLabel);
+      });
+  }
+
+  private processPaymentWithSavedMethod(paymentMethodId: string, savePaymentMethod?: boolean, paymentLabel = 'Saved card') {
+    let body = {
+      paymentMethodId: paymentMethodId,
+      giveDetails: this.convertStringValueToNumber(this.formService.givingForm.getRawValue()),
+      savePaymentMethod: savePaymentMethod
+    };
+    const url = this.getApiUrl(GiveConstants.GIVE_PAYMENT_PATH);
+    this.http.post(url, body, { observe: 'response', withCredentials: true })
+      .pipe(catchError((err) => {this.requestInit = false; return this.handleError(err)}))
+      .subscribe((response: any) => {
+        this.fetchIndividual();
+        this.requestInit = false;
+        this.handlePaymentSuccess(response?.body, paymentLabel);
       });
   }
 
@@ -208,10 +235,11 @@ export class GivingService extends BaseService {
     }
   }
 
-  private generateBodyForPayment(paymentMethod: any) {
+  private generateBodyForPayment(paymentMethod: any, savePaymentMethod?: boolean) {
     return {
       paymentMethodId: paymentMethod['paymentMethod']['id'],
-      giveDetails: this.convertStringValueToNumber(this.formService.givingForm.getRawValue())
+      giveDetails: this.convertStringValueToNumber(this.formService.givingForm.getRawValue()),
+      savePaymentMethod: savePaymentMethod
     }
   }
 
@@ -231,13 +259,43 @@ export class GivingService extends BaseService {
     }
   }
 
-  private handlePaymentSuccess(result: any) {
+  private buildConfirmationItems(giveDetails: any) {
+    const items: { label: string; amount: number }[] = [];
+
+    if (giveDetails.tithe > 0) {
+      items.push({ label: 'Tithe', amount: giveDetails.tithe });
+    }
+
+    giveDetails.offerings?.forEach(offering => {
+      if (offering.amount <= 0) return;
+      const category = this.categories.find(item => item.id === offering.category);
+      const categoryLabel = category?.label || 'Offering';
+      const label = categoryLabel === 'Other' && offering.other ? `Offering - ${offering.other}` : `Offering - ${categoryLabel}`;
+      items.push({ label, amount: offering.amount });
+    });
+
+    return items;
+  }
+
+  private handlePaymentSuccess(result: any, paymentMethod: string) {
     if (result['success']) {
+      const giveDetails = this.convertStringValueToNumber(this.formService.givingForm.getRawValue());
+      const items = this.buildConfirmationItems(giveDetails);
+      const subtotal = items.reduce((sum, item) => sum + item.amount, 0);
+
+      this.confirmationDetails = {
+        total: this.giveTotal,
+        date: new Date(),
+        paymentMethod,
+        items,
+        feeCovered: giveDetails.feeCovered,
+        feeAmount: giveDetails.feeCovered ? +(this.giveTotal - subtotal).toFixed(2) : 0
+      };
       this.formService.createGivingForm();
       this.formService.givingForm.markAsPristine();
       this.formSubmitted = false;
-      this.growlService.showSuccessMessage('Your giving was successful!');
-      this.activeIndex = 0;
+      this.activeIndex = 2;
+      this.giveTotal = 0;
       this.registerTitheOfferingChanges();
     } else {
       this.growlService.showErrorMessage('There was a problem with your giving. Please try again.');

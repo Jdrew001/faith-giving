@@ -24,12 +24,15 @@ import { UserDetailsSessionComponent } from './user-details-session/user-details
 import { AvatarModule } from 'primeng/avatar';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
+import { DialogModule } from 'primeng/dialog';
+import { ProfileModalComponent } from './profile-modal/profile-modal.component';
 
 @NgModule({
   declarations: [
     GivingComponent,
     UserDetailsComponent,
     GivingDetailsComponent,
+    ProfileModalComponent,
     CardDetailsComponent,
     UserDetailsSessionComponent,
   ],
@@ -49,6 +52,7 @@ import { ConfirmationService } from 'primeng/api';
     NgxMaskDirective,
     NgxMaskPipe,
     SkeletonModule,
+    DialogModule,
     ProgressSpinnerModule,
     AvatarModule,
     ConfirmDialogModule,

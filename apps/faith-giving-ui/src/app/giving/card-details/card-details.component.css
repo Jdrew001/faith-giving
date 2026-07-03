@@ -95,3 +95,43 @@ p.error {
 .form-control {
     display: block !important;
 }
+
+.field-group p-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.field-group p-checkbox ::ng-deep .p-checkbox-label {
+    font-size: 14px;
+    color: #1a1b21;
+    font-weight: 500;
+}
+
+.field-group p-checkbox ::ng-deep .p-checkbox-box {
+    border: 1.5px solid #c7c6cb;
+    border-radius: 4px;
+    width: 18px;
+    height: 18px;
+}
+
+.field-group p-checkbox ::ng-deep .p-checkbox-box.p-highlight {
+    background-color: #1a1b21;
+    border-color: #1a1b21;
+}
+
+.field-group p-checkbox ::ng-deep .p-checkbox-box .p-checkbox-icon {
+    color: white;
+    font-size: 12px;
+}
+
+.copyright-row {
+    text-align: center;
+    margin-top: var(--stack-md);
+}
+
+.copyright-text {
+    font-family: var(--font-family);
+    font-size: 11px;
+    color: var(--on-surface-variant);
+}

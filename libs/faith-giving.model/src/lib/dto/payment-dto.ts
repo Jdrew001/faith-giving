@@ -1,6 +1,7 @@
 export interface PaymentDTO {
     paymentMethodId: string;
     giveDetails: GiveDetails;
+    savePaymentMethod?: boolean;
 }
 
 export class GiveDetails {

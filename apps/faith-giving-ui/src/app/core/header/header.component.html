@@ -3,8 +3,9 @@
     <div class="header-brand">
       <span class="brand-text">Faith Giving</span>
     </div>
-    <div class="header-avatar">
-      <i class="pi pi-user"></i>
+    <div class="header-avatar" (click)="onAvatarClick()" [class.authenticated]="authService.isAuthenticated">
+      <span *ngIf="authService.isAuthenticated; else guestIcon" class="avatar-initials">{{ initials }}</span>
+      <ng-template #guestIcon><i class="pi pi-user"></i></ng-template>
     </div>
   </div>
 </header>
