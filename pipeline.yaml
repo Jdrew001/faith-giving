@@ -122,20 +122,30 @@ nodejs:
         keyPath: $FAITH_GIVING_DEPLOY_KEY_PATH
         port: $FAITH_GIVING_DEPLOY_PORT
         script: |
+          set -e
+          export CI=true
+          export npm_config_yes=true
+          echo "→ Validating API archive"
           test -s "$FAITH_GIVING_API_UPLOAD_PATH"
           gzip -t "$FAITH_GIVING_API_UPLOAD_PATH"
           tar --warning=no-unknown-keyword -tzf "$FAITH_GIVING_API_UPLOAD_PATH" >/dev/null
+          echo "→ Preparing API deploy directory"
           mkdir -p "$FAITH_GIVING_SERVICE_DIR"
           if [ -f "$FAITH_GIVING_SERVICE_DIR/.env" ]; then
             cp "$FAITH_GIVING_SERVICE_DIR/.env" /tmp/faith-giving-api.env
           fi
           find "$FAITH_GIVING_SERVICE_DIR" -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+          echo "→ Extracting API archive"
           tar --warning=no-unknown-keyword -xzf "$FAITH_GIVING_API_UPLOAD_PATH" -C "$FAITH_GIVING_SERVICE_DIR"
           if [ -f /tmp/faith-giving-api.env ]; then
             mv /tmp/faith-giving-api.env "$FAITH_GIVING_SERVICE_DIR/.env"
           fi
           cd "$FAITH_GIVING_SERVICE_DIR"
-          npm install --omit=dev --force --no-audit --no-fund --loglevel=error
-          npx typeorm migration:run -d migration-data-source.js
-          pm2 reload ecosystem.config.js --env production || pm2 start ecosystem.config.js --env production
-          pm2 save
+          echo "→ Installing API production dependencies"
+          timeout 300 npm install --omit=dev --force --no-audit --no-fund --loglevel=error
+          echo "→ Running API migrations"
+          timeout 120 ./node_modules/.bin/typeorm migration:run -d migration-data-source.js
+          echo "→ Restarting API with PM2"
+          timeout 60 pm2 reload ecosystem.config.js --env production || timeout 60 pm2 start ecosystem.config.js --env production
+          timeout 30 pm2 save --force
+          echo "✓ Faith Giving API deploy complete"
