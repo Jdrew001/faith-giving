@@ -3,7 +3,6 @@ import { CalulateTotalDto, Giving, GivingReceipt, GivingReportDto, Individual, O
 import { GivingMapperService } from '@faith-giving/faith-giving.mapper';
 import { StripeService } from '../stripe/stripe.service';
 import { EmailService } from '../email/email.service';
-import { TextingService } from '../texting/texting.service';
 import * as Sentry from '@sentry/node';
 import { AppConstants } from '../app.constants';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -23,7 +22,6 @@ export class GivingService {
     private givingMapper: GivingMapperService,
     private stripeService: StripeService,
     private emailService: EmailService,
-    private textingService: TextingService,
     private userService: UserService,
     @InjectRepository(Giving) private givingRepo: Repository<Giving>,
     @InjectRepository(Offering) private offeringRepo: Repository<Offering>,
@@ -77,14 +75,14 @@ export class GivingService {
         throw new BadRequestException('An error occurred', { cause: error, description: message });
       }
 
-      if (payment.status != 'succeeded') return;
+      if (payment.status != 'succeeded') return null;
       Logger.log('Begin transaction of giving information');
       let uploadResult = await this.saveGivingInformation(givingEntity);
 
       if (!uploadResult) {
         Logger.error(`Giving information upload failed`, uploadResult);
         Sentry.captureException(`Giving information upload failed: ${uploadResult}, Details: ${givingEntity}`);
-        return;
+        return null;
       }
 
       const savedGiving = uploadResult as Giving;
@@ -214,9 +212,5 @@ private async generateGivingReport(data: Giving, refData: Array<OfferingType>, t
     //Send give recept to giver
     Logger.log(`Sending email to giver: ${body.giveDetails.email} ${body.giveDetails.firstName} ${body.giveDetails.lastName}`);
     await this.emailService.sendEmailToTemplate<any>(body.giveDetails.email, EmailConstant.GIVING_RECIEPT_SUBJECT, EmailConstant.GIVING_RECIEPT_TEMPLATE, givingReceptDTO);
-    const normalizedPhone = body.giveDetails.phone.replace(/\D/g, '');
-    const formattedPhone = normalizedPhone.length === 10 ? `+1${normalizedPhone}` : `+${normalizedPhone}`;
-    await this.textingService.sendText(formattedPhone,
-        `Thank you for giving $${total.toFixed(2)} to Faith Tabernacle. A receipt has been sent to your email. If you have trouble viewing it, it might be in your spam folder. God Bless!`);
   }
 }

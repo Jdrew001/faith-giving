@@ -17,7 +17,6 @@ import { ReferenceService } from './reference/reference.service';
 import { GivingService } from './giving/giving.service';
 import { FaithGivingMapperModule } from '@faith-giving/faith-giving.mapper';
 import { StripeService } from './stripe/stripe.service';
-import { TextingService } from './texting/texting.service';
 import { EmailService } from './email/email.service';
 import { ConfigModule } from '@nestjs/config';
 import { HttpModule } from '@nestjs/axios';
@@ -34,7 +33,6 @@ import { PaymentMethodService } from './payment-method/payment-method.service';
     ReferenceService,
     GivingService,
     StripeService,
-    TextingService,
     EmailService,
     IndividualService,
     ClientSessionService,

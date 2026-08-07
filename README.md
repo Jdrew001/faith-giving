@@ -8,6 +8,22 @@
 
 Run `nx graph` to see a diagram of the dependencies of the projects.
 
+## SMS and Login Verification
+
+Login codes use Twilio Verify in production. Create a Verify Service in the
+Twilio account you want to use, then set these server-side environment values:
+
+- `TWILIO_ACCOUNT_SID`
+- `TWILIO_AUTH_TOKEN`
+- `TWILIO_VERIFY_SERVICE_SID`
+
+The API still supports the older `TWILIO_ACCOUNTSID`, `TWILIO_AUTH`, and
+`VERIFY_SERVICE_SID` names as fallbacks. In local development, or when
+`OTP_LOCAL_MODE=true`, login codes are generated and checked from the local
+`otp_code` table instead.
+
+Donation receipts are email-only; the app does not send non-OTP texts.
+
 ## Remote caching
 
 Run `npx nx connect-to-nx-cloud` to enable [remote caching](https://nx.app) and make CI faster.
