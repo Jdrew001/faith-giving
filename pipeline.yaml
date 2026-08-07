@@ -11,6 +11,90 @@ on:
 
 web:
   steps:
+    - id: extract_ui_version
+      name: Increment Faith Giving UI version
+      type: extract_version
+      inputs:
+        increment: patch
+
+    - id: write_ui_version_json
+      name: Write Faith Giving UI version metadata
+      type: write_file
+      inputs:
+        path: apps/faith-giving-ui/src/assets/version.json
+        content: |
+          {
+            "version": "$UI_VERSION",
+            "buildVersion": "$BUILD_VERSION",
+            "buildNumber": "$BUILD_NUMBER",
+            "buildDate": "$DEPLOYED_AT",
+            "environment": "$ENVIRONMENT"
+          }
+
+    - id: write_whats_new_json
+      name: Write Faith Giving What's New metadata
+      run: |
+        set -eu
+        mkdir -p apps/faith-giving-ui/src/assets
+        node <<'NODE'
+        const fs = require('fs');
+
+        const version = process.env.UI_VERSION || '1.0.0';
+        const title = (process.env.WHATS_NEW_TITLE || '').trim();
+        const rawItems = process.env.WHATS_NEW_ITEMS_JSON;
+
+        if (!title) {
+          console.error('WHATS_NEW_TITLE is required for frontend builds.');
+          process.exit(1);
+        }
+
+        if (!rawItems || !rawItems.trim()) {
+          console.error('WHATS_NEW_ITEMS_JSON is required for frontend builds.');
+          process.exit(1);
+        }
+
+        let parsedItems;
+        try {
+          parsedItems = JSON.parse(rawItems);
+        } catch (error) {
+          console.error('WHATS_NEW_ITEMS_JSON must be valid JSON.');
+          process.exit(1);
+        }
+
+        if (!Array.isArray(parsedItems)) {
+          console.error('WHATS_NEW_ITEMS_JSON must be a JSON array.');
+          process.exit(1);
+        }
+
+        const items = parsedItems
+          .map((item) => ({
+            title: String(item && item.title ? item.title : '').trim(),
+            description: String(item && item.description ? item.description : '').trim(),
+          }))
+          .filter((item) => item.title.length > 0)
+          .map((item) => (item.description ? item : { title: item.title }));
+
+        if (items.length === 0) {
+          console.error('WHATS_NEW_ITEMS_JSON must contain at least one item title.');
+          process.exit(1);
+        }
+
+        const payload = {
+          version,
+          title,
+          buildVersion: process.env.BUILD_VERSION || `${version}-local`,
+          buildNumber: process.env.BUILD_NUMBER || 'local',
+          buildDate: process.env.DEPLOYED_AT || new Date().toISOString(),
+          environment: process.env.ENVIRONMENT || 'production',
+          items,
+        };
+
+        fs.writeFileSync(
+          'apps/faith-giving-ui/src/assets/whats-new.json',
+          `${JSON.stringify(payload, null, 2)}\n`
+        );
+        NODE
+
     - id: install
       name: Install dependencies
       type: install
@@ -60,6 +144,53 @@ web:
 
 nodejs:
   steps:
+    - id: resolve_api_version
+      name: Resolve Faith Giving API version
+      run: |
+        set -eu
+        node <<'NODE'
+        const fs = require('fs');
+
+        const packagePath = 'apps/faith-giving-api/package.json';
+        const pkg = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
+        const override = (process.env.API_VERSION_OVERRIDE || '').trim();
+        const currentVersion = override || pkg.version || '1.0.0';
+        const match = currentVersion.match(/^([0-9]+)\.([0-9]+)\.([0-9]+)$/);
+
+        if (!match) {
+          console.error(`Invalid API version '${currentVersion}'. Expected X.Y.Z.`);
+          process.exit(1);
+        }
+
+        const major = Number(match[1]);
+        const minor = Number(match[2]);
+        const patch = Number(match[3]);
+        const apiVersion = `${major}.${minor}.${patch + 1}`;
+        const buildNumber = String(Math.floor(Date.now() / 1000));
+        const buildVersion = `${apiVersion}-build.${buildNumber}`;
+        const buildDate = new Date().toISOString();
+        const environment = process.env.ENVIRONMENT || 'production';
+
+        const lines = [
+          ['APP_VERSION', apiVersion],
+          ['UI_VERSION', apiVersion],
+          ['BUILD_VERSION', buildVersion],
+          ['BUILD_NUMBER', buildNumber],
+          ['DEPLOYED_AT', buildDate],
+          ['ENVIRONMENT', environment],
+          ['API_VERSION', apiVersion],
+          ['API_BUILD_VERSION', buildVersion],
+          ['API_BUILD_NUMBER', buildNumber],
+          ['API_BUILD_DATE', buildDate],
+          ['API_ENVIRONMENT', environment],
+        ].map(([key, value]) => `export ${key}=${JSON.stringify(value)}`);
+
+        fs.writeFileSync('.faith-giving-api-version.env', `${lines.join('\n')}\n`);
+        fs.writeFileSync('.capacitor-deploy-version.env', `${lines.join('\n')}\n`);
+        console.log(`Faith Giving API version: ${apiVersion}`);
+        console.log(`Faith Giving API build version: ${buildVersion}`);
+        NODE
+
     - id: install
       name: Install dependencies
       type: install
@@ -75,7 +206,27 @@ nodejs:
     - id: prepare_api_package
       name: Prepare Faith Giving API package
       run: |
+        . ./.faith-giving-api-version.env
         cp apps/faith-giving-api/ecosystem.config.js dist/apps/faith-giving-api/ecosystem.config.js
+        if [ -f dist/apps/faith-giving-api/package.json ]; then
+          API_VERSION="$API_VERSION" node <<'NODE'
+        const fs = require('fs');
+        const packagePath = 'dist/apps/faith-giving-api/package.json';
+        const pkg = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
+        pkg.version = process.env.API_VERSION;
+        fs.writeFileSync(packagePath, `${JSON.stringify(pkg, null, 2)}\n`);
+        NODE
+        fi
+        cat > dist/apps/faith-giving-api/version.json << EOF
+        {
+          "service": "faith-giving-api",
+          "version": "$API_VERSION",
+          "buildVersion": "$API_BUILD_VERSION",
+          "buildNumber": "$API_BUILD_NUMBER",
+          "buildDate": "$API_BUILD_DATE",
+          "environment": "$API_ENVIRONMENT"
+        }
+        EOF
         mkdir -p dist/apps/faith-giving-api/migrations
         npx tsc apps/faith-giving-api/migrations/*.ts --outDir dist/apps/faith-giving-api/migrations --module commonjs --target es2018 --esModuleInterop --skipLibCheck
         cat > dist/apps/faith-giving-api/migration-data-source.js <<'EOF'

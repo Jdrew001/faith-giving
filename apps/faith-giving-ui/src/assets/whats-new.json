@@ -1,0 +1,10 @@
+{
+  "version": "1.0.3",
+  "title": "What's New in v1.0.3",
+  "items": [
+    {
+      "title": "Version-aware updates",
+      "description": "Faith Giving can now show update notes when a new UI version is deployed."
+    }
+  ]
+}

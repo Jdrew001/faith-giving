@@ -29,4 +29,9 @@ export class AppController {
   getEnv() {
     return process.env.NODE_ENV
   }
+
+  @Get('version')
+  getVersion() {
+    return this.appService.getVersion();
+  }
 }

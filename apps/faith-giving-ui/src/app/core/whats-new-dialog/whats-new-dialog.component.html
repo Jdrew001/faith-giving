@@ -1,0 +1,37 @@
+<ng-container *ngIf="whatsNew$ | async as state">
+  <p-dialog
+    [visible]="true"
+    [modal]="true"
+    [closable]="true"
+    [dismissableMask]="true"
+    [draggable]="false"
+    [resizable]="false"
+    [style]="{ width: 'min(92vw, 460px)' }"
+    styleClass="whats-new-dialog"
+    (onHide)="dismiss()"
+  >
+    <ng-template pTemplate="header">
+      <div class="whats-new-header">
+        <span>What's New</span>
+        <small>v{{ state.version.version }}</small>
+      </div>
+    </ng-template>
+
+    <section class="whats-new-body">
+      <p class="whats-new-title">{{ state.content.title }}</p>
+      <ul class="whats-new-list">
+        <li *ngFor="let item of state.content.items; trackBy: trackByTitle">
+          <i class="pi pi-check-circle"></i>
+          <div>
+            <strong>{{ item.title }}</strong>
+            <span *ngIf="item.description">{{ item.description }}</span>
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    <ng-template pTemplate="footer">
+      <button type="button" pButton label="Got it" (click)="dismiss()"></button>
+    </ng-template>
+  </p-dialog>
+</ng-container>

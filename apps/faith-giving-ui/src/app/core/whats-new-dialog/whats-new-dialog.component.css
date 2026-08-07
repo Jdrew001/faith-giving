@@ -1,0 +1,74 @@
+:host ::ng-deep .whats-new-dialog {
+  border-radius: var(--rounded);
+  overflow: hidden;
+}
+
+.whats-new-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.whats-new-header span {
+  color: var(--on-surface);
+  font-family: var(--font-family);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.whats-new-header small {
+  color: var(--on-surface-variant);
+  font-family: var(--font-family);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.whats-new-body {
+  color: var(--on-surface);
+  font-family: var(--font-family);
+}
+
+.whats-new-title {
+  color: var(--on-surface);
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0 0 var(--stack-md);
+}
+
+.whats-new-list {
+  display: grid;
+  gap: var(--stack-md);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.whats-new-list li {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: auto 1fr;
+}
+
+.whats-new-list i {
+  color: var(--primary);
+  font-size: 1rem;
+  margin-top: 0.15rem;
+}
+
+.whats-new-list strong,
+.whats-new-list span {
+  display: block;
+}
+
+.whats-new-list strong {
+  color: var(--on-surface);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.whats-new-list span {
+  color: var(--on-surface-variant);
+  font-size: 14px;
+  line-height: 1.45;
+  margin-top: 0.25rem;
+}
