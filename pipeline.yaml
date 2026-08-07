@@ -28,7 +28,7 @@ web:
       type: package
       inputs:
         source: dist/apps/faith-giving-ui
-        output: faith-giving-ui.tar.gz
+        output: faith-giving-ui.zip
 
     - id: upload_ui
       name: Upload Faith Giving UI archive
@@ -50,12 +50,13 @@ web:
         keyPath: $FAITH_GIVING_DEPLOY_KEY_PATH
         port: $FAITH_GIVING_DEPLOY_PORT
         script: |
+          set -eu
           test -s "$FAITH_GIVING_WEB_UPLOAD_PATH"
-          gzip -t "$FAITH_GIVING_WEB_UPLOAD_PATH"
-          tar --warning=no-unknown-keyword -tzf "$FAITH_GIVING_WEB_UPLOAD_PATH" >/dev/null
+          command -v unzip >/dev/null
+          unzip -t "$FAITH_GIVING_WEB_UPLOAD_PATH" >/dev/null
           mkdir -p "$FAITH_GIVING_WEB_DIR"
           find "$FAITH_GIVING_WEB_DIR" -mindepth 1 -maxdepth 1 -exec rm -rf {} +
-          tar --warning=no-unknown-keyword -xzf "$FAITH_GIVING_WEB_UPLOAD_PATH" -C "$FAITH_GIVING_WEB_DIR"
+          unzip -q "$FAITH_GIVING_WEB_UPLOAD_PATH" -d "$FAITH_GIVING_WEB_DIR"
 
 nodejs:
   steps:
@@ -100,7 +101,7 @@ nodejs:
       type: package
       inputs:
         source: dist/apps/faith-giving-api
-        output: faith-giving-api.tar.gz
+        output: faith-giving-api.zip
 
     - id: upload_api
       name: Upload Faith Giving API archive
@@ -122,13 +123,13 @@ nodejs:
         keyPath: $FAITH_GIVING_DEPLOY_KEY_PATH
         port: $FAITH_GIVING_DEPLOY_PORT
         script: |
-          set -e
+          set -eu
           export CI=true
           export npm_config_yes=true
           echo "→ Validating API archive"
           test -s "$FAITH_GIVING_API_UPLOAD_PATH"
-          gzip -t "$FAITH_GIVING_API_UPLOAD_PATH"
-          tar --warning=no-unknown-keyword -tzf "$FAITH_GIVING_API_UPLOAD_PATH" >/dev/null
+          command -v unzip >/dev/null
+          unzip -t "$FAITH_GIVING_API_UPLOAD_PATH" >/dev/null
           echo "→ Preparing API deploy directory"
           mkdir -p "$FAITH_GIVING_SERVICE_DIR"
           if [ -f "$FAITH_GIVING_SERVICE_DIR/.env" ]; then
@@ -139,7 +140,7 @@ nodejs:
           fi
           find "$FAITH_GIVING_SERVICE_DIR" -mindepth 1 -maxdepth 1 -exec rm -rf {} +
           echo "→ Extracting API archive"
-          tar --warning=no-unknown-keyword -xzf "$FAITH_GIVING_API_UPLOAD_PATH" -C "$FAITH_GIVING_SERVICE_DIR"
+          unzip -q "$FAITH_GIVING_API_UPLOAD_PATH" -d "$FAITH_GIVING_SERVICE_DIR"
           if [ -f /tmp/faith-giving-api.env ]; then
             mv /tmp/faith-giving-api.env "$FAITH_GIVING_SERVICE_DIR/.env"
           fi
