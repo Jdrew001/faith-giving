@@ -31,6 +31,12 @@ export interface WhatsNewState {
 @Injectable({ providedIn: 'root' })
 export class AppVersionService {
   private readonly whatsNewSubject = new BehaviorSubject<WhatsNewState | null>(null);
+  private readonly metadataRequestOptions = {
+    headers: {
+      'Cache-Control': 'no-cache',
+      Pragma: 'no-cache',
+    },
+  };
   readonly whatsNew$ = this.whatsNewSubject.asObservable();
   private initialized = false;
 
@@ -76,13 +82,13 @@ export class AppVersionService {
   }
 
   private loadVersionInfo(): Observable<AppVersionInfo> {
-    return this.http.get<Partial<AppVersionInfo>>(this.assetUrl('version.json')).pipe(
+    return this.http.get<Partial<AppVersionInfo>>(this.assetUrl('version.json'), this.metadataRequestOptions).pipe(
       map((version) => this.normalizeVersionInfo(version))
     );
   }
 
   private loadWhatsNewContent(version: AppVersionInfo): Observable<WhatsNewContent> {
-    return this.http.get<Partial<WhatsNewContent>>(this.assetUrl('whats-new.json')).pipe(
+    return this.http.get<Partial<WhatsNewContent>>(this.assetUrl('whats-new.json'), this.metadataRequestOptions).pipe(
       map((content) => this.normalizeWhatsNewContent(content, version)),
       catchError(() => of(this.defaultWhatsNewContent(version)))
     );

@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpClientTestingModule, HttpTestingController, TestRequest } from '@angular/common/http/testing';
 
 import {
   AppVersionService,
@@ -34,7 +34,9 @@ describe('AppVersionService', () => {
     window.localStorage.setItem(WHATS_NEW_SEEN_VERSION_KEY, '1.0.4');
 
     service.initialize();
-    expectVersionRequest().flush({ version: '1.0.4' });
+    const versionRequest = expectVersionRequest();
+    expectNoCacheHeaders(versionRequest);
+    versionRequest.flush({ version: '1.0.4' });
 
     http.expectNone((request) => request.urlWithParams.includes('whats-new.json'));
     expect(latestState()).toBeNull();
@@ -44,12 +46,16 @@ describe('AppVersionService', () => {
     window.localStorage.setItem(WHATS_NEW_SEEN_VERSION_KEY, '1.0.3');
 
     service.initialize();
-    expectVersionRequest().flush({
+    const versionRequest = expectVersionRequest();
+    expectNoCacheHeaders(versionRequest);
+    versionRequest.flush({
       version: '1.0.4',
       buildVersion: '1.0.4-build.1234567890',
       buildNumber: '1234567890',
     });
-    expectWhatsNewRequest().flush({
+    const whatsNewRequest = expectWhatsNewRequest();
+    expectNoCacheHeaders(whatsNewRequest);
+    whatsNewRequest.flush({
       version: '1.0.4',
       title: 'Fresh fixes',
       items: [
@@ -71,8 +77,12 @@ describe('AppVersionService', () => {
 
   it('falls back safely when whats-new metadata is missing', () => {
     service.initialize();
-    expectVersionRequest().flush({ version: '1.0.5' });
-    expectWhatsNewRequest().flush('Not found', {
+    const versionRequest = expectVersionRequest();
+    expectNoCacheHeaders(versionRequest);
+    versionRequest.flush({ version: '1.0.5' });
+    const whatsNewRequest = expectWhatsNewRequest();
+    expectNoCacheHeaders(whatsNewRequest);
+    whatsNewRequest.flush('Not found', {
       status: 404,
       statusText: 'Not Found',
     });
@@ -91,8 +101,12 @@ describe('AppVersionService', () => {
 
   it('falls back safely when whats-new metadata is for another version', () => {
     service.initialize();
-    expectVersionRequest().flush({ version: '1.0.6' });
-    expectWhatsNewRequest().flush({
+    const versionRequest = expectVersionRequest();
+    expectNoCacheHeaders(versionRequest);
+    versionRequest.flush({ version: '1.0.6' });
+    const whatsNewRequest = expectWhatsNewRequest();
+    expectNoCacheHeaders(whatsNewRequest);
+    whatsNewRequest.flush({
       version: '1.0.5',
       title: 'Old update',
       items: [{ title: 'Old item', description: 'Old copy' }],
@@ -108,6 +122,11 @@ describe('AppVersionService', () => {
 
   function expectWhatsNewRequest() {
     return http.expectOne((request) => request.urlWithParams.startsWith('./assets/whats-new.json?v='));
+  }
+
+  function expectNoCacheHeaders(request: TestRequest): void {
+    expect(request.request.headers.get('Cache-Control')).toBe('no-cache');
+    expect(request.request.headers.get('Pragma')).toBe('no-cache');
   }
 
   function latestState(): WhatsNewState | null {
