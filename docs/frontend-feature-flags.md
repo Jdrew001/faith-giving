@@ -116,12 +116,10 @@ npx jest --config apps/faith-giving-ui/jest.config.ts --runInBand --runTestsByPa
   apps/faith-giving-ui/src/app/app.component.spec.ts
 npx jest --config apps/faith-giving-api/jest.config.ts --runInBand --runTestsByPath \
   apps/faith-giving-api/src/app/auth/auth.controller.spec.ts
-docker build -f apps/faith-giving-ui/Dockerfile -t faith-giving-foundation-ui:local .
-docker build -f apps/faith-giving-api/Dockerfile -t faith-giving-foundation-api:local .
 ```
 
-`--force` retains the existing container installation policy for legacy peer
-constraints, including the existing Nest Firebase wrapper's Firebase 9 peer range.
+`--force` permits the legacy peer constraints, including the existing Nest
+Firebase wrapper's Firebase 9 peer range.
 The shared application's Firebase version is pinned to 12.19.0. Verify the generated
 `dist/apps/faith-giving-api/package.json` contains that version and no
 `@feature-gates/*` runtime dependencies.
