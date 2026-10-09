@@ -31,3 +31,25 @@ Run `npx nx connect-to-nx-cloud` to enable [remote caching](https://nx.app) and 
 ## Further help
 
 Visit the [Nx Documentation](https://nx.dev) to learn more.
+
+## Build and deployment
+
+Use Node 20 and the committed dependency lockfile:
+
+```sh
+npm ci --force
+NX_DAEMON=false npx nx build faith-giving-ui --configuration=production
+NX_DAEMON=false npx nx build faith-giving-api --configuration=production
+```
+
+`pipeline.yaml` packages the frontend assets and API bundle as archives for SSH
+deployment, with the API managed by PM2. Its install steps use development
+dependencies and permit the legacy Firebase peer constraint.
+
+ShipStack project settings generate the public Firebase feature-flag asset after
+the frontend build. API packaging completes the generated dependency lockfile,
+and deployment installs its locked runtime dependencies before migrations and
+PM2 reload.
+
+See [frontend feature flags](docs/frontend-feature-flags.md) for Firebase setup,
+controlled validation and local package regeneration.
