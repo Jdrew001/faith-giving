@@ -7,6 +7,37 @@ giving flow, payment methods, or profile UI.
 
 ## Enable Firebase configuration
 
+### ShipStack deployment settings
+
+Add these project secrets in ShipStack for the branch you deploy (normally
+`master`), or use `*` for values shared by every branch:
+
+| Name                                 | Value                                                |
+| ------------------------------------ | ---------------------------------------------------- |
+| `FAITH_GIVING_FEATURE_FLAGS_ENABLED` | `true` to enable, `false` or unset to disable        |
+| `FAITH_GIVING_FIREBASE_API_KEY`      | Firebase **web app** `apiKey`; required when enabled |
+| `FAITH_GIVING_FIREBASE_PROJECT_ID`   | Firebase `projectId`; required when enabled          |
+| `FAITH_GIVING_FIREBASE_APP_ID`       | Firebase **web app** `appId`; required when enabled  |
+
+The pipeline writes `dist/apps/faith-giving-ui/assets/feature-flags.json` after
+the frontend build and before packaging. This also runs when Nx restores cached
+build output, so a changed ShipStack setting produces a fresh asset. The committed
+source asset stays disabled. Missing/disabled settings produce `{"enabled":false}`;
+invalid enabled settings stop the build before packaging. Values are not logged.
+
+ShipStack stores these alongside secrets, but the three Firebase fields become
+public browser configuration in the deployed asset. Only these explicitly named
+fields are copied; server credentials, private keys and other project secrets
+stay out. See [Firebase's API key guidance](https://firebase.google.com/docs/projects/api-keys).
+
+After deployment, `/give/assets/feature-flags.json` should contain the selected
+configuration. Serve this stable asset with revalidation/no-cache so browsers do
+not retain configuration from a previous deployment. Changing ShipStack settings
+requires another frontend build/package/deployment. Changing donor targeting in
+Firebase Remote Config does not require rebuilding the app.
+
+### Manual or local configuration
+
 The committed `apps/faith-giving-ui/src/assets/feature-flags.json` is disabled:
 
 ```json
@@ -30,6 +61,10 @@ For an approved environment, replace it with Firebase's **browser app** configur
 browser configuration values; do not put service-account JSON or private server
 credentials into this asset. The frontend resolves the asset against its base URL,
 including the production `/give/` path.
+
+ShipStack's generated asset replaces the source configuration in the deployment
+package. For a local production preview using environment settings, run
+`node tools/write-feature-flags-config.mjs` after building the frontend.
 
 Root startup is non-blocking. Disabled, missing, invalid, or failed configuration,
 unsupported browser storage, and unavailable Firebase use the off fallback. Core
@@ -124,10 +159,21 @@ The shared application's Firebase version is pinned to 12.19.0. Verify the gener
 `dist/apps/faith-giving-api/package.json` contains that version and no
 `@feature-gates/*` runtime dependencies.
 
-The existing SSH deployment preserves the server's `node_modules`. Before a
-separately approved deployment of this Firebase upgrade, refresh the API runtime
-dependencies from its generated package manifest so the server also uses 12.19.0.
-Local build checks do not verify or update that server installation.
+Before packaging, the pipeline normalizes Nx's generated API dependency lockfile
+with `npm install --package-lock-only --ignore-scripts --force`. This completes
+dependency alias entries omitted by the existing Nx version without running
+package scripts. The SSH deployment then refreshes API runtime dependencies from
+that packaged manifest and lockfile with `npm ci --omit=dev --force` before
+migrations and PM2 reload, installing the pinned Firebase 12.19.0 rather than
+keeping an older server installation. This requires Node 20 or a compatible
+supported Node version and npm on the API server. Local checks do not update the
+live server.
+
+Check the public asset generator with:
+
+```sh
+node --test tools/write-feature-flags-config.test.mjs
+```
 
 For the controlled browser smoke check, install `@playwright/cli` separately and
 use Chrome. In one terminal, start the static production preview:

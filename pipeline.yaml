@@ -108,6 +108,10 @@ web:
       name: Build Faith Giving UI
       run: npx nx build faith-giving-ui --configuration=production
 
+    - id: write_feature_flags_json
+      name: Write Firebase feature flag deployment configuration
+      run: node tools/write-feature-flags-config.mjs
+
     - id: package_ui
       name: Package Faith Giving UI
       type: package
@@ -249,6 +253,12 @@ nodejs:
         module.exports.default = dataSource;
         EOF
 
+    - id: lock_api_runtime_dependencies
+      name: Normalize packaged API dependency lockfile
+      run: |
+        cd dist/apps/faith-giving-api
+        npm install --package-lock-only --ignore-scripts --force --no-audit --no-fund
+
     - id: package_api
       name: Package Faith Giving API
       type: package
@@ -282,6 +292,8 @@ nodejs:
           echo "→ Validating API archive"
           test -s "$FAITH_GIVING_API_UPLOAD_PATH"
           command -v unzip >/dev/null
+          command -v npm >/dev/null
+          node -e 'if (Number(process.versions.node.split(".")[0]) < 20) throw new Error("API deployments require Node 20 or newer.");'
           unzip -t "$FAITH_GIVING_API_UPLOAD_PATH" >/dev/null
           echo "→ Preparing API deploy directory"
           mkdir -p "$FAITH_GIVING_SERVICE_DIR"
@@ -301,6 +313,8 @@ nodejs:
             mv /tmp/faith-giving-api-node_modules "$FAITH_GIVING_SERVICE_DIR/node_modules"
           fi
           cd "$FAITH_GIVING_SERVICE_DIR"
+          echo "→ Refreshing API runtime dependencies"
+          timeout 300 npm ci --omit=dev --force --no-audit --no-fund
           echo "→ Running API migrations"
           timeout 120 ./node_modules/.bin/typeorm migration:run -d migration-data-source.js
           echo "→ Restarting API with PM2"
