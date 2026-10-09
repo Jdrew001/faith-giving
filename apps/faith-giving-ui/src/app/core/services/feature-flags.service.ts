@@ -68,7 +68,7 @@ export class FeatureFlagsService implements OnDestroy {
       )
       .subscribe((context) => {
         // Context replacement/disposal can reject superseded startup promises.
-        void this.client.setContext(context).catch(() => undefined);
+        this.client.setContext(context).catch(() => undefined);
       });
   }
 
@@ -93,7 +93,7 @@ export class FeatureFlagsService implements OnDestroy {
     this.provider.cancelSetup();
     this.destroyed.next();
     this.destroyed.complete();
-    void this.client
+    this.client
       .dispose()
       .then(() => this.provider.dispose())
       .catch(() => undefined);

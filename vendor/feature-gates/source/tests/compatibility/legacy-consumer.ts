@@ -2,6 +2,7 @@ import { createFeatureClient, defineFeatures } from '@feature-gates/core';
 import { createFirebaseProvider } from '@feature-gates/firebase';
 import type { FirebaseRemoteConfigSdk } from '@feature-gates/firebase';
 import { initializeApp } from 'firebase/app';
+import type { FirebaseOptions } from 'firebase/app';
 import {
   activate, ensureInitialized, fetchAndActivate, getAll, getRemoteConfig,
   isSupported, onConfigUpdate, setCustomSignals,
@@ -18,7 +19,8 @@ update.getUpdatedKeys();
 const catalog = defineFeatures({
   betaGiving: { providerKey: 'beta_giving', fallback: false },
 });
-const app = initializeApp({ apiKey: 'type-check', appId: 'type-check', projectId: 'type-check' });
+declare const firebaseOptions: FirebaseOptions;
+const app = initializeApp(firebaseOptions);
 const provider = createFirebaseProvider({
   remoteConfig: getRemoteConfig(app),
   sdk,
@@ -28,7 +30,7 @@ const provider = createFirebaseProvider({
 });
 const client = createFeatureClient({ catalog, provider });
 client.getSnapshot('betaGiving');
-client.subscribe('betaGiving', () => {});
+client.subscribe('betaGiving', () => undefined);
 client.whenSettled('betaGiving');
 client.start({ targetId: 'donor-123' });
 client.setContext({ targetId: 'anonymous' });
@@ -36,7 +38,7 @@ client.setContext({ targetId: 'anonymous' });
 // @ts-expect-error Unknown feature names must remain invalid in the legacy compiler.
 client.getSnapshot('unknownFeature');
 // @ts-expect-error Subscription names must preserve the catalog's literal keys.
-client.subscribe('unknownFeature', () => {});
+client.subscribe('unknownFeature', () => undefined);
 // @ts-expect-error Settlement names must preserve the catalog's literal keys.
 client.whenSettled('unknownFeature');
 // @ts-expect-error Catalog validation requires a Boolean fallback.

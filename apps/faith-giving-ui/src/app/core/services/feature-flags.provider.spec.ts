@@ -74,12 +74,21 @@ describe('feature flag Firebase boundary', () => {
       { targetId: 'anonymous' },
       new AbortController().signal
     );
-    result.catch(() => undefined);
+    let connected = false;
+    result.then(() => {
+      connected = true;
+    });
     requests
       .expectOne('https://example.com/give/assets/feature-flags.json')
       .flush({ enabled: false });
     flushMicrotasks();
+    expect(connected).toBe(true);
     requests.verify();
-    void provider.dispose();
+    let disposed = false;
+    provider.dispose().then(() => {
+      disposed = true;
+    });
+    flushMicrotasks();
+    expect(disposed).toBe(true);
   }));
 });

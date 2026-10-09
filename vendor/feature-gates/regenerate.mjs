@@ -19,4 +19,4 @@ for (const name of ['core', 'firebase']) {
 }
 const files = ['feature-gates-core-0.1.1.tgz', 'feature-gates-firebase-0.1.1.tgz'];
 const checksums = files.map(name => `${createHash('sha256').update(readFileSync(join(vendor, name))).digest('hex')}  ${name}`);
-writeFileSync(join(vendor, 'SHA256SUMS'), checksums.join('\n') + '\n');
+writeFileSync(join(vendor, 'SHA256SUMS'), `${checksums.join('\n')}\n`);

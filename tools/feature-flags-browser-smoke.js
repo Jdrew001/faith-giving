@@ -1,3 +1,5 @@
+// Playwright CLI evaluates this file as its function input.
+// skipcq: JS-0128
 async function featureFlagsSmoke(page) {
   const base = 'http://127.0.0.1:48179/give/';
   const donorA = {
@@ -41,7 +43,7 @@ async function featureFlagsSmoke(page) {
       body: JSON.stringify(body),
     });
   }
-  async function mockApi(route, path) {
+  function mockApi(route, path) {
     if (path.endsWith('/individualBySession')) {
       state.sessionChecks++;
       return json(route, { success: true, data: state.session });
@@ -74,11 +76,14 @@ async function featureFlagsSmoke(page) {
   await page.addInitScript(() => {
     window.Stripe = () => ({
       elements: () => ({
-        create: () => ({ mount() {}, addEventListener() {} }),
+        create: () => ({
+          mount: () => undefined,
+          addEventListener: () => undefined,
+        }),
       }),
     });
   });
-  await page.route('**/*', async (route) => {
+  await page.route('**/*', (route) => {
     const url = new URL(route.request().url());
     if (route.request().method() === 'OPTIONS') return json(route, {});
     if (url.pathname.endsWith('/assets/feature-flags.json')) {
@@ -107,7 +112,7 @@ async function featureFlagsSmoke(page) {
     }
     if (url.hostname === 'firebaseremoteconfig.googleapis.com') {
       // Leave the simulated realtime connection open; all fetches are deterministic below.
-      if (url.pathname.endsWith(':streamFetchInvalidations')) return;
+      if (url.pathname.endsWith(':streamFetchInvalidations')) return undefined;
       const donor =
         route.request().postDataJSON().custom_signals?.donor_id ?? null;
       state.signals.push(donor);
@@ -164,7 +169,7 @@ async function featureFlagsSmoke(page) {
     await waitForSignal(null);
   }
 
-  await page.goto(base + 'give?guest=true');
+  await page.goto(`${base}give?guest=true`);
   await page.getByRole('heading', { name: 'Online Giving' }).waitFor();
   await page.getByText('Your Details', { exact: true }).waitFor();
   await page.getByRole('button', { name: 'Got it', exact: true }).click();
@@ -185,7 +190,7 @@ async function featureFlagsSmoke(page) {
 
   state.enabled = true;
   state.session = donorA;
-  await page.goto(base + 'give');
+  await page.goto(`${base}give`);
   await page.getByRole('heading', { name: 'Welcome back, Beta!' }).waitFor();
   await waitForSignal(donorA.id);
   assert(

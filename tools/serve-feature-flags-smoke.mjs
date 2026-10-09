@@ -17,8 +17,8 @@ const contentTypes = {
 };
 const server = createServer(async (request, response) => {
   const url = new URL(request.url, 'http://127.0.0.1');
-  const file = resolve(root, '.' + url.pathname.replace(/^\/give(?=\/|$)/, ''));
-  if (file !== root && !file.startsWith(root + '/')) {
+  const file = resolve(root, `.${url.pathname.replace(/^\/give(?=\/|$)/, '')}`);
+  if (file !== root && !file.startsWith(`${root}/`)) {
     response.writeHead(404).end();
     return;
   }
@@ -38,5 +38,5 @@ const server = createServer(async (request, response) => {
 );
 
 process.stdin.on('data', (chunk) => {
-  if (chunk.toString().trim() === 'stop') server.close(() => process.exit(0));
+  if (chunk.toString().trim() === 'stop') server.close(() => process.stdin.pause());
 });

@@ -64,11 +64,12 @@ export const FEATURE_FLAGS_RUNTIME = new InjectionToken<FeatureFlagsRuntime>(
 );
 
 const unavailableProvider: FeatureProvider = {
-  connect: async () => ({
-    evaluate: () => ({ kind: 'unavailable', reason: 'unavailable' }),
-    subscribe: () => () => undefined,
-    close: () => undefined,
-  }),
+  connect: () =>
+    Promise.resolve<ProviderSession>({
+      evaluate: () => ({ kind: 'unavailable', reason: 'unavailable' }),
+      subscribe: () => () => undefined,
+      close: () => undefined,
+    }),
 };
 
 /** Loads configuration once; account changes cancel their connection, never shared setup. */

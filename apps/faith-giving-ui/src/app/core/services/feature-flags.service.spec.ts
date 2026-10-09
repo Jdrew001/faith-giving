@@ -51,17 +51,17 @@ describe('FeatureFlagsService', () => {
     notifications = new Set();
     enabled = false;
     const provider: FeatureProvider = {
-      connect: jest.fn(async (context) => {
+      connect: jest.fn((context: EvaluationContext) => {
         contexts.push(context);
-        return liveSession();
+        return Promise.resolve(liveSession());
       }),
     };
     runtime = {
-      isSupported: jest.fn(async () => true),
+      isSupported: jest.fn(() => Promise.resolve(true)),
       createApp: jest.fn(() => ({ name: 'test-flags' } as FirebaseApp)),
       getRemoteConfig: jest.fn(() => ({ settings: {} } as RemoteConfig)),
       createProvider: jest.fn(() => provider),
-      deleteApp: jest.fn(async () => undefined),
+      deleteApp: jest.fn(() => Promise.resolve()),
     };
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
@@ -284,8 +284,9 @@ describe('FeatureFlagsService', () => {
 
   it('closes provider listeners before deleting the owned app', fakeAsync(() => {
     const listenerCountsAtDeletion: number[] = [];
-    (runtime.deleteApp as jest.Mock).mockImplementation(async () => {
+    (runtime.deleteApp as jest.Mock).mockImplementation(() => {
       listenerCountsAtDeletion.push(notifications.size);
+      return Promise.resolve();
     });
     service.initialize();
     flushMicrotasks();

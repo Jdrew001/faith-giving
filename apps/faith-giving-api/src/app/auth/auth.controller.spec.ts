@@ -5,21 +5,21 @@ type AuthDependencies = ConstructorParameters<typeof AuthController>;
 
 // Keep the response contract tests independent of ORM and provider initialization.
 jest.mock('@faith-giving/faith-giving.mapper', () => ({
-  ClientSessionMapperService: class {},
+  ClientSessionMapperService: jest.fn(),
 }));
 jest.mock(
   'libs/faith-giving.service/src/lib/client-session/client-session.service',
-  () => ({ ClientSessionService: class {} })
+  () => ({ ClientSessionService: jest.fn() })
 );
 jest.mock('libs/faith-giving.service/src/lib/crypt/crypt.service', () => ({
-  CryptService: class {},
+  CryptService: jest.fn(),
 }));
 jest.mock(
   'libs/faith-giving.service/src/lib/individual/individual.service',
-  () => ({ IndividualService: class {} })
+  () => ({ IndividualService: jest.fn() })
 );
 jest.mock('libs/faith-giving.service/src/lib/otp/otp.service', () => ({
-  OtpService: class {},
+  OtpService: jest.fn(),
 }));
 
 function createAuthFixture() {
