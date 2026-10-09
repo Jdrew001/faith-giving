@@ -5,6 +5,13 @@ Faith Giving has an Angular 15 integration with `@feature-gates/core` and
 Remote Config Boolean parameter `beta_access`. This foundation does not alter the
 giving flow, payment methods, or profile UI.
 
+The browser console logs `beta_access is enabled` or `beta_access is disabled`
+after the first settled decision and when its enabled state changes. Pending
+decisions are not logged; unavailable configuration or Firebase settles to the
+disabled fallback. This flag is the first catalog entry, not a limit: additional
+independent flags can be registered in `FEATURE_CATALOG` with their own Firebase
+parameter names and fallbacks.
+
 ## Enable Firebase configuration
 
 ### ShipStack deployment settings
