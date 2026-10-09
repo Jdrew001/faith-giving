@@ -34,18 +34,21 @@ describe('feature flag Firebase boundary', () => {
     TestBed.configureTestingModule({ imports: [HttpClientTestingModule] });
   });
 
-  it('always supplies donor_id and explicitly unsets anonymous or invalid donors', () => {
+  it('supplies user_id, unsets anonymous or invalid users, and clears the former signal', () => {
     const runtime = TestBed.inject(FEATURE_FLAGS_RUNTIME);
     runtime.createProvider({} as RemoteConfig);
     const options = (createFirebaseProvider as jest.Mock).mock.calls[0][0];
     const id = 'b2f7a161-37c0-4a06-b205-321b201d00ca';
     expect(options.customSignals({ targetId: id.toUpperCase() })).toEqual({
-      donor_id: id,
+      user_id: id,
+      donor_id: null,
     });
     expect(options.customSignals({ targetId: 'anonymous' })).toEqual({
+      user_id: null,
       donor_id: null,
     });
     expect(options.customSignals({ targetId: 'not-a-uuid' })).toEqual({
+      user_id: null,
       donor_id: null,
     });
   });

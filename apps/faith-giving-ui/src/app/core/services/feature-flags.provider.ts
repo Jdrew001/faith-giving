@@ -55,7 +55,9 @@ export const FEATURE_FLAGS_RUNTIME = new InjectionToken<FeatureFlagsRuntime>(
         createFirebaseProvider({
           remoteConfig,
           customSignals: (context) => ({
-            donor_id: normalizedDonorId(context.targetId),
+            user_id: normalizedDonorId(context.targetId),
+            // Clear the former signal retained by Firebase in existing browsers.
+            donor_id: null,
           }),
         }),
       deleteApp,
