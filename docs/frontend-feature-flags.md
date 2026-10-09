@@ -124,6 +124,11 @@ The shared application's Firebase version is pinned to 12.19.0. Verify the gener
 `dist/apps/faith-giving-api/package.json` contains that version and no
 `@feature-gates/*` runtime dependencies.
 
+The existing SSH deployment preserves the server's `node_modules`. Before a
+separately approved deployment of this Firebase upgrade, refresh the API runtime
+dependencies from its generated package manifest so the server also uses 12.19.0.
+Local build checks do not verify or update that server installation.
+
 For the controlled browser smoke check, install `@playwright/cli` separately and
 use Chrome. In one terminal, start the static production preview:
 
