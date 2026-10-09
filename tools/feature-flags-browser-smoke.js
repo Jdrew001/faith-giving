@@ -114,7 +114,7 @@ async function featureFlagsSmoke(page) {
       // Leave the simulated realtime connection open; all fetches are deterministic below.
       if (url.pathname.endsWith(':streamFetchInvalidations')) return undefined;
       const donor =
-        route.request().postDataJSON().custom_signals?.user_id ?? null;
+        route.request().postDataJSON().custom_signals?.individual_id ?? null;
       state.signals.push(donor);
       return json(
         route,

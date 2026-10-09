@@ -84,26 +84,26 @@ recover the decision. Configuration is loaded once; donor changes do not reload 
 In Firebase Console Remote Config:
 
 1. Add the Boolean parameter `beta_access` with default `false`.
-2. Add a custom-signal condition for `user_id` matching your selected donor UUIDs.
+2. Add a custom-signal condition for `individual_id` matching your selected donor UUIDs.
    Choose exact matching against multiple values and enter the allowlisted donor
    UUIDs as normalized lowercase values. The equivalent condition expression is
-   `app.customSignal['user_id'].exactlyMatches(['UUID_ONE', 'UUID_TWO'])`,
+   `app.customSignal['individual_id'].exactlyMatches(['UUID_ONE', 'UUID_TWO'])`,
    replacing the placeholders with real lowercase UUIDs. It matches any listed
    value, case-sensitively. See the [Firebase condition reference](https://firebase.google.com/docs/remote-config/condition-reference).
 3. Set the conditional value to `true` and publish the template when approved.
 
-Faith Giving supplies only the authenticated account UUID as `user_id`. Guests,
+Faith Giving supplies only the authenticated account UUID as `individual_id`. Guests,
 missing/invalid IDs, and successful logout explicitly unset the signal with `null`.
 Firebase persists custom signals, so clearing it is part of account isolation.
 Login/session restoration remains owned by the existing authentication flow. There
 is no beta field, opt-in setting, or membership migration in the API.
 
 For access limited to your own login, include only your account's lowercase UUID
-in the `user_id` condition, keep `beta_access` defaulting to `false`, and set its
+in the `individual_id` condition, keep `beta_access` defaulting to `false`, and set its
 conditional value to `true`. Your UUID is the successful login response's
 `data.id` field. Verify your account, another account, and logout after publishing.
 
-Update any previously configured `donor_id` conditions to use `user_id`. The app
+Update any previously configured `donor_id` conditions to use `individual_id`. The app
 explicitly clears the former signal on each connection so persisted targeting
 from an older browser session is not reused.
 
