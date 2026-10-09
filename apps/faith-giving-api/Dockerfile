@@ -7,6 +7,7 @@ WORKDIR /app
 RUN apk add --no-cache python3 py3-setuptools make g++
 
 COPY package*.json ./
+COPY vendor/feature-gates ./vendor/feature-gates
 RUN npm install --force || (echo "❌ npm install failed" && exit 1)
 
 COPY . .

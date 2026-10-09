@@ -45,3 +45,7 @@ apps/faith-giving-api/.env
 .nx/
 
 .env
+
+# Local browser validation artifacts
+/output/playwright/
+/.playwright-cli/
