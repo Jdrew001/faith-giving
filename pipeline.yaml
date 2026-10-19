@@ -43,14 +43,9 @@ web:
         const title = (process.env.WHATS_NEW_TITLE || '').trim();
         const rawItems = process.env.WHATS_NEW_ITEMS_JSON;
 
-        if (!title) {
-          console.error('WHATS_NEW_TITLE is required for frontend builds.');
-          process.exit(1);
-        }
-
-        if (!rawItems || !rawItems.trim()) {
-          console.error('WHATS_NEW_ITEMS_JSON is required for frontend builds.');
-          process.exit(1);
+        if (!title || !rawItems || !rawItems.trim()) {
+          console.log('Skipping optional release notes: no complete notes were supplied.');
+          process.exit(0);
         }
 
         let parsedItems;
