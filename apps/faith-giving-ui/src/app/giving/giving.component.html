@@ -57,8 +57,11 @@
             inputId="cover-fee"
             [binary]="true"
             formControlName="feeCovered"
-            label="Help cover the card processing fee? (2.2% + $0.30)"
           ></p-checkbox>
+          <label class="fee-label" for="cover-fee">
+            Help cover the card processing fee?
+            <span class="fee-note">(2.2% + $0.30)</span>
+          </label>
         </div>
         <div class="giving-total-row" aria-live="polite" aria-atomic="true">
           <span class="total-label">Giving Total</span>
