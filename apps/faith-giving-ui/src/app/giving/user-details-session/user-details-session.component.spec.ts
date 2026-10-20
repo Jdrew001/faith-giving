@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { AvatarModule } from 'primeng/avatar';
+import { ButtonModule } from 'primeng/button';
 import { UserDetailsSessionComponent } from './user-details-session.component';
 
 describe('UserDetailsSessionComponent', () => {
@@ -8,6 +10,7 @@ describe('UserDetailsSessionComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [UserDetailsSessionComponent],
+      imports: [ButtonModule, AvatarModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(UserDetailsSessionComponent);

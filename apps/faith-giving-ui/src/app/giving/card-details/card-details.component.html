@@ -1,3 +1,113 @@
+<ng-container *ngIf="experience.enabled; else legacy">
+<div class="field-group">
+  <label class="field-label" for="numberElement">Card Number</label>
+  <p-skeleton *ngIf="!cardLoaded" width="100%" height="3.25rem"></p-skeleton>
+  <div
+    #numberElement
+    class="form-control stripe-element"
+    id="numberElement"
+    [ngStyle]="{ opacity: !cardLoaded ? '0' : '1' }"
+  ></div>
+  <p class="error" *ngIf="cardErrors?.error && formSubmitted">
+    {{ cardErrors.error.message }}
+  </p>
+  <p class="error" *ngIf="cardErrors?.isEmpty && formSubmitted">
+    Card number is required
+  </p>
+</div>
+<div class="card-field-row">
+  <div class="field-group">
+    <label class="field-label" for="expElement">Expiration</label>
+    <p-skeleton *ngIf="!expLoaded" width="100%" height="3.25rem"></p-skeleton>
+    <div
+      #expElement
+      class="form-control stripe-element"
+      id="expElement"
+      [ngStyle]="{ opacity: !expLoaded ? '0' : '1' }"
+    ></div>
+    <p class="error" *ngIf="expErrors?.error && formSubmitted">
+      {{ expErrors.error.message }}
+    </p>
+    <p class="error" *ngIf="expErrors?.isEmpty && formSubmitted">
+      Expiration is required
+    </p>
+  </div>
+  <div class="field-group">
+    <label class="field-label" for="cvvElement">CVC</label>
+    <p-skeleton *ngIf="!cvvLoaded" width="100%" height="3.25rem"></p-skeleton>
+    <div
+      #cvvElement
+      class="form-control stripe-element"
+      id="cvvElement"
+      [ngStyle]="{ opacity: !cvvLoaded ? '0' : '1' }"
+    ></div>
+    <p class="error" *ngIf="cvvErrors?.error && formSubmitted">
+      {{ cvvErrors.error.message }}
+    </p>
+    <p class="error" *ngIf="cvvErrors?.isEmpty && formSubmitted">
+      CVC is required
+    </p>
+  </div>
+</div>
+<div class="field-group">
+  <label class="field-label" for="billing-zip">ZIP Code</label>
+  <input
+    id="billing-zip"
+    [(ngModel)]="zipCode"
+    placeholder="12345"
+    autocomplete="postal-code"
+    inputmode="numeric"
+    maxlength="5"
+    class="form-control"
+    type="text"
+    [disabled]="initRequest"
+  />
+  <p class="error" *ngIf="formSubmitted && !isZipCodeValid">
+    Please provide a 5-digit ZIP code
+  </p>
+</div>
+<div class="save-card-row" *ngIf="isAuthenticated">
+  <p-checkbox
+    inputId="save-card"
+    [binary]="true"
+    [(ngModel)]="savePaymentMethod"
+    label="Save this card for future giving"
+    [disabled]="initRequest"
+  ></p-checkbox>
+</div>
+<button
+  [disabled]="!cardLoaded || !expLoaded || !cvvLoaded || initRequest"
+  (click)="submit()"
+  class="pay-button"
+  type="button"
+>
+  Give {{ total | currency }}
+</button>
+<div class="back-row">
+  <button
+    *ngIf="hasSavedPaymentMethods"
+    (click)="backToPaymentMethods()"
+    class="back-link"
+    type="button"
+    [disabled]="initRequest"
+  >
+    <i class="pi pi-arrow-left" aria-hidden="true"></i> Back to payment methods
+  </button>
+  <button
+    *ngIf="!hasSavedPaymentMethods"
+    (click)="backToPrevious()"
+    class="back-link"
+    type="button"
+    [disabled]="initRequest"
+  >
+    <i class="pi pi-arrow-left" aria-hidden="true"></i> Back to amount selection
+  </button>
+</div>
+
+</ng-container>
+
+<!-- Preserve the existing experience when beta_access is unavailable or off. -->
+<ng-template #legacy>
 <div class="field-group">
     <label class="field-label">Card Number</label>
     <p-skeleton *ngIf="!cardLoaded" width="100%" height="2.75rem"></p-skeleton>
@@ -49,3 +159,5 @@
 <div class="copyright-row">
     <span class="copyright-text">© 2026 Faith Tabernacle. All rights reserved.</span>
 </div>
+
+</ng-template>

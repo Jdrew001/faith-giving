@@ -2,8 +2,21 @@
 
 Faith Giving has an Angular 15 integration with `@feature-gates/core` and
 `@feature-gates/firebase`. It exposes the `betaAccess` decision from the Firebase
-Remote Config Boolean parameter `beta_access`. This foundation does not alter the
-giving flow, payment methods, or profile UI.
+Remote Config Boolean parameter `beta_access`. The Faith Tabernacle redesign uses
+this existing flag as its single presentation gate; no second parameter is needed.
+
+Only a ready `true` decision enables the redesigned header, footer, sign-in,
+verification, giving, card details, profile, processing, and receipt screens.
+Off, pending, degraded, disabled configuration, and unavailable Firebase use the
+original templates, typography, colors, and Stripe Elements styling.
+
+`GivingExperienceService` owns the shared choice. Before gift entry, it follows
+the current decision, including late recovery after startup. The first focus,
+pointer interaction, input, or continue/payment action in the giving screen locks
+the choice through entry, processing, and receipt. Flag changes apply after Done
+or leaving the giving screen. This prevents a live update from replacing payment
+controls or changing the experience during an attempt. The existing payment and
+authentication APIs remain the authority for all operations.
 
 The browser console logs `beta_access is enabled` or `beta_access is disabled`
 after the first settled decision and when its enabled state changes. Pending
@@ -83,7 +96,8 @@ recover the decision. Configuration is loaded once; donor changes do not reload 
 
 In Firebase Console Remote Config:
 
-1. Add the Boolean parameter `beta_access` with default `false`.
+1. Open the existing Boolean parameter `beta_access` and keep its default `false`
+   for a targeted rollout. Create it only if this environment does not have it.
 2. Add a custom-signal condition for `individual_id` matching your selected donor UUIDs.
    Choose exact matching against multiple values and enter the allowlisted donor
    UUIDs as normalized lowercase values. The equivalent condition expression is
@@ -133,7 +147,7 @@ include `enabled`, `status`, `source`, and an optional fallback `reason` so call
 can distinguish a pending/off decision from a resolved one. SDK updates emit inside
 Angular; unsubscribing removes the listener. The root service starts automatically.
 
-For a future giving/payment feature, select the experience once before starting an
+For other future giving/payment features, select the experience before starting an
 attempt, then hold it through form entry and payment:
 
 ```ts
@@ -142,8 +156,9 @@ const useBetaExperience = decision.status === 'ready' && decision.enabled;
 ```
 
 Use the existing experience for pending or degraded decisions. Re-evaluate at the
-next attempt, not during the current payment flow. The integration intentionally
-adds no feature-gating directives or changes to current giving components.
+next attempt, not during the current payment flow. The redesign already follows
+this policy through `GivingExperienceService`; components must use that shared
+choice rather than independently subscribing to `betaAccess`.
 
 ## Verify an enabled environment
 
@@ -208,8 +223,10 @@ Set `FEATURE_FLAGS_PWCLI` to a wrapper or executable path if it is not on your P
 The preview uses only `127.0.0.1:48179`; type `stop` in its terminal to shut it down.
 The fixture intercepts Firebase, OTP, session, reference, totals and Stripe
 responses and blocks other external traffic. It verifies guest startup, session
-restoration, card-details navigation, OTP sign-in, logout and account switching.
-It never submits a payment. Screenshots are written under `output/playwright/`.
+restoration, both flag states, card-details navigation, a mocked saved-card
+processing/receipt flow, OTP sign-in, logout, account switching, and responsive
+layouts at 320, 390, 768 and 1280 pixels. It never submits a live payment.
+Screenshots are written under `output/playwright/`.
 
 See [vendored package regeneration](../vendor/feature-gates/README.md) for
 independent source and compatibility checks with Node 24.

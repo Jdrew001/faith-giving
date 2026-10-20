@@ -1,0 +1,130 @@
+:host(.legacy) .field-group {
+    margin-bottom: var(--stack-lg);
+}
+
+:host(.legacy) .field-label {
+    font-family: var(--font-family);
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--on-surface);
+    margin-bottom: var(--stack-sm);
+    display: block;
+}
+
+:host(.legacy) .offering-section {
+    margin-bottom: var(--stack-md);
+}
+
+:host(.legacy) .offering-input-row {
+    display: flex;
+    align-items: center;
+    gap: var(--stack-sm);
+    margin-bottom: var(--stack-sm);
+}
+
+:host(.legacy) .offering-input {
+    flex: 1;
+}
+
+:host(.legacy) .add-offering-btn {
+    background: var(--primary);
+    border: none;
+    border-radius: var(--rounded-md);
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+    flex-shrink: 0;
+}
+
+:host(.legacy) .add-offering-btn:hover {
+    opacity: 0.85;
+}
+
+:host(.legacy) .add-offering-btn i {
+    color: var(--on-primary);
+    font-size: 14px;
+}
+
+:host(.legacy) .offering-container {
+    border: 1px solid var(--outline-variant);
+    border-radius: var(--rounded);
+    padding: var(--stack-md);
+    margin-bottom: var(--stack-md);
+    background: var(--surface);
+}
+
+:host(.legacy) .offering-item-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--stack-sm);
+}
+
+:host(.legacy) .offering-label {
+    font-family: var(--font-family);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--on-surface);
+}
+
+:host(.legacy) .remove-offering {
+    cursor: pointer;
+    color: var(--on-surface-variant);
+    transition: color 0.2s ease;
+}
+
+:host(.legacy) .remove-offering:hover {
+    color: var(--error);
+}
+
+:host(.legacy) .remove-offering i {
+    font-size: 14px;
+    color: inherit;
+}
+
+:host(.legacy) i {
+    color: var(--on-surface);
+}
+
+:host(.legacy) i:hover {
+    cursor: pointer;
+    color: var(--secondary);
+}
+
+:host(.legacy) ::ng-deep .dropdown {
+    width: 100%;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--on-surface);
+    background-color: var(--surface);
+    border: 1px solid var(--outline-variant);
+    border-radius: var(--rounded);
+    transition: border-color 0.2s ease;
+}
+
+:host(.legacy) p.error {
+    color: var(--error) !important;
+    text-align: left !important;
+    text-transform: none !important;
+    padding: 0px !important;
+    margin: 4px 0 0 !important;
+    font-size: 12px;
+    font-family: var(--font-family);
+}
+
+:host(.legacy) span.error {
+    color: var(--error) !important;
+    text-align: left !important;
+    text-transform: none !important;
+    padding: 0px !important;
+    margin: 4px 0 0 !important;
+    font-size: 12px;
+    font-family: var(--font-family);
+    display: block;
+}

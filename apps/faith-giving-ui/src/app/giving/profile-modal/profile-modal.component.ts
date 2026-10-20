@@ -1,4 +1,5 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { GivingExperienceService } from '../../core/services/giving-experience.service';
+import { HostBinding, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../core/services/auth.service';
 import { GrowlService } from '../../core/growl.service';
@@ -8,9 +9,16 @@ import { GiveConstants } from '../giving.constants';
 @Component({
   selector: 'faith-giving-profile-modal',
   templateUrl: './profile-modal.component.html',
-  styleUrls: ['./profile-modal.component.css']
+  styleUrls: ['./profile-modal.component.legacy.css', './profile-modal.component.css']
 })
 export class ProfileModalComponent implements OnInit, OnChanges {
+  @HostBinding('class.redesign') get redesignEnabled() {
+    return this.experience.enabled;
+  }
+  @HostBinding('class.legacy') get legacyEnabled() {
+    return !this.experience.enabled;
+  }
+
 
   @Input() visible: boolean = false;
   @Input() individual: any;
@@ -23,6 +31,7 @@ export class ProfileModalComponent implements OnInit, OnChanges {
   loadingPaymentMethods = false;
 
   constructor(
+    public readonly experience: GivingExperienceService,
     private fb: FormBuilder,
     private authService: AuthService,
     private growlService: GrowlService,

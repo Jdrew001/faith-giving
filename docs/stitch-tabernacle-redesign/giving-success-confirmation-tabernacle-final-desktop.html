@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Giving Success Confirmation — Tabernacle Final — Desktop</title>
+<!-- Google Fonts: Poppins & Plus Jakarta Sans -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Poppins:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-container-lowest": "#0e0e0e",
+            "inverse-on-surface": "#313030",
+            "on-tertiary-container": "#636565",
+            "outline-variant": "#2a2a2a",
+            "secondary-fixed": "#e3e2e2",
+            "surface-container-highest": "#353534",
+            "outline": "#858585",
+            "on-secondary": "#2f3131",
+            "primary-fixed-dim": "#c6c6c7",
+            "on-secondary-fixed": "#1a1c1c",
+            "surface-bright": "#3a3939",
+            "surface-container-high": "#2a2a2a",
+            "tertiary-container": "#e2e2e2",
+            "tertiary-fixed": "#e2e2e2",
+            "inverse-surface": "#e5e2e1",
+            "primary-container": "#e2e2e2",
+            "on-tertiary-fixed-variant": "#454747",
+            "surface": "#151515",
+            "on-tertiary": "#2f3131",
+            "surface-container-low": "#1c1b1b",
+            "inverse-primary": "#5d5f5f",
+            "on-secondary-fixed-variant": "#464747",
+            "tertiary-fixed-dim": "#c6c6c7",
+            "on-secondary-container": "#b8b8b8",
+            "on-primary-fixed": "#1a1c1c",
+            "surface-container": "#201f1f",
+            "surface-tint": "#c6c6c7",
+            "background": "#131313",
+            "on-error-container": "#ffdad6",
+            "on-background": "#e5e2e1",
+            "secondary": "#c6c6c6",
+            "on-primary-container": "#636565",
+            "tertiary": "#ffffff",
+            "surface-variant": "#353534",
+            "secondary-container": "#484949",
+            "secondary-fixed-dim": "#c6c6c6",
+            "surface-dim": "#131313",
+            "on-primary-fixed-variant": "#454747",
+            "error-container": "#93000a",
+            "on-surface": "#e5e2e1",
+            "on-error": "#690005",
+            "primary": "#ffffff",
+            "on-surface-variant": "#c4c7c8",
+            "on-tertiary-fixed": "#1a1c1c",
+            "on-primary": "#2f3131",
+            "error": "#ffb4ab",
+            "primary-fixed": "#e2e2e2"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "stack-lg": "32px",
+            "space-xs": "0.5rem",
+            "stack-sm": "8px",
+            "margin-mobile": "1.25rem",
+            "gutter": "24px",
+            "space-xl": "2rem",
+            "container-max": "600px",
+            "space-sm": "0.75rem",
+            "space-md": "1rem",
+            "stack-md": "16px",
+            "space-lg": "1.5rem",
+            "margin": "1.5rem",
+            "gutter-mobile": "20px"
+          },
+          "fontFamily": {
+            "body-sm": [
+              "Plus Jakarta Sans"
+            ],
+            "label-lg": [
+              "Plus Jakarta Sans"
+            ],
+            "body-md": [
+              "Poppins"
+            ],
+            "headline-sm": [
+              "Plus Jakarta Sans"
+            ],
+            "headline-lg-mobile": [
+              "Plus Jakarta Sans"
+            ],
+            "headline-lg": [
+              "Poppins"
+            ],
+            "headline-md": [
+              "Poppins"
+            ],
+            "body-lg": [
+              "Plus Jakarta Sans"
+            ],
+            "label-sm": [
+              "Plus Jakarta Sans"
+            ],
+            "label-md": [
+              "Poppins"
+            ]
+          },
+          "fontSize": {
+            "body-sm": [
+              "14px",
+              {
+                "lineHeight": "1.5",
+                "fontWeight": "400"
+              }
+            ],
+            "label-lg": [
+              "16px",
+              {
+                "lineHeight": "1.4",
+                "fontWeight": "600"
+              }
+            ],
+            "body-md": [
+              "16px",
+              {
+                "lineHeight": "1.65",
+                "fontWeight": "400"
+              }
+            ],
+            "headline-sm": [
+              "20px",
+              {
+                "lineHeight": "1.35",
+                "letterSpacing": "-0.01em",
+                "fontWeight": "600"
+              }
+            ],
+            "headline-lg-mobile": [
+              "32px",
+              {
+                "lineHeight": "1.25",
+                "letterSpacing": "-0.03em",
+                "fontWeight": "700"
+              }
+            ],
+            "headline-lg": [
+              "40px",
+              {
+                "lineHeight": "1.2",
+                "letterSpacing": "-0.04em",
+                "fontWeight": "700"
+              }
+            ],
+            "headline-md": [
+              "24px",
+              {
+                "lineHeight": "1.3",
+                "letterSpacing": "-0.02em",
+                "fontWeight": "700"
+              }
+            ],
+            "body-lg": [
+              "18px",
+              {
+                "lineHeight": "1.6",
+                "fontWeight": "400"
+              }
+            ],
+            "label-sm": [
+              "12px",
+              {
+                "lineHeight": "1.4",
+                "letterSpacing": "0.02em",
+                "fontWeight": "500"
+              }
+            ],
+            "label-md": [
+              "14px",
+              {
+                "lineHeight": "1.4",
+                "fontWeight": "500"
+              }
+            ]
+          }
+        },
+      },
+    }
+  </script>
+</head>
+<body class="bg-[#0b0b0b] text-on-surface antialiased min-h-screen flex flex-col justify-between selection:bg-primary selection:text-background">
+<!-- Top Navigation Anchor (Shared Component: TopNavBar) -->
+<header class="w-full bg-surface-container-lowest border-b border-outline-variant h-20 shrink-0">
+<div class="w-full px-margin flex justify-between items-center max-w-[1440px] mx-auto h-full">
+<!-- Left: Logo & Community Subtext -->
+<div class="flex items-center space-x-3">
+<a class="text-headline-sm font-headline-sm text-primary tracking-tight" href="#">Faith Giving</a>
+<span class="text-outline text-label-md font-label-md">•</span>
+<span class="text-outline text-label-md font-label-md hidden sm:inline">Faith Tabernacle</span>
+</div>
+<!-- Navigation & Action Links -->
+<nav class="flex items-center space-x-6">
+<a class="hover:text-primary transition-colors duration-200 font-label-md text-label-md flex items-center gap-1.5 group text-[#b9b9b9]" href="#">
+<span class="material-symbols-outlined text-[18px] transition-transform group-hover:-translate-x-0.5">arrow_back</span>
+<span>Back to Church</span>
+</a>
+<div class="h-4 w-[1px] bg-outline-variant"></div>
+<div class="flex items-center space-x-3">
+<button class="text-outline hover:text-primary transition-colors duration-200 font-label-md text-label-md">
+            Sign In
+          </button>
+<span class="material-symbols-outlined text-outline hover:text-primary transition-colors cursor-pointer text-[22px]">account_circle</span>
+</div>
+</nav>
+</div>
+</header>
+<!-- Main Canvas: Focused 600px Stewardship Confirmation Column -->
+<main class="flex-grow flex items-center justify-center px-margin py-space-xl">
+<div class="w-full max-w-[600px]">
+<!-- Confirmation Card Container: Surface #151515 with #2a2a2a Border and 24px Radius -->
+<div class="bg-surface rounded-[24px] border border-outline-variant p-6 sm:p-8 md:p-10 flex flex-col items-center">
+<!-- Monochrome Solemn Checkmark Circle (Charcoal #202020 with 1px Border, strictly no green) -->
+<div class="w-20 h-20 rounded-full bg-[#202020] border border-outline-variant flex items-center justify-center mb-6 shadow-none">
+<span class="material-symbols-outlined text-primary text-[36px]" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<!-- Headline: Poppins Bold 32px White #ffffff -->
+<h1 class="font-body-md font-bold text-[32px] leading-[1.25] text-primary text-center tracking-tight mb-3">
+          Thank you for your generosity!
+        </h1>
+<!-- Subtext: Muted #b9b9b9 Contextual Ministry Note -->
+<p class="font-body-sm text-body-sm text-[#b9b9b9] text-center max-w-[460px] mb-8 leading-relaxed">
+          Your gift directly supports the ministries and community outreach of Faith Tabernacle.
+        </p>
+<!-- Nested Itemized Receipt Summary Card (Surface #202020, 16px Radius, 1px Border #2a2a2a, p-6) -->
+<div class="w-full bg-[#202020] rounded-[16px] border border-outline-variant p-6 mb-8 flex flex-col space-y-4">
+<!-- Header Row: Receipt Number & Date -->
+<div class="flex justify-between items-center pb-2 border-b border-outline-variant/60">
+<span class="font-body-md text-body-sm text-primary font-medium tracking-wide">Receipt #FT-84920</span>
+<span class="font-body-sm text-body-sm text-[#b9b9b9]">Oct 20, 2026</span>
+</div>
+<!-- Itemized Line Items -->
+<div class="flex flex-col space-y-2.5 pt-1">
+<div class="flex justify-between items-center text-body-sm">
+<span class="font-body-sm text-[#b9b9b9]">Tithing</span>
+<span class="font-body-md text-primary font-medium">$100.00</span>
+</div>
+<div class="flex justify-between items-center text-body-sm">
+<span class="font-body-sm text-[#b9b9b9]">General Offering</span>
+<span class="font-body-md text-primary font-medium">$25.00</span>
+</div>
+</div>
+<!-- Architectural Divider Line -->
+<div class="w-full h-[1px] bg-outline-variant my-2"></div>
+<!-- Total Line Item Row -->
+<div class="flex justify-between items-baseline py-1">
+<span class="font-body-md font-bold text-[18px] text-primary">Total Gift</span>
+<span class="font-body-md font-bold text-[28px] text-primary tracking-tight leading-none">$125.00</span>
+</div>
+<!-- Payment Method Detail Row -->
+<div class="pt-2 border-t border-outline-variant/60 flex items-center justify-between text-body-sm">
+<span class="font-body-sm text-[#b9b9b9]">Payment Method</span>
+<span class="font-body-md text-primary font-medium flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[18px] text-outline">credit_card</span>
+              Visa ending in 4242
+            </span>
+</div>
+<!-- Email Confirmation Notice -->
+<div class="mt-2 pt-3 border-t border-outline-variant/40 flex items-center gap-2 text-body-sm text-[#b9b9b9]">
+<span class="material-symbols-outlined text-outline text-[18px]">mail</span>
+<span>A receipt has been sent to <span class="text-primary font-medium">alex@example.com</span></span>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="w-full flex flex-col space-y-3">
+<!-- Primary Action Button: Solid White Pill, Pitch-Black Text, min-h-[48px] -->
+<button class="w-full h-[52px] bg-primary text-[#0b0b0b] font-body-md font-bold text-[16px] rounded-full transition-transform duration-150 active:scale-[0.99] hover:bg-neutral-200 flex items-center justify-center tracking-tight">
+            Done
+          </button>
+<!-- Secondary Actions: Outlined Minimal Buttons -->
+<div class="grid grid-cols-2 gap-3 pt-1">
+<button class="h-[46px] rounded-full border border-outline-variant bg-[#151515] hover:bg-[#202020] text-primary font-body-sm text-body-sm font-medium transition-colors duration-150 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-outline">visibility</span>
+              View Receipt
+            </button>
+<button class="h-[46px] rounded-full border border-outline-variant bg-[#151515] hover:bg-[#202020] text-primary font-body-sm text-body-sm font-medium transition-colors duration-150 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-outline">download</span>
+              Download PDF
+            </button>
+</div>
+</div>
+</div>
+<!-- Context Micro-Note Beneath Card -->
+<div class="mt-6 text-center">
+<p class="font-body-sm text-label-sm text-outline">Need assistance with your donation? <a class="underline hover:text-primary transition-colors text-[#b9b9b9]" href="#">Contact Support</a></p>
+</div>
+</div>
+</main>
+<!-- Footer (Shared Component: Footer) -->
+<footer class="w-full py-space-xl bg-surface-container-lowest border-t border-outline-variant shrink-0">
+<div class="max-w-[1440px] mx-auto px-margin flex flex-col md:flex-row justify-between items-center gap-space-sm text-body-sm font-body-sm text-outline"><div class="flex items-center gap-2 text-center md:text-left text-[#b9b9b9]"><span class="text-label-md font-label-md text-primary font-semibold">Faith Giving</span><span>—</span><span>© 2026 Faith Tabernacle</span></div><div class="flex items-center space-x-6"><a class="text-[#b9b9b9] hover:text-primary font-label-sm text-label-sm transition-colors duration-200" href="#">Privacy Policy</a><a class="text-[#b9b9b9] hover:text-primary font-label-sm text-label-sm transition-colors duration-200" href="#">Terms of Service</a><a class="text-[#b9b9b9] hover:text-primary font-label-sm text-label-sm transition-colors duration-200" href="#">Contact Support</a></div></div>
+</footer>
+</body></html>

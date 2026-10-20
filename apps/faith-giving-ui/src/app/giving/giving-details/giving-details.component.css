@@ -1,130 +1,80 @@
-.field-group {
-    margin-bottom: var(--stack-lg);
+:host(.redesign) {
+  display: block;
 }
-
-.field-label {
-    font-family: var(--font-family);
-    font-size: 14px;
-    font-weight: 600;
-    line-height: 1.2;
-    color: var(--on-surface);
-    margin-bottom: var(--stack-sm);
-    display: block;
+:host(.redesign) .field-group {
+  margin-bottom: 24px;
 }
-
-.offering-section {
-    margin-bottom: var(--stack-md);
+:host(.redesign) #tithing {
+  font-weight: 700;
 }
-
-.offering-input-row {
-    display: flex;
-    align-items: center;
-    gap: var(--stack-sm);
-    margin-bottom: var(--stack-sm);
+:host(.redesign) .offering-container {
+  margin-bottom: 8px;
 }
-
-.offering-input {
-    flex: 1;
+:host(.redesign) .offering-input-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) 44px;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--rounded-md);
+  padding: 8px;
+  background: var(--surface-container);
 }
-
-.add-offering-btn {
-    background: var(--primary);
-    border: none;
-    border-radius: var(--rounded-md);
-    width: 48px;
-    height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: opacity 0.2s ease;
-    flex-shrink: 0;
+:host(.redesign) .offering-category,
+:host(.redesign) .offering-amount {
+  min-width: 0;
 }
-
-.add-offering-btn:hover {
-    opacity: 0.85;
+:host(.redesign) .offering-amount input {
+  padding: 12px 8px;
+  background: var(--surface);
+  text-align: right;
+  font-weight: 500;
 }
-
-.add-offering-btn i {
-    color: var(--on-primary);
-    font-size: 14px;
+:host(.redesign) .remove-offering {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--on-surface-variant);
+  cursor: pointer;
 }
-
-.offering-container {
-    border: 1px solid var(--outline-variant);
-    border-radius: var(--rounded);
-    padding: var(--stack-md);
-    margin-bottom: var(--stack-md);
-    background: var(--surface);
+:host(.redesign) .remove-offering:hover {
+  background: var(--surface-container-high);
+  color: var(--error);
 }
-
-.offering-item-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: var(--stack-sm);
+:host(.redesign) .add-offering-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  border: 0;
+  border-radius: 6px;
+  padding: 4px 0;
+  background: transparent;
+  color: var(--on-surface-variant);
+  font-size: 14px;
+  cursor: pointer;
 }
-
-.offering-label {
-    font-family: var(--font-family);
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--on-surface);
+:host(.redesign) .add-offering-btn:hover {
+  color: var(--on-surface);
 }
-
-.remove-offering {
-    cursor: pointer;
-    color: var(--on-surface-variant);
-    transition: color 0.2s ease;
+:host(.redesign) .offering-empty {
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--rounded-md);
+  padding: 4px 16px;
+  background: var(--surface-container);
 }
-
-.remove-offering:hover {
-    color: var(--error);
+:host(.redesign) .other-offering {
+  margin-top: 16px;
 }
-
-.remove-offering i {
-    font-size: 14px;
-    color: inherit;
-}
-
-i {
-    color: var(--on-surface);
-}
-
-i:hover {
-    cursor: pointer;
-    color: var(--secondary);
-}
-
-:host ::ng-deep .dropdown {
-    width: 100%;
-    font-size: 16px;
-    font-weight: 400;
-    line-height: 1.5;
-    color: var(--on-surface);
-    background-color: var(--surface);
-    border: 1px solid var(--outline-variant);
-    border-radius: var(--rounded);
-    transition: border-color 0.2s ease;
-}
-
-p.error {
-    color: var(--error) !important;
-    text-align: left !important;
-    text-transform: none !important;
-    padding: 0px !important;
-    margin: 4px 0 0 !important;
-    font-size: 12px;
-    font-family: var(--font-family);
-}
-
-span.error {
-    color: var(--error) !important;
-    text-align: left !important;
-    text-transform: none !important;
-    padding: 0px !important;
-    margin: 4px 0 0 !important;
-    font-size: 12px;
-    font-family: var(--font-family);
-    display: block;
+@media (max-width: 520px) {
+  :host(.redesign) .offering-input-row {
+    grid-template-columns: minmax(0, 1fr) 44px;
+  }
+  :host(.redesign) .offering-category {
+    grid-column: 1 / -1;
+  }
 }

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Login with Phone Number — Tabernacle Final — Desktop</title>
+<!-- Google Fonts: Poppins & Plus Jakarta Sans -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Poppins:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS with Forms & Container Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-container-lowest": "#0e0e0e",
+            "inverse-on-surface": "#313030",
+            "on-tertiary-container": "#636565",
+            "outline-variant": "#2a2a2a",
+            "secondary-fixed": "#e3e2e2",
+            "surface-container-highest": "#353534",
+            "outline": "#858585",
+            "on-secondary": "#2f3131",
+            "primary-fixed-dim": "#c6c6c7",
+            "on-secondary-fixed": "#1a1c1c",
+            "surface-bright": "#3a3939",
+            "surface-container-high": "#2a2a2a",
+            "tertiary-container": "#e2e2e2",
+            "tertiary-fixed": "#e2e2e2",
+            "inverse-surface": "#e5e2e1",
+            "primary-container": "#e2e2e2",
+            "on-tertiary-fixed-variant": "#454747",
+            "surface": "#151515",
+            "on-tertiary": "#2f3131",
+            "surface-container-low": "#1c1b1b",
+            "inverse-primary": "#5d5f5f",
+            "on-secondary-fixed-variant": "#464747",
+            "tertiary-fixed-dim": "#c6c6c7",
+            "on-secondary-container": "#b8b8b8",
+            "on-primary-fixed": "#1a1c1c",
+            "surface-container": "#201f1f",
+            "surface-tint": "#c6c6c7",
+            "background": "#131313",
+            "on-error-container": "#ffdad6",
+            "on-background": "#e5e2e1",
+            "secondary": "#c6c6c6",
+            "on-primary-container": "#636565",
+            "tertiary": "#ffffff",
+            "surface-variant": "#353534",
+            "secondary-container": "#484949",
+            "secondary-fixed-dim": "#c6c6c6",
+            "surface-dim": "#131313",
+            "on-primary-fixed-variant": "#454747",
+            "error-container": "#93000a",
+            "on-surface": "#e5e2e1",
+            "on-error": "#690005",
+            "primary": "#ffffff",
+            "on-surface-variant": "#c4c7c8",
+            "on-tertiary-fixed": "#1a1c1c",
+            "on-primary": "#2f3131",
+            "error": "#ffb4ab",
+            "primary-fixed": "#e2e2e2"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "stack-lg": "32px",
+            "space-xs": "0.5rem",
+            "stack-sm": "8px",
+            "margin-mobile": "1.25rem",
+            "gutter": "24px",
+            "space-xl": "2rem",
+            "container-max": "600px",
+            "space-sm": "0.75rem",
+            "space-md": "1rem",
+            "stack-md": "16px",
+            "space-lg": "1.5rem",
+            "margin": "1.5rem",
+            "gutter-mobile": "20px"
+          },
+          "fontFamily": {
+            "body-sm": ["Plus Jakarta Sans"],
+            "label-lg": ["Plus Jakarta Sans"],
+            "body-md": ["Poppins"],
+            "headline-sm": ["Plus Jakarta Sans"],
+            "headline-lg-mobile": ["Plus Jakarta Sans"],
+            "headline-lg": ["Poppins"],
+            "headline-md": ["Poppins"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "label-sm": ["Plus Jakarta Sans"],
+            "label-md": ["Poppins"]
+          },
+          "fontSize": {
+            "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+            "label-lg": ["16px", { "lineHeight": "1.4", "fontWeight": "600" }],
+            "body-md": ["16px", { "lineHeight": "1.65", "fontWeight": "400" }],
+            "headline-sm": ["20px", { "lineHeight": "1.35", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "headline-lg-mobile": ["32px", { "lineHeight": "1.25", "letterSpacing": "-0.03em", "fontWeight": "700" }],
+            "headline-lg": ["40px", { "lineHeight": "1.2", "letterSpacing": "-0.04em", "fontWeight": "700" }],
+            "headline-md": ["24px", { "lineHeight": "1.3", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+            "label-sm": ["12px", { "lineHeight": "1.4", "letterSpacing": "0.02em", "fontWeight": "500" }],
+            "label-md": ["14px", { "lineHeight": "1.4", "fontWeight": "500" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    body {
+      background-color: #0b0b0b;
+      font-family: 'Poppins', sans-serif;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+  </style>
+</head>
+<body class="bg-[#0b0b0b] text-[#ffffff] min-h-screen flex flex-col justify-between selection:bg-[#ffffff] selection:text-[#0b0b0b]">
+<!-- Top Navigation Anchor (from Shared Components JSON) -->
+<header class="w-full bg-[#0b0b0b] border-b border-outline-variant h-20 flex-shrink-0 z-50">
+<div class="w-full px-margin md:px-margin flex justify-between items-center max-w-[1440px] mx-auto h-full">
+<!-- Brand Cluster -->
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary text-2xl" data-icon="church">church</span>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm text-primary dark:text-primary tracking-tight font-semibold">Faith Giving</span>
+<span class="font-label-sm text-label-sm text-outline tracking-normal">Faith Tabernacle</span>
+</div>
+</div>
+<!-- Trailing Action Anchor -->
+<nav class="flex items-center gap-space-lg">
+<a class="font-label-md text-label-md text-[#b9b9b9] hover:text-primary transition-colors duration-200 flex items-center gap-1.5" href="#church"><span class="material-symbols-outlined text-base leading-none" data-icon="arrow_back">arrow_back</span> Back to Church</a>
+</nav>
+</div>
+</header>
+<!-- Focused Canvas Context: Login with Phone Number (Max-width 600px) -->
+<main class="w-full flex-grow flex items-center justify-center px-margin py-space-xl">
+<div class="w-full max-w-[600px]">
+<!-- Elevated Giving Card -->
+<section class="bg-surface border border-outline-variant rounded-[24px] p-8 md:p-10 shadow-none relative">
+<!-- Header / Security Icon Identifier -->
+<div class="flex flex-col items-center text-center">
+<div class="w-14 h-14 rounded-full bg-[#202020] border border-outline-variant flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-primary text-2xl" data-icon="lock">lock</span>
+</div>
+<!-- Headline and Description -->
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-md md:text-[32px] text-primary font-bold tracking-tight mb-2">
+            Sign in to give
+          </h1>
+<p class="font-body-md text-body-md text-[#b9b9b9] max-w-sm mb-8 leading-relaxed">
+            Enter your phone number to receive a secure login code.
+          </p>
+</div>
+<!-- Phone Login Form -->
+<form class="space-y-6" onsubmit="event.preventDefault();">
+<!-- Phone Number Input Field -->
+<div class="flex flex-col space-y-2 text-left">
+<label class="font-label-md text-label-md text-[#b9b9b9] font-medium" for="phone-input">
+              Phone Number
+            </label>
+<div class="relative flex items-center bg-[#202020] border border-outline-variant rounded-xl focus-within:border-primary transition-colors duration-150 overflow-hidden min-h-[48px] h-[52px]">
+<!-- Country Prefix Segment -->
+<div class="flex items-center pl-4 pr-3 text-[#b9b9b9] font-label-md text-label-md select-none border-r border-outline-variant h-full bg-[#202020]">
+<span class="text-primary font-medium mr-1.5">+1</span>
+<span class="material-symbols-outlined text-outline text-sm leading-none" data-icon="expand_more">expand_more</span>
+</div>
+<!-- Input Field with Strict Contrast -->
+<input autocomplete="tel-national" class="w-full bg-transparent border-0 text-primary placeholder-[#858585] font-body-md text-body-md focus:ring-0 focus:outline-none px-4 py-2 min-h-[48px]" id="phone-input" placeholder="(555) 000-0000" required="" type="tel"/>
+</div>
+<span class="font-label-sm text-label-sm text-outline pt-0.5">We will send a 6-digit confirmation SMS.</span>
+</div>
+<!-- Primary CTA Button (Send Code →) -->
+<button class="w-full min-h-[48px] h-[52px] bg-primary text-[#0b0b0b] font-label-md text-label-md font-bold rounded-full transition-transform active:scale-[0.99] hover:bg-secondary-fixed flex items-center justify-center gap-2" type="submit">
+<span>Send Code</span>
+<span class="text-lg leading-none select-none">→</span>
+</button>
+<!-- Equal-width Secondary CTA Button (Continue as Guest) -->
+<button class="w-full min-h-[48px] h-[52px] bg-surface border border-outline hover:border-primary text-primary font-label-md text-label-md font-medium rounded-full transition-colors duration-150 hover:bg-[#202020] flex items-center justify-center" type="button">
+            Continue as Guest
+          </button>
+</form>
+<!-- Structured Subtle Divider -->
+<div class="w-full h-px bg-outline-variant my-8"></div>
+<!-- Security Copy Identifier -->
+<div class="flex items-center justify-center text-center gap-2 text-[#b9b9b9]">
+<span class="material-symbols-outlined text-outline text-base leading-none" data-icon="lock">lock</span>
+<p class="font-label-sm text-label-sm tracking-normal">
+            Your connection is secure • Standard message and data rates may apply
+          </p>
+</div>
+</section>
+<!-- Trust Badge Beneath Card -->
+<div class="mt-6 flex items-center justify-center gap-2 text-outline">
+<span class="material-symbols-outlined text-sm leading-none" data-icon="verified_user">verified_user</span>
+<span class="font-label-sm text-label-sm">256-bit SSL encrypted stewardship portal</span>
+</div>
+</div>
+</main>
+<!-- Global Footer Anchor (from Shared Components JSON) -->
+<footer class="w-full py-space-xl bg-[#0b0b0b] border-t border-outline-variant flex-shrink-0">
+<div class="max-w-[1440px] mx-auto px-margin flex flex-col md:flex-row justify-between items-center gap-space-sm text-center md:text-left"><div class="flex flex-col md:flex-row items-center gap-2 md:gap-4"><span class="font-label-md text-label-md text-primary font-semibold">Faith Giving</span><span class="hidden md:inline text-[#b9b9b9]">•</span><p class="font-body-sm text-body-sm text-[#b9b9b9]">© 2026 Faith Tabernacle</p></div><div class="flex items-center gap-6 mt-4 md:mt-0"><a class="font-label-sm text-label-sm text-[#b9b9b9] hover:text-primary transition-colors duration-200" href="#privacy">Privacy Policy</a><a class="font-label-sm text-label-sm text-[#b9b9b9] hover:text-primary transition-colors duration-200" href="#terms">Terms of Service</a><a class="font-label-sm text-label-sm text-[#b9b9b9] hover:text-primary transition-colors duration-200" href="#support">Contact Support</a></div></div>
+</footer>
+</body></html>

@@ -1,4 +1,13 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChildren } from '@angular/core';
+import { GivingExperienceService } from '../core/services/giving-experience.service';
+import {
+  HostBinding,
+  Component,
+  ElementRef,
+  HostListener,
+  OnDestroy,
+  OnInit,
+  ViewChildren,
+} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { GivingFormService } from './services/giving-form.service';
 import { GivingService } from './services/giving.service';
@@ -11,28 +20,66 @@ import { ConfirmDialog } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 
-declare var Stripe;
+declare const Stripe;
 
 @Component({
   selector: 'faith-giving-giving',
   templateUrl: './giving.component.html',
-  styleUrls: ['./giving.component.css'],
+  styleUrls: ['./giving.component.legacy.css', './giving.component.css'],
 })
 export class GivingComponent implements OnInit, OnDestroy {
+  @HostBinding('class.redesign') get redesignEnabled() {
+    return this.experience.enabled;
+  }
+  @HostBinding('class.legacy') get legacyEnabled() {
+    return !this.experience.enabled;
+  }
 
   @ViewChildren('confirmDialog') confirmDialog: ConfirmDialog;
 
-  get givingForm() { return this.formService.givingForm; }
-  get formSubmitted() { return this.giveService.formSubmitted; }
-  get activeFormIndex() { return this.giveService.activeIndex; }
-  get stripeKey() { return process.env['NODE_ENV'] == 'development' ? GiveConstants.STRIPE_PK_TEST : GiveConstants.STRIPE_PK; }
-  get requestInit() { return this.giveService.requestInit; }
-  get giveTotal() { return this.giveService.giveTotal; }
-  get userDetails() { return this.giveService.individualInfo; }
-  get userEdit() { return this.giveService.userEdit; }
-  get isAuthenticated() { return this.authService.isAuthenticated || !!this.giveService.individualInfo; }
-  get individual() { return this.authService.individual ?? this.giveService.individualInfo; }
-  get confirmationDetails() { return this.giveService.confirmationDetails; }
+  get givingForm() {
+    return this.formService.givingForm;
+  }
+  get formSubmitted() {
+    return this.giveService.formSubmitted;
+  }
+  get activeFormIndex() {
+    return this.giveService.activeIndex;
+  }
+  get stripeKey() {
+    return process.env['NODE_ENV'] == 'development'
+      ? GiveConstants.STRIPE_PK_TEST
+      : GiveConstants.STRIPE_PK;
+  }
+  get requestInit() {
+    return this.giveService.requestInit;
+  }
+  get giveTotal() {
+    return this.giveService.giveTotal;
+  }
+  get giftItems() {
+    return this.giveService.getGiftItems();
+  }
+  get giftSubtotal() {
+    return this.giftItems.reduce((sum, item) => sum + item.amount, 0);
+  }
+  get userDetails() {
+    return this.giveService.individualInfo;
+  }
+  get userEdit() {
+    return this.giveService.userEdit;
+  }
+  get isAuthenticated() {
+    return (
+      this.authService.isAuthenticated || !!this.giveService.individualInfo
+    );
+  }
+  get individual() {
+    return this.authService.individual ?? this.giveService.individualInfo;
+  }
+  get confirmationDetails() {
+    return this.giveService.confirmationDetails;
+  }
 
   isGuest = false;
   userEdited = false;
@@ -45,6 +92,7 @@ export class GivingComponent implements OnInit, OnDestroy {
   private _modalSub: Subscription;
 
   constructor(
+    public readonly experience: GivingExperienceService,
     private formService: GivingFormService,
     private growlService: GrowlService,
     public giveService: GivingService,
@@ -58,6 +106,7 @@ export class GivingComponent implements OnInit, OnDestroy {
     this.stripe = Stripe(this.stripeKey);
     this.formService.createGivingForm();
     this._modalSub = this.profileModalService.open$.subscribe(() => {
+      this.experience.lockGift();
       this.showProfileModal = true;
     });
     this.giveService.getCategoryReferenceData();
@@ -81,7 +130,7 @@ export class GivingComponent implements OnInit, OnDestroy {
       if (this.authService.individual) {
         this.applyAuthenticatedIndividual(this.authService.individual);
       } else {
-        this.authService.checkSession().then(found => {
+        this.authService.checkSession().then((found) => {
           if (found) {
             this.applyAuthenticatedIndividual(found);
           } else {
@@ -104,36 +153,63 @@ export class GivingComponent implements OnInit, OnDestroy {
   }
 
   payWithStripe() {
+    this.experience.lockGift();
     this.giveService.formSubmitted = true;
     if (this.givingForm.invalid) {
-      const invalidFields = Object.keys(this.givingForm.controls).filter(key => this.givingForm.controls[key].invalid);
-      this.growlService.showErrorMessage(`Please fix the errors in the form before submitting. ${invalidFields.join(', ')}`);
+      const invalidFields = Object.keys(this.givingForm.controls).filter(
+        (key) => this.givingForm.controls[key].invalid
+      );
+      this.growlService.showErrorMessage(
+        `Please fix the errors in the form before submitting. ${invalidFields.join(
+          ', '
+        )}`
+      );
       return;
     }
     if (this.isAuthenticated) {
       this.fetchSavedPaymentMethods();
     }
+    if (this.experience.enabled) this.giveService.formSubmitted = false;
     this.giveService.activeIndex = 1;
   }
 
-  async submitForm(data: {number: ElementRef, zipCode: number, savePaymentMethod?: boolean}) {
+  async submitForm(data: {
+    number: ElementRef;
+    zipCode: string | number;
+    savePaymentMethod?: boolean;
+  }) {
+    this.experience.lockGift();
+    if (this.experience.enabled && this.requestInit) return;
     if (this.selectedPaymentMethod) {
       // Pay with saved card - skip Stripe Elements, use saved paymentMethodId
-      const selectedCard = this.savedPaymentMethods.find(pm => pm.paymentMethodId === this.selectedPaymentMethod);
-      await this.giveService.submitPaymentWithSavedMethod(this.selectedPaymentMethod, data.savePaymentMethod, selectedCard?.last4 ? `•••• ${selectedCard.last4}` : 'Saved card');
+      const selectedCard = this.savedPaymentMethods.find(
+        (pm) => pm.paymentMethodId === this.selectedPaymentMethod
+      );
+      await this.giveService.submitPaymentWithSavedMethod(
+        this.selectedPaymentMethod,
+        data.savePaymentMethod,
+        selectedCard?.last4 ? `•••• ${selectedCard.last4}` : 'Saved card'
+      );
     } else {
       // Pay with new card
-      await this.giveService.submitPayment(this.stripe, data.number, data.zipCode, data.savePaymentMethod);
+      await this.giveService.submitPayment(
+        this.stripe,
+        data.number,
+        data.zipCode,
+        data.savePaymentMethod
+      );
     }
     this.userEdited = false;
   }
 
   handleFormError() {
-    this.growlService.showErrorMessage('Please fix the errors in the form before submitting.');
+    this.growlService.showErrorMessage(
+      'Please fix the errors in the form before submitting.'
+    );
   }
 
   convertToNumber(value: string) {
-    return parseFloat(value.replace(/[$,.]/g, ""));
+    return parseFloat(value.replace(/[$,.]/g, ''));
   }
 
   previous() {
@@ -165,7 +241,7 @@ export class GivingComponent implements OnInit, OnDestroy {
           this.userEdited = false;
           this.giveService.userEdit = false;
           this.formService.updateUserFields(this.giveService.individualInfo);
-        }
+        },
       });
       return;
     }
@@ -191,6 +267,7 @@ export class GivingComponent implements OnInit, OnDestroy {
     this.giveService.activeIndex = 0;
     this.selectedPaymentMethod = null;
     this.useNewCard = this.savedPaymentMethods.length === 0;
+    this.experience.releaseGift();
   }
 
   viewReceipt() {
@@ -207,14 +284,19 @@ export class GivingComponent implements OnInit, OnDestroy {
       next: (result) => {
         if (result?.success) {
           this.savedPaymentMethods = result.data;
-          if (this.savedPaymentMethods.length > 0 && !this.selectedPaymentMethod) {
-            this.selectPaymentMethod(this.savedPaymentMethods[0].paymentMethodId);
+          if (
+            this.savedPaymentMethods.length > 0 &&
+            !this.selectedPaymentMethod
+          ) {
+            this.selectPaymentMethod(
+              this.savedPaymentMethods[0].paymentMethodId
+            );
           }
         }
       },
       error: () => {
         this.savedPaymentMethods = [];
-      }
+      },
     });
   }
 
@@ -230,5 +312,13 @@ export class GivingComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this._modalSub?.unsubscribe();
+    this.experience.releaseGift();
+  }
+
+  @HostListener('focusin')
+  @HostListener('pointerdown')
+  @HostListener('input')
+  lockExperience(): void {
+    this.experience.lockGift();
   }
 }

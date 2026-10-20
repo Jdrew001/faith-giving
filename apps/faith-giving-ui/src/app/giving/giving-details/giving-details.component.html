@@ -1,3 +1,127 @@
+<ng-container *ngIf="experience.enabled; else legacy">
+<ng-container [formGroup]="givingForm">
+  <div class="field-group">
+    <label class="field-label" for="tithing">Tithing</label>
+    <input
+      id="tithing"
+      currencyMask
+      type="text"
+      inputmode="decimal"
+      formControlName="tithe"
+      class="form-control"
+      placeholder="$0.00"
+      [attr.aria-invalid]="formSubmitted && givingForm.hasError('oneRequired')"
+    />
+    <p
+      class="error"
+      *ngIf="givingForm.hasError('oneRequired') && formSubmitted"
+    >
+      Tithe or Offering must be provided
+    </p>
+  </div>
+
+  <div class="offering-section">
+    <span class="field-label">Offering</span>
+    <div class="offering-empty" *ngIf="offerings.controls.length === 0">
+      <button type="button" class="add-offering-btn" (click)="addOffering()">
+        <i class="pi pi-plus-circle" aria-hidden="true"></i> Add Offering
+      </button>
+    </div>
+
+    <div
+      class="offering-container"
+      formArrayName="offerings"
+      *ngFor="let form of offerings.controls; let i = index"
+    >
+      <ng-container [formGroupName]="i">
+        <div class="offering-input-row">
+          <div class="offering-category">
+            <label class="visually-hidden" [for]="'offering-category-' + i"
+              >Offering {{ i + 1 }} category</label
+            >
+            <p-dropdown
+              [inputId]="'offering-category-' + i"
+              styleClass="dropdown"
+              formControlName="category"
+              optionValue="id"
+              dataKey="id"
+              [options]="categories"
+              optionLabel="label"
+              placeholder="Select category"
+              emptyMessage="No categories available"
+              appendTo="body"
+            ></p-dropdown>
+          </div>
+          <div class="offering-amount">
+            <label class="visually-hidden" [for]="'offering-amount-' + i"
+              >Offering {{ i + 1 }} amount</label
+            >
+            <input
+              [id]="'offering-amount-' + i"
+              currencyMask
+              type="text"
+              inputmode="decimal"
+              class="form-control"
+              formControlName="amount"
+              placeholder="$0.00"
+            />
+          </div>
+          <button
+            class="remove-offering"
+            type="button"
+            (click)="deleteOffering(i)"
+            [attr.aria-label]="'Remove offering ' + (i + 1)"
+          >
+            <i class="pi pi-times" aria-hidden="true"></i>
+          </button>
+        </div>
+        <p
+          class="error"
+          *ngIf="form.hasError('offeringRequired') && formSubmitted"
+        >
+          Offering required. Remove or fill in to continue.
+        </p>
+        <p
+          class="error"
+          *ngIf="form.hasError('categoryRequired') && formSubmitted"
+        >
+          A category must be selected
+        </p>
+        <div class="other-offering" *ngIf="isOtherCategory(i)">
+          <label class="field-label" [for]="'offering-description-' + i"
+            >Offering description</label
+          >
+          <input
+            [id]="'offering-description-' + i"
+            type="text"
+            class="form-control"
+            formControlName="other"
+            placeholder="General Offering, Building Fund, etc"
+          />
+          <p
+            class="error"
+            *ngIf="form.hasError('otherRequired') && formSubmitted"
+          >
+            An other offering type must be specified
+          </p>
+        </div>
+      </ng-container>
+    </div>
+    <button
+      *ngIf="offerings.controls.length > 0"
+      type="button"
+      class="add-offering-btn"
+      (click)="addOffering()"
+    >
+      <i class="pi pi-plus-circle" aria-hidden="true"></i> Add Offering
+    </button>
+  </div>
+</ng-container>
+
+</ng-container>
+
+<!-- Preserve the existing experience when beta_access is unavailable or off. -->
+<ng-template #legacy>
 <ng-container [formGroup]="givingForm">
     <div class="field-group">
         <label class="field-label">Tithing</label>
@@ -59,3 +183,5 @@
         </div>
     </div>
 </ng-container>
+
+</ng-template>

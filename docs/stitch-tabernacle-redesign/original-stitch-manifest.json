@@ -1,0 +1,303 @@
+{
+  "project": {
+    "createTime": "2026-05-07T16:45:05.739632Z",
+    "designTheme": {
+      "bodyFont": "PLUS_JAKARTA_SANS",
+      "bodyFontFamily": "Plus Jakarta Sans",
+      "colorMode": "LIGHT",
+      "colorVariant": "FIDELITY",
+      "customColor": "#0A0C11",
+      "designMd": "---\nname: Faith Giving\ncolors:\n  surface: '#f9f9ff'\n  surface-dim: '#d9d9e1'\n  surface-bright: '#f9f9ff'\n  surface-container-lowest: '#ffffff'\n  surface-container-low: '#f3f3fb'\n  surface-container: '#ededf5'\n  surface-container-high: '#e8e7ef'\n  surface-container-highest: '#e2e2e9'\n  on-surface: '#1a1b21'\n  on-surface-variant: '#46464b'\n  inverse-surface: '#2e3036'\n  inverse-on-surface: '#f0f0f8'\n  outline: '#76777b'\n  outline-variant: '#c7c6cb'\n  surface-tint: '#5d5e64'\n  primary: '#000000'\n  on-primary: '#ffffff'\n  primary-container: '#1a1b21'\n  on-primary-container: '#82838a'\n  inverse-primary: '#c6c6cd'\n  secondary: '#505f76'\n  on-secondary: '#ffffff'\n  secondary-container: '#d0e1fb'\n  on-secondary-container: '#54647a'\n  tertiary: '#000000'\n  on-tertiary: '#ffffff'\n  tertiary-container: '#191c1e'\n  on-tertiary-container: '#818486'\n  error: '#ba1a1a'\n  on-error: '#ffffff'\n  error-container: '#ffdad6'\n  on-error-container: '#93000a'\n  primary-fixed: '#e2e2e9'\n  primary-fixed-dim: '#c6c6cd'\n  on-primary-fixed: '#1a1b21'\n  on-primary-fixed-variant: '#45474d'\n  secondary-fixed: '#d3e4fe'\n  secondary-fixed-dim: '#b7c8e1'\n  on-secondary-fixed: '#0b1c30'\n  on-secondary-fixed-variant: '#38485d'\n  tertiary-fixed: '#e0e3e5'\n  tertiary-fixed-dim: '#c4c7c9'\n  on-tertiary-fixed: '#191c1e'\n  on-tertiary-fixed-variant: '#444749'\n  background: '#f9f9ff'\n  on-background: '#1a1b21'\n  surface-variant: '#e2e2e9'\ntypography:\n  headline-lg:\n    fontFamily: Plus Jakarta Sans\n    fontSize: 40px\n    fontWeight: '700'\n    lineHeight: '1.2'\n    letterSpacing: -0.02em\n  headline-md:\n    fontFamily: Plus Jakarta Sans\n    fontSize: 24px\n    fontWeight: '600'\n    lineHeight: '1.3'\n  body-lg:\n    fontFamily: Plus Jakarta Sans\n    fontSize: 18px\n    fontWeight: '400'\n    lineHeight: '1.6'\n  body-md:\n    fontFamily: Plus Jakarta Sans\n    fontSize: 16px\n    fontWeight: '400'\n    lineHeight: '1.6'\n  label-md:\n    fontFamily: Plus Jakarta Sans\n    fontSize: 14px\n    fontWeight: '600'\n    lineHeight: '1.2'\n    letterSpacing: 0.05em\nrounded:\n  sm: 0.25rem\n  DEFAULT: 0.5rem\n  md: 0.75rem\n  lg: 1rem\n  xl: 1.5rem\n  full: 9999px\nspacing:\n  container-max: 600px\n  gutter: 1.5rem\n  section-gap: 4rem\n  stack-sm: 0.5rem\n  stack-md: 1rem\n  stack-lg: 2rem\n---\n\n## Brand & Style\n\nThis design system centers on a philosophy of \"Reverent Minimalism.\" The brand personality is deeply rooted in clarity and accessibility, ensuring that the act of giving feels like a natural, undistracted extension of worship. By prioritizing high-contrast legibility and expansive whitespace, the UI evokes an emotional response of peace, transparency, and trust. \n\nThe aesthetic style is a refined **Modern Minimalist** approach. It avoids unnecessary ornamentation, relying instead on precise typographic hierarchy and a sophisticated monochromatic foundation to guide the user’s journey. This creates a professional atmosphere that respects the gravity of stewardship while maintaining the warmth of a community-focused environment.\n\n## Colors\n\nThe palette is anchored by the brand's deep charcoal (`#0A0C11`), used for primary actions and core typography to provide a sense of stability and authority. This is balanced by an expansive use of white (`#FFFFFF`) to ensure the \"generous whitespace\" requested is functional, not just aesthetic.\n\n- **Primary:** Used for the most critical calls to action (e.g., \"Give Now\" buttons) and header text.\n- **Secondary:** A muted slate gray used for auxiliary information and icons, preventing the interface from feeling too harsh.\n- **Surface:** Subtle off-white backgrounds are used to differentiate form sections without introducing heavy borders.\n\n## Typography\n\nThis design system utilizes **Plus Jakarta Sans** for its modern, friendly, and geometric characteristics, echoing the welcoming spirit of the community. \n\nHeadlines are set with tighter letter-spacing and heavier weights to command attention, while body copy utilizes a generous line height (1.6) to maximize readability for all age groups. Labels are intentionally distinct, using uppercase styling and increased tracking to clearly mark form fields and small metadata without cluttering the layout.\n\n## Layout & Spacing\n\nThe layout philosophy follows a **Fixed Grid** model for the giving experience, centering the content in a focused 600px container. This concentration minimizes eye travel and increases conversion by making the giving process feel manageable.\n\nSpacing is governed by a strict 8px rhythmic scale. We prioritize \"generous whitespace\" by using large vertical gaps (`section-gap`) between logical steps of the giving process (e.g., between \"Amount Selection\" and \"Payment Details\"). Internal component padding is kept airy to ensure the interface never feels cramped, even on mobile devices.\n\n## Elevation & Depth\n\nTo maintain the clean and modern aesthetic, depth is communicated through **Low-Contrast Outlines** and **Tonal Layers** rather than heavy shadows.\n\n1.  **Surface Tiers:** The main giving card sits on a very subtle light-gray background to separate it from the pure white page background.\n2.  **Soft Borders:** Elements like input fields and amount-selection chips use 1px borders in a soft light-gray. \n3.  **Active State Depth:** When an element is selected (like a giving tier), it gains a subtle ambient shadow (0px 4px 20px, 5% opacity) to provide a soft \"lift\" without breaking the minimalist aesthetic.\n\n## Shapes\n\nThe design system employs a **Rounded** shape language. \n\n- **Standard Elements:** Buttons and input fields use a 0.5rem radius, providing a softened, approachable feel that avoids the corporate coldness of sharp corners.\n- **Large Elements:** Giving cards and main containers use a 1rem radius to frame the content comfortably.\n- **Interactive Elements:** Small interactive chips (like pre-set dollar amounts) utilize the same 0.5rem radius to maintain a consistent visual rhythm throughout the form.\n\n## Components\n\n### Buttons\nPrimary buttons are solid `#0A0C11` with white text, utilizing bold typography. They should have a subtle scale-down effect on click to feel tactile. Secondary buttons use a transparent background with a 1px border.\n\n### Giving Chips\nFor pre-set donation amounts, use large, airy chips. When unselected, they have a light border; when selected, they transition to a solid primary color background with white text to clearly indicate the choice.\n\n### Input Fields\nInputs should be \"Minimalist-Modern\": a simple light-gray border that thickens slightly and darkens when focused. Labels should float or sit clearly above the field in the `label-md` style.\n\n### Cards\nThe primary giving container is a large white card with a 1rem border-radius. It should have no visible border, instead relying on a very soft, wide ambient shadow to distinguish it from the background.\n\n### Progress Indicator\nA simple, thin line at the top of the card or container to show the user's step in the process (e.g., Amount > Info > Confirm), using the primary color for the active state and a light gray for pending states.",
+      "font": "PLUS_JAKARTA_SANS",
+      "headlineFont": "PLUS_JAKARTA_SANS",
+      "headlineFontFamily": "Plus Jakarta Sans",
+      "labelFont": "PLUS_JAKARTA_SANS",
+      "labelFontFamily": "Plus Jakarta Sans",
+      "namedColors": {
+        "background": "#f9f9ff",
+        "error": "#ba1a1a",
+        "error_container": "#ffdad6",
+        "inverse_on_surface": "#f0f0f8",
+        "inverse_primary": "#c6c6cd",
+        "inverse_surface": "#2e3036",
+        "on_background": "#1a1b21",
+        "on_error": "#ffffff",
+        "on_error_container": "#93000a",
+        "on_primary": "#ffffff",
+        "on_primary_container": "#82838a",
+        "on_primary_fixed": "#1a1b21",
+        "on_primary_fixed_variant": "#45474d",
+        "on_secondary": "#ffffff",
+        "on_secondary_container": "#54647a",
+        "on_secondary_fixed": "#0b1c30",
+        "on_secondary_fixed_variant": "#38485d",
+        "on_surface": "#1a1b21",
+        "on_surface_variant": "#46464b",
+        "on_tertiary": "#ffffff",
+        "on_tertiary_container": "#818486",
+        "on_tertiary_fixed": "#191c1e",
+        "on_tertiary_fixed_variant": "#444749",
+        "outline": "#76777b",
+        "outline_variant": "#c7c6cb",
+        "primary": "#000000",
+        "primary_container": "#1a1b21",
+        "primary_fixed": "#e2e2e9",
+        "primary_fixed_dim": "#c6c6cd",
+        "secondary": "#505f76",
+        "secondary_container": "#d0e1fb",
+        "secondary_fixed": "#d3e4fe",
+        "secondary_fixed_dim": "#b7c8e1",
+        "surface": "#f9f9ff",
+        "surface_bright": "#f9f9ff",
+        "surface_container": "#ededf5",
+        "surface_container_high": "#e8e7ef",
+        "surface_container_highest": "#e2e2e9",
+        "surface_container_low": "#f3f3fb",
+        "surface_container_lowest": "#ffffff",
+        "surface_dim": "#d9d9e1",
+        "surface_tint": "#5d5e64",
+        "surface_variant": "#e2e2e9",
+        "tertiary": "#000000",
+        "tertiary_container": "#191c1e",
+        "tertiary_fixed": "#e0e3e5",
+        "tertiary_fixed_dim": "#c4c7c9"
+      },
+      "overrideNeutralColor": "#0A0C11",
+      "overridePrimaryColor": "#0A0C11",
+      "overrideSecondaryColor": "#64748B",
+      "overrideTertiaryColor": "#F8FAFC",
+      "roundness": "ROUND_EIGHT",
+      "spacing": {
+        "container-max": "600px",
+        "gutter": "1.5rem",
+        "section-gap": "4rem",
+        "stack-lg": "2rem",
+        "stack-md": "1rem",
+        "stack-sm": "0.5rem"
+      },
+      "spacingScale": 2,
+      "typography": {
+        "body-lg": {
+          "fontFamily": "Plus Jakarta Sans",
+          "fontSize": "18px",
+          "fontWeight": "400",
+          "lineHeight": "1.6"
+        },
+        "body-md": {
+          "fontFamily": "Plus Jakarta Sans",
+          "fontSize": "16px",
+          "fontWeight": "400",
+          "lineHeight": "1.6"
+        },
+        "headline-lg": {
+          "fontFamily": "Plus Jakarta Sans",
+          "fontSize": "40px",
+          "fontWeight": "700",
+          "letterSpacing": "-0.02em",
+          "lineHeight": "1.2"
+        },
+        "headline-md": {
+          "fontFamily": "Plus Jakarta Sans",
+          "fontSize": "24px",
+          "fontWeight": "600",
+          "lineHeight": "1.3"
+        },
+        "label-md": {
+          "fontFamily": "Plus Jakarta Sans",
+          "fontSize": "14px",
+          "fontWeight": "600",
+          "letterSpacing": "0.05em",
+          "lineHeight": "1.2"
+        }
+      }
+    },
+    "deviceType": "DESKTOP",
+    "metadata": {
+      "userRole": "OWNER"
+    },
+    "name": "projects/13478507951163706242",
+    "origin": "STITCH",
+    "projectType": "TEXT_TO_UI_PRO",
+    "screenInstances": [
+      {
+        "height": 1413,
+        "id": "02db10e1fc274f3d8ead1e165d0eeaaf",
+        "sourceScreen": "projects/13478507951163706242/screens/02db10e1fc274f3d8ead1e165d0eeaaf",
+        "width": 1280,
+        "x": 4797,
+        "y": -116
+      },
+      {
+        "height": 1024,
+        "id": "29dda55b40b941aa8ee96be6efca19aa",
+        "sourceScreen": "projects/13478507951163706242/screens/29dda55b40b941aa8ee96be6efca19aa",
+        "width": 1280,
+        "x": 3453,
+        "y": -116
+      },
+      {
+        "height": 285,
+        "id": "48da0ed4-b86a-47f4-abcc-22d3dc5b3c25",
+        "sourceScreen": "projects/13478507951163706242/screens/13478507951163703736",
+        "type": "SCREEN_INSTANCE",
+        "width": 512
+      },
+      {
+        "height": 1024,
+        "id": "6d55699567b64cd98d07325ee4b8b482",
+        "sourceScreen": "projects/13478507951163706242/screens/6d55699567b64cd98d07325ee4b8b482",
+        "width": 1280,
+        "x": 6141,
+        "y": -116
+      },
+      {
+        "height": 1470,
+        "id": "8a9fed79b492492989327d12610102ad",
+        "sourceScreen": "projects/13478507951163706242/screens/8a9fed79b492492989327d12610102ad",
+        "width": 1280,
+        "x": 765,
+        "y": -116
+      },
+      {
+        "height": 1149,
+        "id": "a6cfc05820104c498b34213a65127ea6",
+        "sourceScreen": "projects/13478507951163706242/screens/a6cfc05820104c498b34213a65127ea6",
+        "width": 1280,
+        "x": 2109,
+        "y": -116
+      },
+      {
+        "height": 540,
+        "id": "assets-8d0cc4966a10412197b77daa448bfff4-1778172335656",
+        "sourceAsset": "assets/8d0cc4966a10412197b77daa448bfff4",
+        "type": "DESIGN_SYSTEM_INSTANCE",
+        "width": 960,
+        "x": -234,
+        "y": 364
+      },
+      {
+        "height": 1071,
+        "id": "b3a0e17049f34a8e9a6adebb1b1de2b7",
+        "sourceScreen": "projects/13478507951163706242/screens/b3a0e17049f34a8e9a6adebb1b1de2b7",
+        "width": 1280,
+        "y": 1610
+      }
+    ],
+    "thumbnailScreenshot": {
+      "downloadUrl": "https://lh3.googleusercontent.com/aida/AEtjO1WF3VJKyWfBpe8QTHn7uyL96d2i3K30IhrmwAqgmZWIgnzyxcIxW9tdSnVZUH3SCbskaZg6NxMLJXggnN2Fz16rPxT88W9URTT0hRZsSe1am3rK5qmld8gO9VVq34r3z0zudHY1JrxlMWQ075zrzeu8FQsXTYARoygksEWd07N1QLfYDcqcB0wudxnKWUF2SYwziO-54Yusbix_xPGB7owCIbGVwP0v3nmVWLpXcOS5BX6umLBu5jNPaHM",
+      "name": "projects/13478507951163706242/files/3c5ca90b67e94e9eb8f5da5dec8be451"
+    },
+    "title": "Faith Arlington Giving Redesign",
+    "updateTime": "2026-07-04T17:12:34.779610Z",
+    "visibility": "PRIVATE"
+  },
+  "screens": [
+    {
+      "deviceType": "DESKTOP",
+      "height": "2940",
+      "htmlCode": {
+        "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzUzYTQ0YTQxYmZkNTRjYjU5NDljMDc0NzVkNGRjMDI1EgsSBxC2qePwiRgYAZIBJAoKcHJvamVjdF9pZBIWQhQxMzQ3ODUwNzk1MTE2MzcwNjI0Mg&filename=&opi=89354086",
+        "mimeType": "text/html",
+        "name": "projects/13478507951163706242/files/d4491d32b17c48a19953a2bf62cb843a"
+      },
+      "name": "projects/13478507951163706242/screens/8a9fed79b492492989327d12610102ad",
+      "screenshot": {
+        "downloadUrl": "https://lh3.googleusercontent.com/aida/AEtjO1WdkFdopRP8ouvnAP-LHx9tVOa4MB-GHH8ls5A2dO4OmI-Iw9kZ-oWCpLT0qU17JubrfBKRrO6rnuGJCXxvdoGxvvALsRThkJLZ5gE3QeIeGk6SJPfDMVV9dHt07WtFwDezy3UN3XuhoH5PGLMeiHWBY2WAXtyXBLRm228gJjLn_KRj-3M9Fu42Kr9R3ryPR4CKjKEUzRfyNKL5VtDSBHJPDZrAI86duP8ncoqBkPyoMjKfOn64y7nv54A",
+        "name": "projects/13478507951163706242/files/3c5ca90b67e94e9eb8f5da5dec8be451"
+      },
+      "title": "Faith Giving Form Redesign",
+      "width": "2560"
+    },
+    {
+      "deviceType": "DESKTOP",
+      "height": "2298",
+      "htmlCode": {
+        "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sX2RiNDYxNTk1N2JlMTRkZjk4N2VhMjllNjRjN2E4ODRjEgsSBxC2qePwiRgYAZIBJAoKcHJvamVjdF9pZBIWQhQxMzQ3ODUwNzk1MTE2MzcwNjI0Mg&filename=&opi=89354086",
+        "mimeType": "text/html",
+        "name": "projects/13478507951163706242/files/ddb2da1c6e3a4b68abcb3f6383685e72"
+      },
+      "name": "projects/13478507951163706242/screens/a6cfc05820104c498b34213a65127ea6",
+      "screenshot": {
+        "downloadUrl": "https://lh3.googleusercontent.com/aida/AEtjO1Xa4XOFGOmaeUk7odZSZyJkMrrODuvw2VoA-SoGgibZ4fX46PUkw-VW5tuJ3kMsYxiAE80H90Mht7dWcrEJhxVC_gnXXj0HZ5qO7H1peiqBefDdWL2aWHMpl6tlqrm5f2I4f0fasv8BXKkQxCfitmyUUPelpdK9l--mboMydL_zIKG3q8sBXpm67HkoGqQPa4mjX9lRRvToUQQbexTBnzPWj6l9-ip0AF8TnBzZz7ix2SBcwJRaujLGkrPQ",
+        "name": "projects/13478507951163706242/files/f7dedf55d3c34edaadc89626d7cb5f10"
+      },
+      "title": "Online Giving (Prefilled)",
+      "width": "2560"
+    },
+    {
+      "deviceType": "DESKTOP",
+      "height": "2142",
+      "htmlCode": {
+        "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzAwMDY1NWE5OGVmOGJhMDcwMjJkNGNiZWYyMDJjNTgzEgsSBxC2qePwiRgYAZIBJAoKcHJvamVjdF9pZBIWQhQxMzQ3ODUwNzk1MTE2MzcwNjI0Mg&filename=&opi=89354086",
+        "mimeType": "text/html",
+        "name": "projects/13478507951163706242/screens/b3a0e17049f34a8e9a6adebb1b1de2b7/fileEntries/html"
+      },
+      "name": "projects/13478507951163706242/screens/b3a0e17049f34a8e9a6adebb1b1de2b7",
+      "screenshot": {
+        "downloadUrl": "https://lh3.googleusercontent.com/aida/AEtjO1UInAUnNDaHJkZvGIJJNWV_M6XIDdb9NNUgZooJUSDNSVfIn3f_zjFRGdHMN4Mp27YsJ28K8ZtpsoDUERqCFt_g2M6-OssCnrIlb57MOoNltqKDQR_bhMYkRxGuGasljEcAunH4bqam4zyTtLzn3fRWzLXIiGj9g8eNz5mLxAqCIqWFRqlCiMyOIZB3xcP4oFAe4ega-t5HjsTfi_t32tgjn_tOkcSfdQ2Hl3hv4xNUK048uD6Nfy1mhGs",
+        "name": "projects/13478507951163706242/screens/b3a0e17049f34a8e9a6adebb1b1de2b7/fileEntries/screenshot"
+      },
+      "title": "Saved Payment Method",
+      "width": "2560"
+    },
+    {
+      "deviceType": "DESKTOP",
+      "height": "2048",
+      "htmlCode": {
+        "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzQ4YzQzYjUyYTQ4ZjRiYWRhZGE1OWEwYWM2OGI5MWYyEgsSBxC2qePwiRgYAZIBJAoKcHJvamVjdF9pZBIWQhQxMzQ3ODUwNzk1MTE2MzcwNjI0Mg&filename=&opi=89354086",
+        "mimeType": "text/html",
+        "name": "projects/13478507951163706242/files/843e62e6350d4d688197be9ce03edafa"
+      },
+      "name": "projects/13478507951163706242/screens/6d55699567b64cd98d07325ee4b8b482",
+      "screenshot": {
+        "downloadUrl": "https://lh3.googleusercontent.com/aida/AEtjO1VT5-pr6xF10jG6aBoK8yw5CHS89rMUm0iR9lzqPRILMWTZVWp1eJJiQTVYFD3pUGE-yXJIQfbO1UmAEhK0V6jSUOv3Ir4lgXrvoGxbq6ShHo8TvoH5RRrF5Ru_IBNwEDFTEM8FtLX56MUjCzcnnWMqsckEpW-2HWgqNimcIr_EAgZwuOREsottu3lCjkX7WVLPJUiYDwDcBIhbf6Ox5N9EAmRIl9_WWBo-Gh07JOvnYJ7o6n72WQf0MGsf",
+        "name": "projects/13478507951163706242/files/2757f7a3f9c343479033cac1ad9a98c1"
+      },
+      "title": "Login with Phone Number",
+      "width": "2560"
+    },
+    {
+      "deviceType": "DESKTOP",
+      "height": "2048",
+      "htmlCode": {
+        "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzAwMDY1NWE5ODhkOTBhMTcwNGVhYjIxNjdkMzhjODEyEgsSBxC2qePwiRgYAZIBJAoKcHJvamVjdF9pZBIWQhQxMzQ3ODUwNzk1MTE2MzcwNjI0Mg&filename=&opi=89354086",
+        "mimeType": "text/html",
+        "name": "projects/13478507951163706242/screens/29dda55b40b941aa8ee96be6efca19aa/fileEntries/html"
+      },
+      "name": "projects/13478507951163706242/screens/29dda55b40b941aa8ee96be6efca19aa",
+      "screenshot": {
+        "downloadUrl": "https://lh3.googleusercontent.com/aida/AEtjO1UaK2Ioaay6LgfgDSbAA0F4rLFS97wOynDN-0AoqCaFFtnOWNJtll9Q9uMCCqyB0ilG8mVyfr6Ku02XEeNCmnlCsbIckSVfqRTWJh2AF4Tds9EStrPG-LTsotb_WLKyrG64hYM1qgLgiREFwf_TQ41Fks7g1Uf1OJlMkgbn1X8mMFV1m1GGnvhElo49yt9BX3CeaRDB54ZhAan6IMej3HgZg2A30xrsw-sYULy0XMnRMpBLnkYnvd5tbTSb",
+        "name": "projects/13478507951163706242/screens/29dda55b40b941aa8ee96be6efca19aa/fileEntries/screenshot"
+      },
+      "title": "Payment Processing",
+      "width": "2560"
+    },
+    {
+      "height": "875",
+      "htmlCode": {},
+      "name": "projects/13478507951163706242/screens/13478507951163703736",
+      "screenshot": {
+        "downloadUrl": "https://lh3.googleusercontent.com/aida/AEtjO1Vy0IKJuQnfd0n2BFBErfvYMlLmX6nwbX5aWDugGjO-BRGNGm48ZYKIIkNVTMURtmF02mYVH1DrYZ8f1T019YmiP7_9TlyKhvhMvYZk25F1Y3nT_hwf6MvSXgmBvG4m-rcDCLItpU-6IpZZnC-1x-lPjsPmpfI506c44BDr3e42mWK2myhEwszmdGy6MxCqWhfnWvtqrWrrGZn-v4p_E69Yk4os4L3KToOL0KEokYlDgM26qNj_jF9_ssbNFuTrkuQF70-2DHHe_A",
+        "name": "projects/13478507951163706242/files/13478507951163705943"
+      },
+      "title": "image.png",
+      "width": "1573"
+    },
+    {
+      "deviceType": "DESKTOP",
+      "height": "2640",
+      "htmlCode": {
+        "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzAwMDY1NWFhZjJlYjU0NGMwOTI1ZDQyZjBmMGI5MDVkEgsSBxC2qePwiRgYAZIBJAoKcHJvamVjdF9pZBIWQhQxMzQ3ODUwNzk1MTE2MzcwNjI0Mg&filename=&opi=89354086",
+        "mimeType": "text/html",
+        "name": "projects/13478507951163706242/files/17725649724656956048"
+      },
+      "name": "projects/13478507951163706242/screens/02db10e1fc274f3d8ead1e165d0eeaaf",
+      "screenshot": {
+        "downloadUrl": "https://lh3.googleusercontent.com/aida/AEtjO1Uz8kI5i2xUbKaBVuJuMvvkx5OfcMgzmG-hMFdbqDXlYpunJ_ZgysLU_zeCv2JfL-QICghf1UDGcuQDhNQQeMWwPAgLdPCNIwJ6FXN0PKfl-fX3Jpu56MTq1Gcdf9R_qDBmWo7bnaZTn-GSFnbhWIhlzfhltJJhvhip98yFITHn8pgjHnoPBrxuZQ6zIAA4yraRGTtyFiiC8DcXpUOxTozy8w5y3CWFvCIz5Q4slvRTaJOMiySSjPH_umA",
+        "name": "projects/13478507951163706242/files/10869292545688797102"
+      },
+      "title": "Giving Success Confirmation",
+      "width": "2560"
+    }
+  ]
+}

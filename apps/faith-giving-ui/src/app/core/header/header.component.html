@@ -1,3 +1,43 @@
+<ng-container *ngIf="experience.enabled; else legacy">
+<header class="app-header">
+  <div class="header-inner">
+    <a class="header-brand" routerLink="/" aria-label="Faith Giving home">
+      <span class="brand-text">Faith Giving</span>
+    </a>
+    <nav class="header-actions" aria-label="Main navigation">
+      <a class="church-link" href="https://discoverfaitharlington.org/"
+        >Back to Church</a
+      >
+      <ng-container *ngIf="authService.isAuthenticated; else signIn">
+        <button
+          class="header-avatar"
+          type="button"
+          (click)="onAvatarClick()"
+          aria-label="Edit your profile"
+        >
+          <span class="avatar-initials">{{ initials }}</span>
+        </button>
+        <button
+          class="text-button sign-out"
+          type="button"
+          (click)="authService.signOut()"
+        >
+          Sign out
+        </button>
+      </ng-container>
+      <ng-template #signIn>
+        <a class="sign-in-link" routerLink="/"
+          ><i class="pi pi-user" aria-hidden="true"></i> Sign in</a
+        >
+      </ng-template>
+    </nav>
+  </div>
+</header>
+
+</ng-container>
+
+<!-- Preserve the existing experience when beta_access is unavailable or off. -->
+<ng-template #legacy>
 <header class="app-header">
   <div class="header-inner">
     <div class="header-brand">
@@ -9,3 +49,5 @@
     </div>
   </div>
 </header>
+
+</ng-template>

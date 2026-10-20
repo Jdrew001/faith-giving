@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { GivingExperienceService } from '../core/services/giving-experience.service';
+import { HostBinding, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../core/services/auth.service';
@@ -6,9 +7,16 @@ import { AuthService } from '../core/services/auth.service';
 @Component({
     selector: 'faith-giving-verify',
     templateUrl: './verify.component.html',
-    styleUrls: ['./verify.component.css']
+    styleUrls: ['./verify.component.legacy.css', './verify.component.css']
 })
 export class VerifyComponent implements OnInit {
+  @HostBinding('class.redesign') get redesignEnabled() {
+    return this.experience.enabled;
+  }
+  @HostBinding('class.legacy') get legacyEnabled() {
+    return !this.experience.enabled;
+  }
+
 
     verifyForm: FormGroup;
     loading = false;
@@ -19,6 +27,7 @@ export class VerifyComponent implements OnInit {
     get code() { return this.verifyForm.get('code'); }
 
     constructor(
+    public readonly experience: GivingExperienceService,
         private fb: FormBuilder,
         private authService: AuthService,
         private route: ActivatedRoute,
