@@ -1,3 +1,308 @@
+<ng-container *ngIf="experience.enabled; else legacy">
+<div class="give-page" [formGroup]="givingForm">
+  <div
+    class="giving-card"
+    [ngSwitch]="activeFormIndex"
+    [attr.aria-busy]="requestInit"
+  >
+    <div
+      class="card-container"
+      [attr.aria-hidden]="requestInit ? 'true' : null"
+      [attr.inert]="requestInit ? '' : null"
+    >
+      <ng-container *ngSwitchCase="0">
+        <header class="giving-header" [class.returning-header]="!isGuest">
+          <span class="step-badge">Step 1 of 2 · Gift details</span>
+          <ng-container *ngIf="isGuest; else welcome">
+            <h1>Online Giving</h1>
+            <p>Support the ministries and mission of Faith Tabernacle.</p>
+            <a class="sign-in-callout" routerLink="/">
+              <span>Already have an account?</span>
+              <strong
+                >Sign in for faster giving
+                <i class="pi pi-arrow-right" aria-hidden="true"></i
+              ></strong>
+            </a>
+          </ng-container>
+          <ng-template #welcome>
+            <h1>Welcome back, {{ individual?.firstname }}!</h1>
+            <button class="text-button" type="button" (click)="signOut()">
+              Not you? Sign out
+            </button>
+          </ng-template>
+        </header>
+
+        <ng-container *ngIf="isGuest">
+          <section aria-labelledby="your-details-heading">
+            <h2 id="your-details-heading" class="section-title">
+              Your Details
+            </h2>
+            <faith-giving-user-details
+              [formSubmitted]="formSubmitted"
+              (onChange$)="userInputChange()"
+            ></faith-giving-user-details>
+          </section>
+          <hr class="section-divider" />
+        </ng-container>
+
+        <section aria-labelledby="gift-details-heading">
+          <h2 id="gift-details-heading" class="section-title">Gift Details</h2>
+          <faith-giving-giving-details
+            [formSubmitted]="formSubmitted"
+          ></faith-giving-giving-details>
+        </section>
+
+        <div class="fee-container">
+          <p-checkbox
+            inputId="cover-fee"
+            [binary]="true"
+            formControlName="feeCovered"
+            label="Help cover the card processing fee? (2.2% + $0.30)"
+          ></p-checkbox>
+        </div>
+        <div class="giving-total-row" aria-live="polite" aria-atomic="true">
+          <span class="total-label">Giving Total</span>
+          <strong class="total-amount">{{ giveTotal | currency }}</strong>
+        </div>
+        <button
+          (click)="payWithStripe()"
+          class="pay-button"
+          type="button"
+          [disabled]="requestInit"
+        >
+          Continue to payment
+          <i class="pi pi-arrow-right" aria-hidden="true"></i>
+        </button>
+        <div class="clear-row">
+          <button (click)="clearFields()" class="text-button" type="button">
+            Clear form
+          </button>
+        </div>
+        <div class="secure-payment-note">
+          <i class="pi pi-lock" aria-hidden="true"></i> Secure giving · Payments
+          processed by Stripe
+        </div>
+      </ng-container>
+
+      <ng-container *ngSwitchCase="1">
+        <header class="giving-header payment-header">
+          <span class="step-badge">Step 2 of 2 · Payment</span>
+          <h1>
+            {{
+              isAuthenticated && savedPaymentMethods.length > 0 && !useNewCard
+                ? 'How would you like to pay?'
+                : 'Card Details'
+            }}
+          </h1>
+          <p>Complete your gift to Faith Tabernacle.</p>
+        </header>
+
+        <ng-template #giftSummary>
+          <div class="payment-summary" aria-label="Gift summary">
+            <div class="payment-summary-row" *ngFor="let item of giftItems">
+              <span>{{ item.label }}</span
+              ><span>{{ item.amount | currency }}</span>
+            </div>
+            <div
+              class="payment-summary-row"
+              *ngIf="givingForm.get('feeCovered').value"
+            >
+              <span>Processing fee covered</span
+              ><span>{{ giveTotal - giftSubtotal | currency }}</span>
+            </div>
+            <div class="payment-summary-row payment-summary-total">
+              <span>Total Gift</span><strong>{{ giveTotal | currency }}</strong>
+            </div>
+          </div>
+        </ng-template>
+
+        <ng-container
+          *ngIf="
+            isAuthenticated && savedPaymentMethods.length > 0 && !useNewCard;
+            else newCard
+          "
+        >
+          <fieldset class="saved-cards-list">
+            <legend class="field-label">Select a saved payment method</legend>
+            <label
+              *ngFor="let pm of savedPaymentMethods"
+              class="saved-card-item"
+              [class.selected]="selectedPaymentMethod === pm.paymentMethodId"
+            >
+              <i class="pi pi-credit-card" aria-hidden="true"></i>
+              <span class="card-copy">
+                <span class="card-title-row"
+                  ><span class="card-brand">{{ pm.brand }}</span>
+                  <span>•••• {{ pm.last4 }}</span></span
+                >
+                <span class="card-expiry"
+                  >Expires {{ pm.expMonth }}/{{
+                    pm.expYear.toString().slice(-2)
+                  }}</span
+                >
+              </span>
+              <input
+                type="radio"
+                name="savedPaymentMethod"
+                [value]="pm.paymentMethodId"
+                [checked]="selectedPaymentMethod === pm.paymentMethodId"
+                (change)="selectPaymentMethod(pm.paymentMethodId)"
+                [disabled]="requestInit"
+                [attr.aria-label]="pm.brand + ' ending in ' + pm.last4"
+              />
+            </label>
+          </fieldset>
+          <button
+            (click)="useNewCardSelected()"
+            class="payment-option-btn"
+            type="button"
+            [disabled]="requestInit"
+          >
+            <i class="pi pi-plus" aria-hidden="true"></i> Add new payment method
+          </button>
+          <ng-container *ngTemplateOutlet="giftSummary"></ng-container>
+          <button
+            (click)="
+              submitForm({
+                number: null,
+                zipCode: null,
+                savePaymentMethod: false
+              })
+            "
+            class="pay-button"
+            type="button"
+            [disabled]="requestInit || !selectedPaymentMethod"
+          >
+            Give {{ giveTotal | currency }}
+          </button>
+          <div class="back-row">
+            <button
+              (click)="previous()"
+              class="back-link"
+              type="button"
+              [disabled]="requestInit"
+            >
+              <i class="pi pi-arrow-left" aria-hidden="true"></i> Back to amount
+              selection
+            </button>
+          </div>
+        </ng-container>
+        <ng-template #newCard>
+          <ng-container *ngTemplateOutlet="giftSummary"></ng-container>
+          <faith-giving-card-details
+            [formSubmitted]="formSubmitted"
+            [stripe]="stripe"
+            [initRequest]="requestInit"
+            [total]="giveTotal"
+            [isAuthenticated]="isAuthenticated"
+            [hasSavedPaymentMethods]="savedPaymentMethods.length > 0"
+            (submit$)="submitForm($event)"
+            (backToPrevious$)="previous()"
+            (backToPaymentMethods$)="useNewCard = false"
+          ></faith-giving-card-details>
+        </ng-template>
+        <div class="secure-payment-note">
+          <i class="pi pi-lock" aria-hidden="true"></i> Secure giving · Payments
+          processed by Stripe
+        </div>
+      </ng-container>
+
+      <ng-container *ngSwitchCase="2">
+        <section
+          class="confirmation-step"
+          *ngIf="confirmationDetails"
+          aria-labelledby="confirmation-heading"
+        >
+          <div class="confirmation-icon">
+            <i class="pi pi-check" aria-hidden="true"></i>
+          </div>
+          <h1 id="confirmation-heading">Thank you for your generosity!</h1>
+          <p class="confirmation-message">
+            Your gift helps support the ministries and mission of Faith
+            Tabernacle.
+          </p>
+          <dl class="confirmation-summary">
+            <div class="summary-row">
+              <dt>Date</dt>
+              <dd>{{ confirmationDetails.date | date : 'mediumDate' }}</dd>
+            </div>
+            <div
+              class="summary-row"
+              *ngFor="let item of confirmationDetails.items"
+            >
+              <dt>{{ item.label }}</dt>
+              <dd>{{ item.amount | currency }}</dd>
+            </div>
+            <div class="summary-row" *ngIf="confirmationDetails.feeCovered">
+              <dt>Processing fee covered</dt>
+              <dd>{{ confirmationDetails.feeAmount | currency }}</dd>
+            </div>
+            <div class="summary-row total-summary-row">
+              <dt>Total Gift</dt>
+              <dd>{{ confirmationDetails.total | currency }}</dd>
+            </div>
+            <div class="summary-row">
+              <dt>Payment Method</dt>
+              <dd>
+                <i class="pi pi-credit-card" aria-hidden="true"></i>
+                {{ confirmationDetails.paymentMethod }}
+              </dd>
+            </div>
+          </dl>
+          <button
+            (click)="done()"
+            class="pay-button confirmation-done-button"
+            type="button"
+          >
+            Done
+          </button>
+          <div class="confirmation-actions">
+            <button (click)="viewReceipt()" class="text-button" type="button">
+              <i class="pi pi-eye" aria-hidden="true"></i> View Receipt
+            </button>
+          </div>
+        </section>
+      </ng-container>
+    </div>
+
+    <div
+      *ngIf="requestInit"
+      class="processing-overlay"
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
+    >
+      <i class="pi pi-spinner pi-spin processing-spinner" aria-hidden="true"></i>
+      <h1>Processing your gift...</h1>
+      <strong class="processing-total">{{ giveTotal | currency }}</strong>
+      <p>
+        Please keep this window open while your payment is processed. Do not
+        submit your gift again.
+      </p>
+    </div>
+  </div>
+</div>
+
+<p-toast position="bottom-center"></p-toast>
+<p-confirmDialog
+  #confirmDialog
+  [message]="'Are you sure you want to cancel?'"
+  acceptLabel="Yes"
+  rejectLabel="No"
+  acceptButtonStyleClass="p-button-sm"
+  rejectButtonStyleClass="p-button-secondary p-button-sm"
+  (acceptEvent)="onConfirm()"
+></p-confirmDialog>
+<faith-giving-profile-modal
+  [visible]="showProfileModal"
+  [individual]="individual"
+  (closeModal)="closeProfileModal()"
+></faith-giving-profile-modal>
+
+</ng-container>
+
+<!-- Preserve the existing experience when beta_access is unavailable or off. -->
+<ng-template #legacy>
 <div class="give-page" [formGroup]="givingForm">
 
     <!-- ── Authenticated header ── -->
@@ -213,3 +518,5 @@
     [visible]="showProfileModal"
     [individual]="individual"
     (closeModal)="closeProfileModal()"></faith-giving-profile-modal>
+
+</ng-template>

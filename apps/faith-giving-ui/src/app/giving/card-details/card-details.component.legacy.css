@@ -1,0 +1,140 @@
+:host(.legacy) .field-group {
+    margin-bottom: var(--stack-md);
+}
+
+:host(.legacy) .field-label {
+    font-family: var(--font-family);
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--on-surface);
+    margin-bottom: var(--stack-sm);
+    display: block;
+}
+
+:host(.legacy) .stripe-element {
+    padding: 12px 16px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    color: #1a1b21;
+    -webkit-text-fill-color: #1a1b21;
+}
+
+:host(.legacy) p.error {
+    color: var(--error) !important;
+    text-align: left !important;
+    text-transform: none !important;
+    padding: 0px !important;
+    margin: 4px 0 0 !important;
+    font-size: 12px;
+    font-family: var(--font-family);
+}
+
+:host(.legacy) .pay-button {
+    background: var(--primary);
+    color: var(--on-primary);
+    border: none;
+    border-radius: var(--rounded-md);
+    width: 100%;
+    padding: 14px;
+    font-family: var(--font-family);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: transform 0.1s ease;
+    margin-top: var(--stack-lg);
+}
+
+:host(.legacy) .pay-button:active {
+    transform: scale(0.98);
+}
+
+:host(.legacy) .pay-button:hover {
+    background: #1a1b21;
+}
+
+:host(.legacy) .pay-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+:host(.legacy) .pay-button i {
+    color: var(--on-primary);
+    font-size: 14px;
+}
+
+:host(.legacy) .back-row {
+    text-align: center;
+    margin-top: var(--stack-md);
+}
+
+:host(.legacy) .back-link {
+    font-family: var(--font-family);
+    font-size: 14px;
+    color: var(--on-surface-variant);
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: color 0.2s ease;
+}
+
+:host(.legacy) .back-link:hover {
+    color: var(--on-surface);
+}
+
+:host(.legacy) .back-link i {
+    font-size: 12px;
+    color: inherit;
+}
+
+:host(.legacy) .form-control {
+    display: block !important;
+}
+
+:host(.legacy) .field-group p-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+:host(.legacy) .field-group p-checkbox ::ng-deep .p-checkbox-label {
+    font-size: 14px;
+    color: #1a1b21;
+    font-weight: 500;
+}
+
+:host(.legacy) .field-group p-checkbox ::ng-deep .p-checkbox-box {
+    border: 1.5px solid #c7c6cb;
+    border-radius: 4px;
+    width: 18px;
+    height: 18px;
+}
+
+:host(.legacy) .field-group p-checkbox ::ng-deep .p-checkbox-box.p-highlight {
+    background-color: #1a1b21;
+    border-color: #1a1b21;
+}
+
+:host(.legacy) .field-group p-checkbox ::ng-deep .p-checkbox-box .p-checkbox-icon {
+    color: white;
+    font-size: 12px;
+}
+
+:host(.legacy) .copyright-row {
+    text-align: center;
+    margin-top: var(--stack-md);
+}
+
+:host(.legacy) .copyright-text {
+    font-family: var(--font-family);
+    font-size: 11px;
+    color: var(--on-surface-variant);
+}

@@ -25,6 +25,7 @@ import {
   FeatureFlagsRuntime,
 } from './feature-flags.provider';
 import { FeatureFlagsService } from './feature-flags.service';
+import { GivingExperienceService } from './giving-experience.service';
 
 const DONOR_A = 'b2f7a161-37c0-4a06-b205-321b201d00ca';
 const DONOR_B = '741ae580-8a7b-4ad3-a97c-df17c8e109ef';
@@ -43,6 +44,7 @@ describe('FeatureFlagsService', () => {
   let notifications: Set<() => void>;
   let enabled: boolean;
   let zone: NgZone;
+  let experience: GivingExperienceService;
 
   beforeEach(() => {
     individual = new BehaviorSubject(null);
@@ -74,6 +76,7 @@ describe('FeatureFlagsService', () => {
       ],
     });
     service = TestBed.inject(FeatureFlagsService);
+    experience = TestBed.inject(GivingExperienceService);
     http = TestBed.inject(HttpTestingController);
     zone = TestBed.inject(NgZone);
     service
@@ -210,6 +213,7 @@ describe('FeatureFlagsService', () => {
     resolveSupport(true);
     flushMicrotasks();
     expect(service.snapshot('betaAccess').enabled).toBe(true);
+    expect(experience.enabled).toBe(true);
 
     let insideAngular = false;
     const subscription = service.decision$('betaAccess').subscribe(() => {
@@ -219,6 +223,7 @@ describe('FeatureFlagsService', () => {
     zone.runOutsideAngular(() => notifications.forEach((notify) => notify()));
     expect(insideAngular).toBe(true);
     expect(service.snapshot('betaAccess').enabled).toBe(false);
+    expect(experience.enabled).toBe(false);
     subscription.unsubscribe();
   }));
 

@@ -1,0 +1,65 @@
+:host(.legacy) .app-header {
+  background-color: var(--surface);
+  border-bottom: 1px solid var(--outline-variant);
+  padding: 0 var(--gutter);
+}
+
+:host(.legacy) .header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+}
+
+:host(.legacy) .header-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+:host(.legacy) .header-brand i {
+  font-size: 1.25rem;
+  color: var(--primary);
+}
+
+:host(.legacy) .brand-text {
+  font-family: var(--font-family);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--primary);
+  letter-spacing: -0.01em;
+}
+
+:host(.legacy) .header-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--surface-container-low);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+:host(.legacy) .header-avatar:hover {
+  background-color: var(--surface-container);
+}
+
+:host(.legacy) .header-avatar i {
+  font-size: 1rem;
+  color: var(--on-surface-variant);
+}
+
+:host(.legacy) .header-avatar.authenticated {
+  background-color: #1a1b21;
+}
+
+:host(.legacy) .avatar-initials {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.03em;
+}

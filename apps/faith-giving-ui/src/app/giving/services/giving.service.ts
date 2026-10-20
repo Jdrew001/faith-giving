@@ -89,11 +89,11 @@ export class GivingService extends BaseService {
       });
   }
 
-  async createPaymentMethod(stripe, number: ElementRef, zipCode: number) {
+  async createPaymentMethod(stripe, number: ElementRef, zipCode: string | number) {
     return await stripe.createPaymentMethod(this.generateBodyForPaymentMethod(number, zipCode));
   }
 
-  async submitPayment(stripe, element: ElementRef, zipCode: number, savePaymentMethod?: boolean) {
+  async submitPayment(stripe, element: ElementRef, zipCode: string | number, savePaymentMethod?: boolean) {
     this.requestInit = true;
     let paymentMethod = await this.createPaymentMethod(stripe, element, zipCode);
     console.log('paymentMethod', paymentMethod);
@@ -220,7 +220,7 @@ export class GivingService extends BaseService {
       });
   }
 
-  private generateBodyForPaymentMethod(number: ElementRef, zipCode: number) {
+  private generateBodyForPaymentMethod(number: ElementRef, zipCode: string | number) {
     return {
       type: 'card',
       card: number,
@@ -275,6 +275,11 @@ export class GivingService extends BaseService {
     });
 
     return items;
+  }
+
+  getGiftItems() {
+    const details = this.convertStringValueToNumber(this.formService.givingForm.getRawValue());
+    return this.buildConfirmationItems(details);
   }
 
   private handlePaymentSuccess(result: any, paymentMethod: string) {

@@ -1,0 +1,52 @@
+# Faith Giving redesign QA
+
+final result: passed
+
+## Source and scope
+
+- Stitch project: https://stitch.withgoogle.com/projects/13478507951163706242
+- Reference captures: `docs/stitch-tabernacle-redesign/*-tabernacle-final-desktop.png`.
+- Implementation: the existing Angular app on `feature/faith-tabernacle-giving-redesign`.
+- All redesigned presentation uses the existing Firebase Boolean `beta_access`.
+- No Firebase template, deployment, real OTP, or live payment was changed.
+
+## Visual comparison
+
+The guest desktop reference and implementation were opened together at a nominal 1280px viewport. The final comparison is `docs/stitch-tabernacle-redesign/implementation/giving-desktop-comparison-final.png`. The implementation retains the 600px card, Poppins font, #0b0b0b canvas, #151515 card, #202020 controls, #2a2a2a borders, white pill CTA, and responsive shared header/footer.
+
+The initial spacing and field-density mismatch was fixed and recaptured. The 320px payment label and fee text were adjusted for readability. The returning heading uses the reference's 24px scale. Remaining small differences in badge, icons, text casing, and section spacing are P3 polish. The phone field preserves the existing US phone input behavior. Amounts, categories, donor details, totals, saved cards and receipt lines come from existing application data rather than illustrative source values.
+
+Desktop source/implementation pairs for guest, returning, saved-card, sign-in, processing and receipt screens are saved as `implementation/*-comparison-final.png`. The processing overlay retains the underlying payment DOM and its height to avoid destroying Stripe controls. A standard PrimeIcons spinner replaces the illustrative source icon. Sign-in, verification and profile captures were taken before the flag wrapper; the final gated browser checks cover giving, saved cards, card navigation, processing, receipt, targeting and logout.
+
+Generated PDF actions, unsupported recurring giving, and illustrative provider/security claims were omitted. The existing print receipt action remains available. Stitch mobile generation was quota-blocked; responsive implementation uses the desktop design direction.
+
+## Behavior and rollout evidence
+
+- 62 frontend tests pass, including the actual feature client with a controlled Firebase runtime.
+- Ready true enables the redesign. Pending, degraded, false, or unavailable configuration retains the original experience.
+- First interaction locks the choice through the gift. Tests preserve payment DOM identity across a flag change and apply the latest choice on Done/exit.
+- New-card tests cover the existing Stripe boundary, field readiness, leading-zero ZIP codes, validation and repeat-submit suppression.
+- Controlled browser smoke passes for disabled guest startup, beta/regular donors, session restoration, OTP sign-in, logout, account switching, saved-card processing, receipt and Done. No uncaught browser errors or unexpected API calls were observed; external requests outside the controlled fixture were blocked.
+- Browser captures at 320, 390, 768 and 1280 pixels show no horizontal overflow. Card navigation was also checked at 390px. Stripe fields are stubbed in the browser harness; their style configuration is asserted at the component boundary. Iframe rendering, deployed font delivery and live charges are not established by this harness.
+- Production build passes, with initial bundle and retained legacy component stylesheet size warnings.
+- Repository lint remains blocked by 21 existing errors and 26 warnings; no new lint errors remain.
+- Earlier full repository tests found 9 existing backend suite failures (7 service suites and 2 API suites). No backend sources were changed.
+
+## Reproduction
+
+Use Node 20 and the repository's installed dependencies:
+
+```sh
+NX_DAEMON=false npx nx test faith-giving-ui --runInBand --skip-nx-cache
+NX_DAEMON=false npx nx build faith-giving-ui --configuration=production --skip-nx-cache
+node tools/serve-feature-flags-smoke.mjs
+# In another terminal, with playwright-cli available:
+bash tools/run-feature-flags-browser-smoke.sh
+```
+
+The production build's initial output is 2.20 MB (2 MB warning, 5 MB error limit).
+The retained legacy giving stylesheet is 11.96 kB (8 kB warning, 12 kB error limit).
+
+## Evidence limits
+
+Local browser checks use controlled Firebase, authentication and payment responses. They do not prove deployed Firebase targeting, OTP delivery, Stripe processing or production behavior. Rollout remains subject to the existing Firebase environment configuration and approved template targeting.

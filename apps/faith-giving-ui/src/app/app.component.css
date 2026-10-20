@@ -1,6 +1,20 @@
-.app-content {
+:host(.legacy) .app-content {
   min-height: calc(100vh - 160px);
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+:host(.redesign) .app-content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+:host(.redesign) {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
 }

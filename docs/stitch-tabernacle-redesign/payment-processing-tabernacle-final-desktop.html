@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Payment Processing — Tabernacle Final — Desktop</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Poppins:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-container-lowest": "#0e0e0e",
+            "inverse-on-surface": "#313030",
+            "on-tertiary-container": "#636565",
+            "outline-variant": "#2a2a2a",
+            "secondary-fixed": "#e3e2e2",
+            "surface-container-highest": "#353534",
+            "outline": "#858585",
+            "on-secondary": "#2f3131",
+            "primary-fixed-dim": "#c6c6c7",
+            "on-secondary-fixed": "#1a1c1c",
+            "surface-bright": "#3a3939",
+            "surface-container-high": "#2a2a2a",
+            "tertiary-container": "#e2e2e2",
+            "tertiary-fixed": "#e2e2e2",
+            "inverse-surface": "#e5e2e1",
+            "primary-container": "#e2e2e2",
+            "on-tertiary-fixed-variant": "#454747",
+            "surface": "#151515",
+            "on-tertiary": "#2f3131",
+            "surface-container-low": "#1c1b1b",
+            "inverse-primary": "#5d5f5f",
+            "on-secondary-fixed-variant": "#464747",
+            "tertiary-fixed-dim": "#c6c6c7",
+            "on-secondary-container": "#b8b8b8",
+            "on-primary-fixed": "#1a1c1c",
+            "surface-container": "#201f1f",
+            "surface-tint": "#c6c6c7",
+            "background": "#131313",
+            "on-error-container": "#ffdad6",
+            "on-background": "#e5e2e1",
+            "secondary": "#c6c6c6",
+            "on-primary-container": "#636565",
+            "tertiary": "#ffffff",
+            "surface-variant": "#353534",
+            "secondary-container": "#484949",
+            "secondary-fixed-dim": "#c6c6c6",
+            "surface-dim": "#131313",
+            "on-primary-fixed-variant": "#454747",
+            "error-container": "#93000a",
+            "on-surface": "#e5e2e1",
+            "on-error": "#690005",
+            "primary": "#ffffff",
+            "on-surface-variant": "#c4c7c8",
+            "on-tertiary-fixed": "#1a1c1c",
+            "on-primary": "#2f3131",
+            "error": "#ffb4ab",
+            "primary-fixed": "#e2e2e2"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "2xl": "1.5rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "stack-lg": "32px",
+            "space-xs": "0.5rem",
+            "stack-sm": "8px",
+            "margin-mobile": "1.25rem",
+            "gutter": "24px",
+            "space-xl": "2rem",
+            "container-max": "600px",
+            "space-sm": "0.75rem",
+            "space-md": "1rem",
+            "stack-md": "16px",
+            "space-lg": "1.5rem",
+            "margin": "1.5rem",
+            "gutter-mobile": "20px"
+          },
+          "fontFamily": {
+            "body-sm": ["Plus Jakarta Sans"],
+            "label-lg": ["Plus Jakarta Sans"],
+            "body-md": ["Poppins"],
+            "headline-sm": ["Plus Jakarta Sans"],
+            "headline-lg-mobile": ["Plus Jakarta Sans"],
+            "headline-lg": ["Poppins"],
+            "headline-md": ["Poppins"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "label-sm": ["Plus Jakarta Sans"],
+            "label-md": ["Poppins"]
+          },
+          "fontSize": {
+            "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+            "label-lg": ["16px", { "lineHeight": "1.4", "fontWeight": "600" }],
+            "body-md": ["16px", { "lineHeight": "1.65", "fontWeight": "400" }],
+            "headline-sm": ["20px", { "lineHeight": "1.35", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "headline-lg-mobile": ["32px", { "lineHeight": "1.25", "letterSpacing": "-0.03em", "fontWeight": "700" }],
+            "headline-lg": ["40px", { "lineHeight": "1.2", "letterSpacing": "-0.04em", "fontWeight": "700" }],
+            "headline-md": ["24px", { "lineHeight": "1.3", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+            "label-sm": ["12px", { "lineHeight": "1.4", "letterSpacing": "0.02em", "fontWeight": "500" }],
+            "label-md": ["14px", { "lineHeight": "1.4", "fontWeight": "500" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    @keyframes pulseRing {
+      0% {
+        transform: scale(0.95);
+        opacity: 0.8;
+      }
+      50% {
+        transform: scale(1.05);
+        opacity: 0.3;
+      }
+      100% {
+        transform: scale(0.95);
+        opacity: 0.8;
+      }
+    }
+    .pulsing-indicator {
+      animation: pulseRing 2.4s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="bg-[#0b0b0b] text-on-surface antialiased min-h-screen flex flex-col justify-between selection:bg-surface-container-high selection:text-primary">
+<!-- TopNavBar (Shared Component) -->
+<header class="w-full bg-surface-container-lowest border-b border-outline-variant h-20 flex-shrink-0 z-50">
+<div class="w-full px-margin md:px-margin flex justify-between items-center max-w-[1440px] mx-auto h-full">
+<!-- Brand & Church Context -->
+<div class="flex items-center space-x-6">
+<a class="text-headline-sm font-headline-sm text-primary tracking-tight" href="#">Faith Giving</a>
+<div class="h-4 w-px bg-outline-variant hidden sm:block"></div>
+<div class="hidden sm:flex items-center space-x-2">
+<span class="text-body-sm font-body-sm text-outline">Faith Tabernacle</span>
+</div>
+</div>
+<!-- Navigation & Trailing Actions -->
+<div class="flex items-center space-x-6">
+<a class="text-outline font-label-md text-label-md hover:text-primary transition-colors duration-200 hidden md:inline-flex items-center space-x-1.5" href="#">
+<span class="material-symbols-outlined text-[18px]">arrow_back</span>
+<span>Back to Church</span>
+</a>
+<div class="h-4 w-px bg-outline-variant hidden md:block"></div>
+<div class="flex items-center space-x-3">
+<button class="text-outline hover:text-primary transition-colors duration-200 p-1 flex items-center justify-center" type="button">
+<span class="material-symbols-outlined text-[24px]">account_circle</span>
+</button>
+<a class="text-outline font-label-md text-label-md hover:text-primary transition-colors duration-200" href="#">Sign In</a>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Canvas: Focused Centered Card -->
+<main class="flex-grow flex items-center justify-center px-margin py-space-xl">
+<div class="w-full max-w-[600px] bg-surface border border-outline-variant rounded-2xl p-6 md:p-8 relative flex flex-col">
+<!-- Stepper: Amount -> Payment -> Processing -->
+<nav aria-label="Progress" class="w-full mb-space-xl">
+<ol class="flex items-center justify-between w-full">
+<!-- Step 1: Amount (Complete) -->
+<li class="flex items-center">
+<div class="flex items-center space-x-2 text-outline">
+<span class="flex items-center justify-center w-6 h-6 rounded-full border border-outline text-[12px] font-label-sm font-semibold">
+<span class="material-symbols-outlined text-[14px]">check</span>
+</span>
+<span class="text-body-sm font-body-sm text-outline hidden sm:inline">Amount</span>
+</div>
+</li>
+<!-- Connector 1 -->
+<li class="flex-grow mx-3 h-px bg-outline-variant"></li>
+<!-- Step 2: Payment (Complete) -->
+<li class="flex items-center">
+<div class="flex items-center space-x-2 text-outline">
+<span class="flex items-center justify-center w-6 h-6 rounded-full border border-outline text-[12px] font-label-sm font-semibold">
+<span class="material-symbols-outlined text-[14px]">check</span>
+</span>
+<span class="text-body-sm font-body-sm text-outline hidden sm:inline">Payment</span>
+</div>
+</li>
+<!-- Connector 2 -->
+<li class="flex-grow mx-3 h-px bg-outline-variant"></li>
+<!-- Step 3: Processing (Active) -->
+<li class="flex items-center">
+<div class="flex items-center space-x-2 text-primary">
+<span class="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-on-secondary font-label-sm text-[12px] font-bold">
+                3
+              </span>
+<span class="text-body-sm font-body-sm text-primary font-semibold">Processing</span>
+</div>
+</li>
+</ol>
+</nav>
+<!-- Central Processing Module -->
+<div class="flex flex-col items-center text-center my-space-md">
+<!-- Processing Icon Container -->
+<div class="relative w-24 h-24 mb-space-lg flex items-center justify-center">
+<!-- Outer Pulsing Hairline Accent Ring -->
+<div class="absolute inset-0 rounded-full border border-outline opacity-40 pulsing-indicator"></div>
+<!-- Inner Rigid Architectural Pod -->
+<div class="w-20 h-20 rounded-full bg-[#202020] border border-outline-variant flex items-center justify-center">
+<!-- Smooth Monochrome Progress Spinner -->
+<div class="relative w-10 h-10 flex items-center justify-center">
+<div class="absolute inset-0 rounded-full border-2 border-outline-variant border-t-primary animate-spin"></div>
+<span class="material-symbols-outlined text-primary text-[20px]">volunteer_activism</span>
+</div>
+</div>
+</div>
+<!-- Headline -->
+<h1 class="text-headline-md font-headline-md text-primary mb-2">
+          Processing your gift...
+        </h1>
+<!-- Amount Prominent Callout -->
+<div class="text-headline-lg font-headline-lg text-primary tracking-tight mb-space-md">
+          $125.00
+        </div>
+<!-- Status Badge -->
+<div class="inline-flex items-center space-x-2 bg-[#202020] border border-outline-variant rounded-full px-3.5 py-1.5 mb-space-lg">
+<span class="material-symbols-outlined text-[14px] text-outline">lock</span>
+<span class="text-label-sm font-label-sm text-secondary tracking-widest uppercase">SECURE ENCRYPTED TRANSACTION</span>
+</div>
+<!-- Subtitle & Crucial Warning -->
+<p class="text-body-sm font-body-sm text-[#b9b9b9] max-w-md mx-auto leading-relaxed">Your contribution of $125.00 is being securely processed. Please do not close this window, press back, or refresh the page to prevent duplicate submissions.</p>
+</div>
+<!-- Info Box (Bottom of Card) -->
+<div class="mt-space-lg bg-[#202020] border border-outline-variant rounded-xl p-4 flex items-start space-x-3.5 text-left">
+<span class="material-symbols-outlined text-outline text-[20px] flex-shrink-0 mt-0.5">info</span>
+<div class="text-body-sm font-body-sm text-[#b9b9b9] leading-snug">Giving through Faith Giving is tax-deductible. A confirmation receipt will be emailed immediately following completion.</div>
+</div>
+</div>
+</main>
+<!-- Footer (Shared Component) -->
+<footer class="w-full bg-surface-container-lowest border-t border-outline-variant py-space-xl flex-shrink-0">
+<div class="max-w-[1440px] mx-auto px-margin flex flex-col md:flex-row justify-between items-center gap-space-sm">
+<!-- Copyright & Stripe Assurance -->
+<div class="text-body-sm font-body-sm text-outline text-center md:text-left">© 2026 Faith Tabernacle</div>
+<!-- Compliance Links -->
+<nav aria-label="Legal &amp; Security Links" class="flex items-center space-x-6"><a class="text-[#b9b9b9] font-label-sm text-label-sm hover:text-primary transition-colors duration-200" href="#">Privacy Policy</a>
+<a class="text-[#b9b9b9] font-label-sm text-label-sm hover:text-primary transition-colors duration-200" href="#">Terms of Service</a>
+<a class="text-[#b9b9b9] font-label-sm text-label-sm hover:text-primary transition-colors duration-200" href="#">Contact Support</a></nav>
+</div>
+</footer>
+</body></html>

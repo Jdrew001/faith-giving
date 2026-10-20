@@ -1,3 +1,89 @@
+<ng-container *ngIf="experience.enabled; else legacy">
+<ng-container [formGroup]="givingForm">
+  <div class="field-group">
+    <label class="field-label" for="giving-email">Email address</label>
+    <input
+      id="giving-email"
+      type="email"
+      autocomplete="email"
+      formControlName="email"
+      class="form-control"
+      placeholder="your@email.com"
+      (keyup)="userChanged()"
+      [attr.aria-invalid]="formSubmitted && givingForm.get('email').invalid"
+    />
+    <p class="error" *ngIf="givingForm.get('email').invalid && formSubmitted">
+      A valid email address is required
+    </p>
+  </div>
+  <div class="name-fields">
+    <div class="field-group">
+      <label class="field-label" for="giving-first-name">First Name</label>
+      <input
+        id="giving-first-name"
+        type="text"
+        autocomplete="given-name"
+        formControlName="firstName"
+        class="form-control"
+        placeholder="First Name"
+        (keyup)="userChanged()"
+        [attr.aria-invalid]="
+          formSubmitted && givingForm.get('firstName').invalid
+        "
+      />
+      <p
+        class="error"
+        *ngIf="givingForm.get('firstName').invalid && formSubmitted"
+      >
+        First Name required
+      </p>
+    </div>
+    <div class="field-group">
+      <label class="field-label" for="giving-last-name">Last Name</label>
+      <input
+        id="giving-last-name"
+        type="text"
+        autocomplete="family-name"
+        formControlName="lastName"
+        class="form-control"
+        placeholder="Last Name"
+        (keyup)="userChanged()"
+        [attr.aria-invalid]="
+          formSubmitted && givingForm.get('lastName').invalid
+        "
+      />
+      <p
+        class="error"
+        *ngIf="givingForm.get('lastName').invalid && formSubmitted"
+      >
+        Last Name required
+      </p>
+    </div>
+  </div>
+  <div class="field-group">
+    <label class="field-label" for="giving-phone">Phone Number</label>
+    <input
+      id="giving-phone"
+      mask="(000) 000-0000"
+      type="tel"
+      inputmode="tel"
+      autocomplete="tel-national"
+      formControlName="phone"
+      class="form-control"
+      placeholder="(555) 000-0000"
+      (keyup)="userChanged()"
+      [attr.aria-invalid]="formSubmitted && givingForm.get('phone').invalid"
+    />
+    <p class="error" *ngIf="givingForm.get('phone').invalid && formSubmitted">
+      Phone required
+    </p>
+  </div>
+</ng-container>
+
+</ng-container>
+
+<!-- Preserve the existing experience when beta_access is unavailable or off. -->
+<ng-template #legacy>
 <ng-container [formGroup]="givingForm">
     <div class="field-group">
         <label class="field-label">Email</label>
@@ -25,3 +111,5 @@
         <p class="error" *ngIf="givingForm.get('phone').invalid && formSubmitted">Phone required</p>
     </div>
 </ng-container>
+
+</ng-template>

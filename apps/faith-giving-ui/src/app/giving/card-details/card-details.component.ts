@@ -1,19 +1,38 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { GiveConstants } from '../giving.constants';
+import { GivingExperienceService } from '../../core/services/giving-experience.service';
+import {
+  HostBinding,
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { GrowlService } from '../../core/growl.service';
 
 @Component({
   selector: 'faith-giving-card-details',
   templateUrl: './card-details.component.html',
-  styleUrls: ['./card-details.component.css'],
+  styleUrls: [
+    './card-details.component.legacy.css',
+    './card-details.component.css',
+  ],
 })
 export class CardDetailsComponent implements AfterViewInit {
+  @HostBinding('class.redesign') get redesignEnabled() {
+    return this.experience.enabled;
+  }
+  @HostBinding('class.legacy') get legacyEnabled() {
+    return !this.experience.enabled;
+  }
 
   @Input() formSubmitted: boolean;
   @Input() stripe;
-  @Input() initRequest: boolean = false;
-  @Input() isAuthenticated: boolean = false;
-  @Input() hasSavedPaymentMethods: boolean = false;
+  @Input() initRequest = false;
+  @Input() isAuthenticated = false;
+  @Input() hasSavedPaymentMethods = false;
+  @Input() total = 0;
 
   @ViewChild('numberElement') numberElement: ElementRef;
   @ViewChild('expElement') expElement: ElementRef;
@@ -22,7 +41,7 @@ export class CardDetailsComponent implements AfterViewInit {
   @Output() submit$: EventEmitter<any> = new EventEmitter();
   @Output() backToPrevious$: EventEmitter<any> = new EventEmitter();
   @Output() backToPaymentMethods$: EventEmitter<any> = new EventEmitter();
-  @Output() savePaymentMethodChange: EventEmitter<boolean> = new EventEmitter(); 
+  @Output() savePaymentMethodChange: EventEmitter<boolean> = new EventEmitter();
 
   cardLoaded = false;
   cvvLoaded = false;
@@ -37,7 +56,34 @@ export class CardDetailsComponent implements AfterViewInit {
   zipCode;
   savePaymentMethod = false;
 
-  elementStyles = {
+  private readonly redesignElementStyles = {
+    base: {
+      color: '#ffffff',
+      iconColor: '#ffffff',
+      fontFamily: 'Poppins, Arial, sans-serif',
+      fontSize: '16px',
+      fontSmoothing: 'antialiased',
+
+      '::placeholder': {
+        color: '#b9b9b9',
+      },
+      ':-webkit-autofill': {
+        color: '#ffffff',
+      },
+      '::-webkit-input-placeholder': {
+        color: '#b9b9b9',
+      },
+    },
+    invalid: {
+      color: '#ffb4ab',
+      iconColor: '#ffb4ab',
+      '::placeholder': {
+        color: '#b9b9b9',
+      },
+    },
+  };
+
+  private readonly legacyElementStyles = {
     base: {
       color: '#1a1b21',
       iconColor: '#1a1b21',
@@ -64,34 +110,59 @@ export class CardDetailsComponent implements AfterViewInit {
     },
   };
 
+  get elementStyles() {
+    return this.experience.enabled
+      ? this.redesignElementStyles
+      : this.legacyElementStyles;
+  }
+
   elementClasses = {
     focus: 'focused',
     empty: 'empty',
     invalid: 'invalid',
   };
 
+  get isZipCodeValid() {
+    return this.experience.enabled
+      ? /^\d{5}$/.test(this.zipCode?.toString() ?? '')
+      : this.zipCode?.toString()?.length === 5;
+  }
+
   get isCreditCardFormValid() {
-    return !this.cardErrors && !this.expErrors && !this.cvvErrors && this.zipCode?.toString()?.length !== '' && this.zipCode?.toString()?.length === 5;
+    return (
+      !this.cardErrors &&
+      !this.expErrors &&
+      !this.cvvErrors &&
+      this.isZipCodeValid
+    );
   }
 
   constructor(
+    public readonly experience: GivingExperienceService,
     private growlService: GrowlService
-  ) {
-  }
+  ) {}
 
   ngAfterViewInit() {
     setTimeout(() => {
       this.initStripeElements();
       this.initStripeListenters();
-    },200)
+    }, 200);
   }
 
   submit() {
+    if (this.experience.enabled && this.initRequest) return;
+    if (this.experience.enabled) this.formSubmitted = true;
     if (!this.isCreditCardFormValid) {
-      this.growlService.showErrorMessage('Please fix the errors in the form before submitting.');
+      this.growlService.showErrorMessage(
+        'Please fix the errors in the form before submitting.'
+      );
       return;
     }
-    this.submit$.next({number: this.number, zipCode: this.zipCode, savePaymentMethod: this.savePaymentMethod});
+    this.submit$.next({
+      number: this.number,
+      zipCode: this.zipCode,
+      savePaymentMethod: this.savePaymentMethod,
+    });
   }
 
   backToPrevious() {
@@ -103,21 +174,30 @@ export class CardDetailsComponent implements AfterViewInit {
   }
 
   private initStripeElements() {
-    const elements = this.stripe.elements();
+    const fontUrl = new URL(
+      'assets/fonts/Poppins-Regular.woff2',
+      document.baseURI
+    ).href;
+    const elements = this.experience.enabled
+      ? this.stripe.elements({
+          fonts: [{ family: 'Poppins', src: `url(${fontUrl})`, weight: '400' }],
+        })
+      : this.stripe.elements();
     this.number = elements.create('cardNumber', {
       style: this.elementStyles,
       classes: this.elementClasses,
-      placeholder: '1234 1234 1234 1234'
+      ...(this.experience.enabled ? { disableLink: true } : {}),
+      placeholder: '1234 1234 1234 1234',
     });
     this.exp = elements.create('cardExpiry', {
       style: this.elementStyles,
       classes: this.elementClasses,
-      placeholder: 'MM / YY'
+      placeholder: 'MM / YY',
     });
     this.cvv = elements.create('cardCvc', {
       style: this.elementStyles,
       classes: this.elementClasses,
-      placeholder: 'CVC'
+      placeholder: 'CVC',
     });
     this.number.mount(this.numberElement.nativeElement);
     this.exp.mount(this.expElement.nativeElement);
@@ -130,13 +210,15 @@ export class CardDetailsComponent implements AfterViewInit {
       if (error || empty) {
         this.cardErrors = {
           isEmpty: empty,
-          error: error
-        }
+          error: error,
+        };
       }
     });
-    this.number.addEventListener('ready', (data) => {
+    this.number.addEventListener('ready', () => {
       this.cardErrors = null;
-      setTimeout(() => {this.cardLoaded = true;}, 1000);
+      setTimeout(() => {
+        this.cardLoaded = true;
+      }, 1000);
     });
 
     this.exp.addEventListener('change', ({ error, empty }) => {
@@ -144,14 +226,17 @@ export class CardDetailsComponent implements AfterViewInit {
       if (error || empty) {
         this.expErrors = {
           isEmpty: empty,
-          error: error
-        }
+          error: error,
+        };
       }
     });
-    this.exp.addEventListener('ready', ({ error, empty }) => {
+    this.exp.addEventListener('ready', () => {
       this.expErrors = null;
-      this.cvvLoaded = true;
-      setTimeout(() => {this.cvvLoaded = true;}, 1000);
+      if (!this.experience.enabled) this.cvvLoaded = true;
+      setTimeout(() => {
+        if (this.experience.enabled) this.expLoaded = true;
+        else this.cvvLoaded = true;
+      }, 1000);
     });
 
     this.cvv.addEventListener('change', ({ error, empty }) => {
@@ -159,14 +244,17 @@ export class CardDetailsComponent implements AfterViewInit {
       if (error || empty) {
         this.cvvErrors = {
           isEmpty: empty,
-          error: error
-        }
+          error: error,
+        };
       }
     });
-    this.cvv.addEventListener('ready', ({ error, empty }) => {
+    this.cvv.addEventListener('ready', () => {
       this.cvvErrors = null;
-      this.expLoaded = true;
-      setTimeout(() => {this.expLoaded = true;}, 1000);
+      if (!this.experience.enabled) this.expLoaded = true;
+      setTimeout(() => {
+        if (this.experience.enabled) this.cvvLoaded = true;
+        else this.expLoaded = true;
+      }, 1000);
     });
   }
 }

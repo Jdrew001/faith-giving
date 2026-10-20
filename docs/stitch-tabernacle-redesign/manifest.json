@@ -1,0 +1,110 @@
+{
+  "projectUrl": "https://stitch.withgoogle.com/projects/13478507951163706242",
+  "createdOn": "2026-10-20",
+  "sourceWebsite": "https://discoverfaitharlington.org/",
+  "sourceStylesheet": "/Users/drewatkison/Documents/projects/faith-taberancle-web/src/app/(frontend)/styles.css",
+  "designSystem": "assets/74d9889662b740d0bda2a4f996b3d5a1",
+  "desktopScreens": [
+    {
+      "name": "projects/13478507951163706242/screens/179780674dc34cec96f884d7e1595468",
+      "title": "Faith Giving Form Redesign — Tabernacle Final — Desktop",
+      "screenshot": "projects/13478507951163706242/files/c6e81476ea4f4bfebfdcb449df42f450",
+      "html": "projects/13478507951163706242/files/413180f3d31b4b48bd8c3bca2ef91f62"
+    },
+    {
+      "name": "projects/13478507951163706242/screens/d0d2fd677d0a45a887438d771e2754c8",
+      "title": "Online Giving Prefilled — Tabernacle Final — Desktop",
+      "screenshot": "projects/13478507951163706242/files/29baac69b869463c8123cb38e2b1677c",
+      "html": "projects/13478507951163706242/files/63b2d8eb596644988c64ca6c29a56d47"
+    },
+    {
+      "name": "projects/13478507951163706242/screens/a3a2d5a323244f5e99d549c499033092",
+      "title": "Saved Payment Method — Tabernacle Final — Desktop",
+      "screenshot": "projects/13478507951163706242/files/59c68f24fe224fa8a373f467ac32c421",
+      "html": "projects/13478507951163706242/files/b759e74146b3462ab9b4537dafa7afe4"
+    },
+    {
+      "name": "projects/13478507951163706242/screens/16f63abecc134622ab620ab3ab58bce5",
+      "title": "Login with Phone Number — Tabernacle Final — Desktop",
+      "screenshot": "projects/13478507951163706242/files/09faabda88bb47b9aa9b2114379fea6e",
+      "html": "projects/13478507951163706242/files/23737573e41040db9d61ca8086b26a60"
+    },
+    {
+      "name": "projects/13478507951163706242/screens/05519eca89d04789b2da68e72824621e",
+      "title": "Payment Processing — Tabernacle Final — Desktop",
+      "screenshot": "projects/13478507951163706242/files/38f8b98b314b40a9b0c4a7072c24dba8",
+      "html": "projects/13478507951163706242/files/6579d35db3bb4b39833c881127ac23b8"
+    },
+    {
+      "name": "projects/13478507951163706242/screens/a8a79acf3eb94ba9b28602f0bdec47e1",
+      "title": "Giving Success Confirmation — Tabernacle Final — Desktop",
+      "screenshot": "projects/13478507951163706242/files/724215ebe0004b6d854d4c1478ba3ea8",
+      "html": "projects/13478507951163706242/files/64b7431abec94f87be7934b1a62e4b5c"
+    }
+  ],
+  "files": [
+    {
+      "file": "faith-giving-form-redesign-tabernacle-final-desktop.html",
+      "screen": "projects/13478507951163706242/screens/179780674dc34cec96f884d7e1595468",
+      "kind": "html"
+    },
+    {
+      "file": "faith-giving-form-redesign-tabernacle-final-desktop.png",
+      "screen": "projects/13478507951163706242/screens/179780674dc34cec96f884d7e1595468",
+      "kind": "image"
+    },
+    {
+      "file": "online-giving-prefilled-tabernacle-final-desktop.html",
+      "screen": "projects/13478507951163706242/screens/d0d2fd677d0a45a887438d771e2754c8",
+      "kind": "html"
+    },
+    {
+      "file": "online-giving-prefilled-tabernacle-final-desktop.png",
+      "screen": "projects/13478507951163706242/screens/d0d2fd677d0a45a887438d771e2754c8",
+      "kind": "image"
+    },
+    {
+      "file": "saved-payment-method-tabernacle-final-desktop.html",
+      "screen": "projects/13478507951163706242/screens/a3a2d5a323244f5e99d549c499033092",
+      "kind": "html"
+    },
+    {
+      "file": "saved-payment-method-tabernacle-final-desktop.png",
+      "screen": "projects/13478507951163706242/screens/a3a2d5a323244f5e99d549c499033092",
+      "kind": "image"
+    },
+    {
+      "file": "login-with-phone-number-tabernacle-final-desktop.html",
+      "screen": "projects/13478507951163706242/screens/16f63abecc134622ab620ab3ab58bce5",
+      "kind": "html"
+    },
+    {
+      "file": "login-with-phone-number-tabernacle-final-desktop.png",
+      "screen": "projects/13478507951163706242/screens/16f63abecc134622ab620ab3ab58bce5",
+      "kind": "image"
+    },
+    {
+      "file": "payment-processing-tabernacle-final-desktop.html",
+      "screen": "projects/13478507951163706242/screens/05519eca89d04789b2da68e72824621e",
+      "kind": "html"
+    },
+    {
+      "file": "payment-processing-tabernacle-final-desktop.png",
+      "screen": "projects/13478507951163706242/screens/05519eca89d04789b2da68e72824621e",
+      "kind": "image"
+    },
+    {
+      "file": "giving-success-confirmation-tabernacle-final-desktop.html",
+      "screen": "projects/13478507951163706242/screens/a8a79acf3eb94ba9b28602f0bdec47e1",
+      "kind": "html"
+    },
+    {
+      "file": "giving-success-confirmation-tabernacle-final-desktop.png",
+      "screen": "projects/13478507951163706242/screens/a8a79acf3eb94ba9b28602f0bdec47e1",
+      "kind": "image"
+    }
+  ],
+  "mobileStatus": "Not completed. Stitch generation quota exhausted. No mobile screen resources were returned.",
+  "implementationStatus": "Design artifacts only. No application or production changes.",
+  "verification": "All six final HTML exports checked for Poppins, exact #0b0b0b canvas, current footer year, and absence of recurring-giving controls."
+}

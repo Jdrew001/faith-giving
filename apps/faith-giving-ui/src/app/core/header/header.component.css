@@ -1,65 +1,124 @@
-.app-header {
-  background-color: var(--surface);
+:host(.redesign) .app-header {
   border-bottom: 1px solid var(--outline-variant);
   padding: 0 var(--gutter);
+  background: var(--background);
 }
-
-.header-inner {
-  max-width: 1200px;
-  margin: 0 auto;
+:host(.redesign) .header-inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 64px;
+  gap: 24px;
+  max-width: 1440px;
+  min-height: 80px;
+  margin: 0 auto;
 }
-
-.header-brand {
+:host(.redesign) .header-brand {
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  align-items: baseline;
+  flex-wrap: wrap;
+  column-gap: 10px;
+  text-decoration: none;
 }
-
-.header-brand i {
-  font-size: 1.25rem;
-  color: var(--primary);
-}
-
-.brand-text {
-  font-family: var(--font-family);
-  font-size: 18px;
+:host(.redesign) .brand-text {
+  color: var(--on-surface);
+  font-size: 20px;
   font-weight: 700;
-  color: var(--primary);
-  letter-spacing: -0.01em;
+  letter-spacing: -0.04em;
 }
-
-.header-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: var(--surface-container-low);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.header-avatar:hover {
-  background-color: var(--surface-container);
-}
-
-.header-avatar i {
-  font-size: 1rem;
+:host(.redesign) .brand-context {
   color: var(--on-surface-variant);
+  font-size: 13px;
 }
-
-.header-avatar.authenticated {
-  background-color: #1a1b21;
+:host(.redesign) .header-actions {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-shrink: 0;
 }
-
-.avatar-initials {
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: #ffffff;
-  letter-spacing: 0.03em;
+:host(.redesign) .church-link,
+:host(.redesign) .sign-in-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  color: var(--on-surface-variant);
+  font-size: 14px;
+  text-decoration: none;
+}
+:host(.redesign) .sign-in-link {
+  border-left: 1px solid var(--outline-variant);
+  padding-left: 24px;
+  color: var(--on-surface);
+}
+:host(.redesign) .church-link:hover,
+:host(.redesign) .sign-in-link:hover {
+  color: var(--on-surface);
+  text-decoration: underline;
+}
+:host(.redesign) .header-avatar {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--outline-variant);
+  border-radius: 50%;
+  padding: 0;
+  background: var(--surface-container);
+  color: var(--on-surface);
+  cursor: pointer;
+}
+:host(.redesign) .header-avatar:hover {
+  border-color: var(--outline);
+}
+:host(.redesign) .avatar-initials {
+  font-size: 14px;
+  font-weight: 500;
+}
+@media (max-width: 600px) {
+  :host(.redesign) .app-header {
+    padding: 0 20px;
+  }
+  :host(.redesign) .header-inner {
+    gap: 12px;
+    min-height: 76px;
+  }
+  :host(.redesign) .header-brand {
+    flex-direction: column;
+    gap: 0;
+  }
+  :host(.redesign) .brand-text {
+    font-size: 17px;
+  }
+  :host(.redesign) .brand-context {
+    font-size: 11px;
+  }
+  :host(.redesign) .header-actions {
+    gap: 12px;
+  }
+  :host(.redesign) .church-link {
+    max-width: 72px;
+    font-size: 12px;
+    text-align: center;
+    line-height: 1.4;
+  }
+  :host(.redesign) .sign-in-link {
+    gap: 6px;
+    padding-left: 12px;
+    font-size: 12px;
+  }
+  :host(.redesign) .sign-out {
+    font-size: 12px;
+  }
+}
+@media (max-width: 380px) {
+  :host(.redesign) .header-actions {
+    gap: 8px;
+  }
+  :host(.redesign) .header-avatar {
+    width: 40px;
+    height: 40px;
+  }
+  :host(.redesign) .sign-out {
+    display: none;
+  }
 }
