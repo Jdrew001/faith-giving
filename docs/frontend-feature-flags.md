@@ -200,6 +200,27 @@ keeping an older server installation. This requires Node 20 or a compatible
 supported Node version and npm on the API server. Local checks do not update the
 live server.
 
+### API server runtime
+
+The SSH deploy step prepends `~/apps/faith-giving-api/shared/runtime/bin` to
+`PATH`. Provision a supported Node LTS release and npm in that dedicated directory
+before deploying if the host's default Node is older than 20. Keep the runtime
+outside `FAITH_GIVING_SERVICE_DIR`, whose contents are replaced during deployment.
+The system Node installation and other applications can retain their own runtimes.
+
+The existing Faith Giving PM2 daemon must also run Node 20 or newer. Its cluster
+workers inherit the daemon's Node executable, so changing the deploy shell's
+`PATH` or adding an app interpreter does not upgrade an already-running daemon.
+The deployment checks both runtimes before replacing API files, installing
+dependencies, or running migrations. A stale PM2 PID file without a live daemon
+does not prevent deployment; PM2 can start under the selected runtime.
+
+Upgrading a live PM2 daemon restarts its managed processes. Check which applications
+it owns and arrange the runtime change separately from the build. After the
+upgrade, update any PM2 boot service to use the same runtime and verify the API
+process's executable, its saved configuration, and its health. Do not run a shared
+daemon upgrade merely to change one application's runtime.
+
 Check the public asset generator with:
 
 ```sh
