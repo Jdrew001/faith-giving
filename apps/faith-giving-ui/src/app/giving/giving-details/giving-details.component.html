@@ -22,11 +22,14 @@
 
   <div class="offering-section">
     <span class="field-label">Offering</span>
-    <div class="offering-empty" *ngIf="offerings.controls.length === 0">
-      <button type="button" class="add-offering-btn" (click)="addOffering()">
-        <i class="pi pi-plus-circle" aria-hidden="true"></i> Add Offering
-      </button>
-    </div>
+    <button
+      *ngIf="offerings.controls.length === 0"
+      type="button"
+      class="add-offering-btn offering-empty"
+      (click)="addOffering()"
+    >
+      <i class="pi pi-plus-circle" aria-hidden="true"></i> Add Offering
+    </button>
 
     <div
       class="offering-container"

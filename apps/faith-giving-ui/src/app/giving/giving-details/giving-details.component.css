@@ -62,6 +62,8 @@
   color: var(--on-surface);
 }
 :host(.redesign) .offering-empty {
+  width: 100%;
+  min-height: 54px;
   border: 1px solid var(--outline-variant);
   border-radius: var(--rounded-md);
   padding: 4px 16px;

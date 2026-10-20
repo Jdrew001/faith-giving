@@ -88,11 +88,22 @@
   opacity: 1;
 }
 :host(.redesign) .fee-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
   margin: 24px 0 28px;
+}
+:host(.redesign) .fee-label {
+  margin: 0;
+  color: var(--on-surface-variant);
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: nowrap;
+  cursor: pointer;
 }
 :host(.redesign) .fee-note {
   display: block;
-  margin: 4px 0 0 32px;
+  margin-top: 4px;
   color: var(--on-surface-variant);
   font-size: 12px;
 }
@@ -371,6 +382,9 @@
   :host(.redesign) .giving-header p {
     font-size: 14px;
   }
+  :host(.redesign) .fee-label {
+    font-size: 13px;
+  }
   :host(.redesign) .payment-header h1,
   :host(.redesign) .confirmation-step h1 {
     font-size: 26px;
@@ -392,6 +406,17 @@
   }
   :host(.redesign) .total-summary-row dd {
     font-size: 22px;
+  }
+}
+@media (max-width: 380px) {
+  :host(.redesign) .give-page {
+    padding-inline: 16px;
+  }
+  :host(.redesign) .card-container {
+    padding-inline: 16px;
+  }
+  :host(.redesign) .fee-label {
+    font-size: 12px;
   }
 }
 @media print {

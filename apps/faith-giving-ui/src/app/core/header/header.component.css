@@ -55,7 +55,6 @@
   gap: 24px;
   flex-shrink: 0;
 }
-:host(.redesign) .church-link,
 :host(.redesign) .sign-in-link {
   display: inline-flex;
   align-items: center;
@@ -70,7 +69,6 @@
   padding-left: 24px;
   color: var(--on-surface);
 }
-:host(.redesign) .church-link:hover,
 :host(.redesign) .sign-in-link:hover {
   color: var(--on-surface);
   text-decoration: underline;
@@ -96,7 +94,7 @@
 }
 @media (max-width: 600px) {
   :host(.redesign) .app-header {
-    padding: 0 20px;
+    padding: calc(12px + env(safe-area-inset-top, 0px)) 20px 12px;
   }
   :host(.redesign) .header-inner {
     gap: 12px;
@@ -111,12 +109,6 @@
   }
   :host(.redesign) .header-actions {
     gap: 12px;
-  }
-  :host(.redesign) .church-link {
-    max-width: 72px;
-    font-size: 12px;
-    text-align: center;
-    line-height: 1.4;
   }
   :host(.redesign) .sign-in-link {
     gap: 6px;
