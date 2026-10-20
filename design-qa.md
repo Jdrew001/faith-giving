@@ -50,3 +50,20 @@ The retained legacy giving stylesheet is 11.96 kB (8 kB warning, 12 kB error lim
 ## Evidence limits
 
 Local browser checks use controlled Firebase, authentication and payment responses. They do not prove deployed Firebase targeting, OTP delivery, Stripe processing or production behavior. Rollout remains subject to the existing Firebase environment configuration and approved template targeting.
+
+## Wordmark follow-up - October 20, 2026
+
+The requested bracketed wordmark follows **Faith Tabernacle - Homepage Hero Redesign**
+in the [Faith Tabernacle Stitch project](https://stitch.withgoogle.com/projects/12573781095477606846),
+screen `50a96e22be684c9988a61d29dd1bd679`. The header now presents widely spaced
+uppercase **Faith Giving** inside a thin square-bracket frame. The small church
+association label beside it was removed. This update remains within the existing
+`beta_access` presentation gate; the legacy header is unchanged.
+
+The production build passed with the previously documented size warnings. A
+targeted browser check with a controlled Firebase response verified the header at
+1280, 768, 390 and 320 pixels, including visible brackets, uppercase text, no page
+overflow and no overlap with navigation. Captures are saved as
+`docs/stitch-tabernacle-redesign/implementation/wordmark-{width}.png`. The broader
+smoke run timed out in its mocked session-restoration phase on this follow-up;
+it is not reported as a fresh full-flow pass for the wordmark change.
