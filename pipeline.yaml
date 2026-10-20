@@ -284,11 +284,53 @@ nodejs:
           set -eu
           export CI=true
           export npm_config_yes=true
+          # Resolve the runtime and inherited PATH on the SSH host.
+          api_runtime_bin=~/apps/faith-giving-api/shared/runtime/bin
+          export PATH="$api_runtime_bin:$(printenv PATH)"
           echo "→ Validating API archive"
           test -s "$FAITH_GIVING_API_UPLOAD_PATH"
           command -v unzip >/dev/null
           command -v npm >/dev/null
-          node -e 'if (Number(process.versions.node.split(".")[0]) < 20) throw new Error("API deployments require Node 20 or newer.");'
+          command -v pm2 >/dev/null
+          node <<'NODE'
+          const fs = require('fs');
+          const os = require('os');
+          const path = require('path');
+          const { execFileSync } = require('child_process');
+
+          function requireSupportedNode(version, owner) {
+            if (Number(version.split('.')[0]) >= 20) return;
+            throw new Error(
+              `${owner} uses Node ${version}; Node 20 or newer is required. ` +
+              'Provision the Faith Giving runtime at ~/apps/faith-giving-api/shared/runtime ' +
+              'and restart its PM2 daemon under that runtime before deploying.'
+            );
+          }
+
+          function daemonExecutable() {
+            const pm2Home = process.env.PM2_HOME || path.join(os.homedir(), '.pm2');
+            const pidFile = path.join(pm2Home, 'pm2.pid');
+            if (!fs.existsSync(pidFile)) return null;
+            const pid = fs.readFileSync(pidFile, 'utf8').trim();
+            if (!/^[1-9][0-9]*$/.test(pid)) throw new Error('Invalid PM2 daemon PID');
+            try {
+              return fs.readlinkSync(`/proc/${pid}/exe`);
+            } catch (error) {
+              if (error.code === 'ENOENT') return null;
+              throw error;
+            }
+          }
+
+          requireSupportedNode(process.versions.node, 'API deployment');
+          const daemonNode = daemonExecutable();
+          if (daemonNode) {
+            const version = execFileSync(daemonNode, ['-p', 'process.versions.node'], {
+              encoding: 'utf8',
+            }).trim();
+            requireSupportedNode(version, 'API PM2 daemon');
+          }
+          console.log(`API deployment runtime: Node ${process.versions.node} (${process.execPath})`);
+          NODE
           unzip -t "$FAITH_GIVING_API_UPLOAD_PATH" >/dev/null
           echo "→ Preparing API deploy directory"
           mkdir -p "$FAITH_GIVING_SERVICE_DIR"
