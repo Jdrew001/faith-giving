@@ -79,6 +79,11 @@ export class GivingService extends BaseService {
     return this.http.get<{success: boolean, data: any[]}>(url, { withCredentials: true });
   }
 
+  deletePaymentMethod(id: string) {
+    const url = this.getApiUrl(`${GiveConstants.PAYMENT_METHODS}/${id}`);
+    return this.http.delete<{success: boolean}>(url, { withCredentials: true });
+  }
+
   generatePaymentIntent(body: any) {
     const url = this.getApiUrl(GiveConstants.GIVE_PAYMENT_INTENT_PATH);
     this.http.post(url, body)

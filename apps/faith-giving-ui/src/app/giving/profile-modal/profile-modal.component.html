@@ -71,6 +71,7 @@
         id="profile-phone"
         formControlName="phone"
         mask="(000) 000-0000"
+        prefix="+1 "
         class="form-control"
         readonly
       />
@@ -91,7 +92,22 @@
       ></p-skeleton>
 
       <div
-        *ngIf="!loadingPaymentMethods && paymentMethods.length === 0"
+        *ngIf="!loadingPaymentMethods && paymentMethodsError"
+        class="payment-methods-error"
+        role="alert"
+      >
+        <p>Unable to load saved payment methods.</p>
+        <button
+          type="button"
+          pButton
+          label="Try again"
+          class="p-button-text"
+          (click)="fetchPaymentMethods()"
+        ></button>
+      </div>
+
+      <div
+        *ngIf="!loadingPaymentMethods && !paymentMethodsError && paymentMethods.length === 0"
         class="no-payment-methods"
       >
         No saved payment methods
@@ -177,7 +193,7 @@
 
         <div class="field-group">
             <label class="field-label">Phone</label>
-            <input type="tel" pInputText formControlName="phone" mask="(000) 000-0000" class="form-control" readonly />
+            <input type="tel" pInputText formControlName="phone" mask="(000) 000-0000" prefix="+1 " class="form-control" readonly />
             <small class="phone-note">Contact support to change your phone number</small>
         </div>
 
@@ -188,7 +204,12 @@
 
             <p-skeleton *ngIf="loadingPaymentMethods" width="100%" height="3rem"></p-skeleton>
 
-            <div *ngIf="!loadingPaymentMethods && paymentMethods.length === 0" class="no-payment-methods">
+            <div *ngIf="!loadingPaymentMethods && paymentMethodsError" class="payment-methods-error" role="alert">
+                <p>Unable to load saved payment methods.</p>
+                <button type="button" pButton label="Try again" class="p-button-text" (click)="fetchPaymentMethods()"></button>
+            </div>
+
+            <div *ngIf="!loadingPaymentMethods && !paymentMethodsError && paymentMethods.length === 0" class="no-payment-methods">
                 No saved payment methods
             </div>
 

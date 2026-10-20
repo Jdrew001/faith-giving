@@ -3,8 +3,9 @@ import { HostBinding, Component, EventEmitter, Input, OnChanges, OnInit, Output,
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../core/services/auth.service';
 import { GrowlService } from '../../core/growl.service';
-import { HttpClient } from '@angular/common/http';
-import { GiveConstants } from '../giving.constants';
+import { finalize } from 'rxjs';
+import { PaymentMethod } from '../models/giving.model';
+import { GivingService } from '../services/giving.service';
 
 @Component({
   selector: 'faith-giving-profile-modal',
@@ -27,15 +28,16 @@ export class ProfileModalComponent implements OnInit, OnChanges {
   profileForm: FormGroup;
   loading = false;
   formSubmitted = false;
-  paymentMethods: any[] = [];
+  paymentMethods: PaymentMethod[] = [];
   loadingPaymentMethods = false;
+  paymentMethodsError = false;
 
   constructor(
     public readonly experience: GivingExperienceService,
     private fb: FormBuilder,
     private authService: AuthService,
     private growlService: GrowlService,
-    private http: HttpClient
+    private givingService: GivingService
   ) {
     this.profileForm = this.fb.group({
       firstName: ['', [Validators.required]],
@@ -58,24 +60,27 @@ export class ProfileModalComponent implements OnInit, OnChanges {
   }
 
   fetchPaymentMethods() {
+    this.paymentMethods = [];
+    this.paymentMethodsError = false;
     this.loadingPaymentMethods = true;
-    this.http.get<{success: boolean, data: any[]}>(GiveConstants.PAYMENT_METHODS, { withCredentials: true })
+    this.givingService.fetchPaymentMethods()
+      .pipe(finalize(() => { this.loadingPaymentMethods = false; }))
       .subscribe({
         next: (result) => {
-          if (result?.success) {
+          if (result?.success && Array.isArray(result.data)) {
             this.paymentMethods = result.data;
+          } else {
+            this.paymentMethodsError = true;
           }
         },
         error: () => {
-          this.paymentMethods = [];
+          this.paymentMethodsError = true;
         }
-      }).add(() => {
-        this.loadingPaymentMethods = false;
       });
   }
 
   deletePaymentMethod(id: string) {
-    this.http.delete<{success: boolean}>(`${GiveConstants.PAYMENT_METHODS}/${id}`, { withCredentials: true })
+    this.givingService.deletePaymentMethod(id)
       .subscribe({
         next: (result) => {
           if (result?.success) {
@@ -92,11 +97,15 @@ export class ProfileModalComponent implements OnInit, OnChanges {
   private prefill() {
     const ind = this.individual ?? this.authService.individual;
     if (ind) {
+      const digits = (ind.phone ?? '').replace(/\D/g, '');
+      const phone = digits.length === 11 && digits.startsWith('1')
+        ? digits.slice(1)
+        : digits;
       this.profileForm.patchValue({
         firstName: ind.firstname,
         lastName: ind.lastname,
         email: ind.email,
-        phone: ind.phone
+        phone
       });
     }
   }
