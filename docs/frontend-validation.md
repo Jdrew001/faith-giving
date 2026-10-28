@@ -50,22 +50,51 @@ establish OTP delivery, live charges, Stripe iframe rendering or deployment.
 
 ## API deployment runtime
 
-The SSH deploy step prepends `~/apps/faith-giving-api/shared/runtime/bin` to
-`PATH`. Provision a supported Node LTS release and npm in that dedicated directory
-before deploying if the host's default Node is older than 20. Keep the runtime
-outside `FAITH_GIVING_SERVICE_DIR`, whose contents are replaced during deployment.
-The system Node installation and other applications can retain their own runtimes.
+API deployments package `tools/prepare-api-runtime.cjs` and run it on the SSH host
+before replacing application files or running migrations. The bootstrap installs
+Node **24.22.1** and its bundled npm under
+`~/apps/faith-giving-api/shared/runtimes/`, then selects it through the stable
+`~/apps/faith-giving-api/shared/runtime` link. It verifies the archive against the
+pinned SHA-256 hashes from [Node's official release files](https://nodejs.org/dist/v24.22.1/SHASUMS256.txt).
+A healthy matching runtime is reused on subsequent deployments. Downloads and
+validation finish before the selected runtime changes; staging files are removed
+on failure, and older runtime directories remain available for recovery.
 
-The existing Faith Giving PM2 daemon must also run Node 20 or newer. Its cluster
-workers inherit the daemon's Node executable, so changing the deploy shell's
-`PATH` or adding an app interpreter does not upgrade an already-running daemon.
-The deployment checks both runtimes before replacing API files, installing
-dependencies, or running migrations. A stale PM2 PID file without a live daemon
-does not prevent deployment; PM2 can start under the selected runtime.
+The bootstrap also updates the existing `pm2-<deploy-user>.service` boot service
+with a dedicated override that runs all PM2 commands with the selected Node
+executable. The PM2 process home and saved application configuration are retained.
+It upgrades a running daemon only when its Node version differs, then checks the
+API's local `/api` endpoint. This requires passwordless sudo for the boot
+service configuration. The system Node installation is left in place.
 
-Upgrading a live PM2 daemon restarts its managed processes. Check which applications
-it owns and arrange the runtime change separately from the build. After the
-upgrade, update any PM2 boot service to use the same runtime and verify the API
-process's executable, its saved configuration, and its health. Do not run a shared
-daemon upgrade merely to change one application's runtime.
+Before any daemon restart, both its live and saved process lists must contain only
+`faith-giving-api`. If another application shares that PM2 home, setup stops before
+restarting it. An existing systemd PM2 boot service is required. Private backups of
+the saved process list and previous override are stored under
+`~/apps/faith-giving-api/shared/pm2-runtime-backup-*`. The setup restores the prior
+boot override and restarts the service if activation fails.
 
+The deployment retains its runtime checks before API replacement, dependency
+installation and migrations. Keep the shared runtime directory outside
+`FAITH_GIVING_SERVICE_DIR`, whose contents are replaced during deployment.
+
+Verify the bootstrap and its failure cases with:
+
+```sh
+node --test tools/prepare-api-runtime.test.cjs
+```
+
+To update Node, change the pinned version and both architecture checksums in the
+bootstrap together, then run its checks and validate the API. PM2's startup
+configuration must follow the selected runtime; see the [PM2 startup guidance](https://pm2.keymetrics.io/docs/usage/startup/).
+
+### Server verification — October 27, 2026
+
+The dedicated runtime and PM2 boot override were applied to the production server.
+The PM2 daemon and the API worker both use Node 24.22.1. The boot service is enabled
+and active. The local and public API each returned HTTP 200 after the restart.
+All 18 external imports from the deployed API bundle loaded under the new runtime.
+Repeating setup preserved the daemon PID, and the exact archive-based pipeline
+preflight passed without replacing application files or running migrations.
+The runtime's eight automated tests and the pipeline's YAML/shell checks passed.
+Application deployment was not rerun as part of this runtime repair.

@@ -205,6 +205,8 @@ nodejs:
       run: |
         . ./.faith-giving-api-version.env
         cp apps/faith-giving-api/ecosystem.config.js dist/apps/faith-giving-api/ecosystem.config.js
+        mkdir -p dist/apps/faith-giving-api/deploy
+        cp tools/prepare-api-runtime.cjs dist/apps/faith-giving-api/deploy/prepare-api-runtime.cjs
         if [ -f dist/apps/faith-giving-api/package.json ]; then
           API_VERSION="$API_VERSION" node <<'NODE'
         const fs = require('fs');
@@ -280,12 +282,21 @@ nodejs:
           set -eu
           export CI=true
           export npm_config_yes=true
-          # Resolve the runtime and inherited PATH on the SSH host.
-          api_runtime_bin=~/apps/faith-giving-api/shared/runtime/bin
-          export PATH="$api_runtime_bin:$(printenv PATH)"
           echo "→ Validating API archive"
           test -s "$FAITH_GIVING_API_UPLOAD_PATH"
           command -v unzip >/dev/null
+          unzip -t "$FAITH_GIVING_API_UPLOAD_PATH" >/dev/null
+          api_shared_dir=~/apps/faith-giving-api/shared
+          mkdir -p "$api_shared_dir"
+          api_runtime_setup=$(mktemp "$api_shared_dir/runtime-setup.XXXXXX.cjs")
+          trap 'rm -f "$api_runtime_setup"' EXIT
+          unzip -p "$FAITH_GIVING_API_UPLOAD_PATH" deploy/prepare-api-runtime.cjs > "$api_runtime_setup"
+          test -s "$api_runtime_setup"
+          echo "→ Preparing pinned API runtime and PM2 boot configuration"
+          node "$api_runtime_setup"
+          api_runtime_bin=~/apps/faith-giving-api/shared/runtime/bin
+          export PATH="$api_runtime_bin:$(printenv PATH)"
+          node "$api_runtime_setup" --pm2
           command -v npm >/dev/null
           command -v pm2 >/dev/null
           node <<'NODE'
@@ -327,7 +338,6 @@ nodejs:
           }
           console.log(`API deployment runtime: Node ${process.versions.node} (${process.execPath})`);
           NODE
-          unzip -t "$FAITH_GIVING_API_UPLOAD_PATH" >/dev/null
           echo "→ Preparing API deploy directory"
           mkdir -p "$FAITH_GIVING_SERVICE_DIR"
           if [ -f "$FAITH_GIVING_SERVICE_DIR/.env" ]; then
