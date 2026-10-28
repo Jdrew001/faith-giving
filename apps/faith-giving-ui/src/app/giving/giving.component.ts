@@ -6,7 +6,7 @@ import {
   OnInit,
   ViewChildren,
 } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { GivingFlowService } from '../core/services/giving-flow.service';
 import { GivingFormService } from './services/giving-form.service';
 import { GivingService } from './services/giving.service';
 import { GrowlService } from '../core/growl.service';
@@ -91,12 +91,16 @@ export class GivingComponent implements OnInit, OnDestroy {
     private confirmService: ConfirmationService,
     private authService: AuthService,
     private profileModalService: ProfileModalService,
-    private route: ActivatedRoute
+    public readonly flow: GivingFlowService
   ) {}
 
   ngOnInit() {
     this.stripe = Stripe(this.stripeKey);
     this.formService.createGivingForm();
+    this.giveService.activeIndex = 0;
+    this.giveService.formSubmitted = false;
+    this.giveService.confirmationDetails = null;
+    this.giveService.individualInfo = this.authService.individual;
     this._modalSub = this.profileModalService.open$.subscribe(() => {
       this.showProfileModal = true;
     });
@@ -107,12 +111,12 @@ export class GivingComponent implements OnInit, OnDestroy {
       this.fetchSavedPaymentMethods();
     }
 
-    this.isGuest = this.route.snapshot.queryParamMap.get('guest') === 'true';
+    this.isGuest = this.flow.isGuest;
 
     if (this.isGuest) {
       this.giveService.userEdit = true;
       this.formService.enablePersonalFieldValidators();
-      const prefillPhone = this.route.snapshot.queryParamMap.get('phone');
+      const prefillPhone = this.flow.prefillPhone;
       if (prefillPhone) {
         this.formService.givingForm.patchValue({ phone: prefillPhone });
       }

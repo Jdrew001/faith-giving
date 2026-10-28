@@ -12,6 +12,21 @@ Firebase Remote Config or uses the `FAITH_GIVING_FEATURE_FLAGS_ENABLED` and
 settings can remain during rollout for older cached clients; they do not affect
 this version. The API retains its independent Firebase dependency.
 
+## One public URL
+
+The complete giving experience stays at `/give/`. Sign-in, code verification,
+guest and returning-donor giving, card entry, processing, receipts, profile edits
+and logout switch views inside the app through `GivingFlowService`. The former
+Angular page routes and unused standalone verification page have been removed.
+Incoming old links consume guest/phone prefills and replace the address with the
+application base URL without retaining extra path segments, query strings or fragments.
+
+The entry HTML supplies the dark background immediately. Production styles remain
+render-blocking so authentication controls cannot render before their theme is
+available. The live nginx `/give/` location uses `expires -1` to return
+`Cache-Control: no-cache`, including for the entry document and build metadata.
+Keep that location setting when updating the server configuration.
+
 ## Local validation
 
 Use Node 20 with the committed lockfile:

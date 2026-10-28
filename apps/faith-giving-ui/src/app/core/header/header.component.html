@@ -1,6 +1,11 @@
 <header class="app-header">
   <div class="header-inner">
-    <a class="header-brand" routerLink="/" aria-label="Faith Giving home">
+    <a
+      class="header-brand"
+      href="./"
+      (click)="$event.preventDefault(); showHome()"
+      aria-label="Faith Giving home"
+    >
       <span class="brand-text">Faith Giving</span>
     </a>
     <nav class="header-actions" aria-label="Main navigation">
@@ -22,7 +27,10 @@
         </button>
       </ng-container>
       <ng-template #signIn>
-        <a class="sign-in-link" routerLink="/"
+        <a
+          class="sign-in-link"
+          href="./"
+          (click)="$event.preventDefault(); flow.showSignIn()"
           ><i class="pi pi-user" aria-hidden="true"></i> Sign in</a
         >
       </ng-template>

@@ -15,7 +15,7 @@
           <ng-container *ngIf="isGuest; else welcome">
             <h1>Online Giving</h1>
             <p>Support the ministries and mission of Faith Tabernacle.</p>
-            <a class="sign-in-callout" routerLink="/">
+            <a class="sign-in-callout" href="./" (click)="$event.preventDefault(); flow.showSignIn()">
               <span>Already have an account?</span>
               <strong
                 >Sign in for faster giving

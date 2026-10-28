@@ -1,5 +1,28 @@
 # Faith Giving redesign QA
 
+## Single URL follow-up — October 27, 2026
+
+The live frontend now uses one address, `/give/`, for every authentication and
+giving screen. The old Angular route tree was removed and replaced by in-page
+view state. The initial HTML is dark, production CSS loads before the UI paints,
+and the nginx giving location revalidates assets with `Cache-Control: no-cache`.
+
+The production build is `0b2c7f13b352c579` / `main.7763e687741fa25f.js` (1.83 MB
+initial bundle). All 35 frontend tests passed with no new lint findings. Local and
+production-asset browser smoke checks passed for startup, legacy-link cleanup,
+session restoration, OTP sign-in, guest entry, account switching, logout, card
+navigation, processing and receipts. Each screen retained the exact `/give/` URL.
+Authentication and payment transitions in that smoke use controlled responses;
+no real OTP or charge was submitted. Responsive captures cover 320, 390, 768 and
+1280 pixels. Evidence is in `output/playwright/*single-url*.log` and the screenshots.
+
+The static frontend was replaced on the live server after saving a recoverable
+copy of the prior frontend and nginx configuration. HTTP checks confirm the new
+bundle, dark initial HTML, render-blocking styles and cache revalidation headers.
+The deployed UI metadata is `1.0.4-build.1793150366`. A fresh anonymous browser
+entry also confirmed `/give/` with the black background using the real session
+endpoint; capture: `output/playwright/single-url-live-sign-in.png`.
+
 ## Primary theme follow-up — October 27, 2026
 
 The dark theme is now unconditional. The presentation flag, Firebase browser

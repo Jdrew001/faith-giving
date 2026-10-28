@@ -137,6 +137,13 @@ async function givingSmoke(page) {
     return route.abort();
   });
 
+  function assertSingleUrl() {
+    assert(
+      page.url() === base,
+      `Expected only ${base}; received ${page.url()}`
+    );
+  }
+
   async function signIn(donor) {
     state.otpDonor = donor;
     await page.getByLabel('Phone Number').fill(donor.phone);
@@ -146,6 +153,7 @@ async function givingSmoke(page) {
     await page
       .getByRole('heading', { name: `Welcome back, ${donor.firstname}!` })
       .waitFor();
+    assertSingleUrl();
   }
   async function signOut() {
     const headerAction = page.getByRole('button', {
@@ -155,12 +163,22 @@ async function givingSmoke(page) {
     if (await headerAction.isVisible()) await headerAction.click();
     else await page.getByText('Not you? Sign out', { exact: true }).click();
     await page.getByRole('heading', { name: 'Sign in to give' }).waitFor();
+    assertSingleUrl();
   }
 
   await page.setViewportSize({ width: 1280, height: 900 });
-  await page.goto(`${base}give?guest=true`, { waitUntil: 'domcontentloaded' });
+  await page.goto(`${base}give?guest=true&phone=${donorA.phone}`, {
+    waitUntil: 'domcontentloaded',
+  });
   await page.getByRole('heading', { name: 'Online Giving' }).waitFor();
   await page.getByText('Your Details', { exact: true }).waitFor();
+  assertSingleUrl();
+  assert(
+    (
+      await page.getByLabel('Phone Number', { exact: true }).inputValue()
+    ).replace(/\D/g, '') === donorA.phone,
+    'Old guest phone prefill was lost'
+  );
   assert(
     state.sessionChecks === 0,
     'Explicit guest route unexpectedly restored a session'
@@ -185,8 +203,9 @@ async function givingSmoke(page) {
     'Guest startup did not use the primary theme'
   );
   state.session = donorA;
-  await page.goto(`${base}give`, { waitUntil: 'domcontentloaded' });
+  await page.goto(base, { waitUntil: 'domcontentloaded' });
   await page.getByRole('heading', { name: 'Welcome back, Alex!' }).waitFor();
+  assertSingleUrl();
   assert(
     state.sessionChecks === 1,
     'Existing session restoration ownership changed'
@@ -200,6 +219,7 @@ async function givingSmoke(page) {
   await page.getByText('$25.00', { exact: true }).waitFor();
   await page.getByRole('button', { name: 'Continue to payment' }).click();
   await page.getByRole('radio', { name: 'visa ending in 4242' }).waitFor();
+  assertSingleUrl();
   await page.screenshot({
     path: 'output/playwright/primary-saved-card-desktop.png',
     fullPage: true,
@@ -222,6 +242,7 @@ async function givingSmoke(page) {
   await page
     .getByRole('heading', { name: 'Processing your gift...' })
     .waitFor();
+  assertSingleUrl();
   await page.screenshot({
     path: 'output/playwright/primary-processing-desktop.png',
     fullPage: true,
@@ -229,6 +250,7 @@ async function givingSmoke(page) {
   await page
     .getByRole('heading', { name: 'Thank you for your generosity!' })
     .waitFor();
+  assertSingleUrl();
   await page.screenshot({
     path: 'output/playwright/primary-receipt-desktop.png',
     fullPage: true,
@@ -258,7 +280,12 @@ async function givingSmoke(page) {
   });
 
   state.session = null;
-  await page.goto(base + 'give?guest=true', { waitUntil: 'domcontentloaded' });
+  await page.goto(base, { waitUntil: 'domcontentloaded' });
+  await page.getByRole('heading', { name: 'Sign in to give' }).waitFor();
+  assertSingleUrl();
+  await page.getByRole('button', { name: /Continue as Guest/i }).click();
+  await page.getByRole('heading', { name: 'Online Giving' }).waitFor();
+  assertSingleUrl();
   await page.locator('html.faith-giving-redesign').waitFor();
   await page.getByLabel('First Name', { exact: true }).fill('Alex');
   await page.getByLabel('Last Name', { exact: true }).fill('Taylor');
@@ -325,6 +352,8 @@ async function givingSmoke(page) {
   return {
     passed: [
       'primary theme at guest startup without Firebase',
+      'legacy giving paths and guest prefills normalize to /give/',
+      'sign-in, verification, giving, processing, receipt and logout stay at /give/',
       'guest route skips session restore',
       'invalid guest submission stays in giving',
       'authenticated session restoration',

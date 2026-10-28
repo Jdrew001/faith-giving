@@ -1,4 +1,5 @@
 import { HostBinding, Component } from '@angular/core';
+import { GivingFlowService } from '../services/giving-flow.service';
 import { AuthService } from '../services/auth.service';
 import { ProfileModalService } from '../services/profile-modal.service';
 
@@ -14,6 +15,7 @@ export class HeaderComponent {
 
   constructor(
     public authService: AuthService,
+    public readonly flow: GivingFlowService,
     private profileModalService: ProfileModalService
   ) {}
 
@@ -23,6 +25,11 @@ export class HeaderComponent {
     return (
       (ind.firstname?.charAt(0) || '') + (ind.lastname?.charAt(0) || '')
     ).toUpperCase();
+  }
+
+  showHome(): void {
+    if (this.authService.isAuthenticated) this.flow.showGiving();
+    else this.flow.showSignIn();
   }
 
   onAvatarClick() {

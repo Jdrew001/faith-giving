@@ -1,6 +1,11 @@
 <app-header></app-header>
 <main class="app-content">
-  <router-outlet></router-outlet>
+  <faith-giving-sign-in
+    *ngIf="flow.view === 'sign-in'; else giving"
+  ></faith-giving-sign-in>
+  <ng-template #giving>
+    <faith-giving-giving></faith-giving-giving>
+  </ng-template>
 </main>
 <app-footer></app-footer>
 <app-whats-new-dialog></app-whats-new-dialog>

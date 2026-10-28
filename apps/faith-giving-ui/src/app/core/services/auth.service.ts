@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { GivingFlowService } from './giving-flow.service';
 import { BehaviorSubject, Observable, catchError, EMPTY, tap } from 'rxjs';
 import { BaseService } from '../../utils/base.service';
 import { GrowlService } from '../growl.service';
@@ -26,7 +26,7 @@ export class AuthService extends BaseService {
     constructor(
         private http: HttpClient,
         protected override growlService: GrowlService,
-        private router: Router
+        private flow: GivingFlowService
     ) {
         super(growlService);
     }
@@ -91,7 +91,7 @@ updateProfile(data: { firstname: string; lastname: string; email: string; phone:
             .pipe(catchError(err => { this.handleError(err); return EMPTY; }))
             .subscribe(() => {
                 this._individual.next(null);
-                this.router.navigate(['/']);
+                this.flow.showSignIn();
             });
     }
 }

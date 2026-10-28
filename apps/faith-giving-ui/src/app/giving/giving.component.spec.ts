@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { ActivatedRoute, convertToParamMap } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
+import { GivingFlowService } from '../core/services/giving-flow.service';
 import { of } from 'rxjs';
 import { AuthService } from '../core/services/auth.service';
 import { GrowlService } from '../core/growl.service';
@@ -71,20 +70,15 @@ describe('GivingComponent', () => {
     } as unknown as GivingService;
     Object.assign(window, { Stripe: jest.fn().mockReturnValue({}) });
     await TestBed.configureTestingModule({
-      imports: [GivingModule, RouterTestingModule, NoopAnimationsModule],
+      imports: [GivingModule, NoopAnimationsModule],
       providers: [
         { provide: AuthService, useValue: auth },
         { provide: GrowlService, useValue: { showErrorMessage: jest.fn() } },
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            snapshot: { queryParamMap: convertToParamMap({ guest: 'true' }) },
-          },
-        },
       ],
     })
       .overrideProvider(GivingService, { useValue: giving })
       .compileComponents();
+    TestBed.inject(GivingFlowService).continueAsGuest();
     fixture = TestBed.createComponent(GivingComponent);
     component = fixture.componentInstance;
     form = TestBed.inject(GivingFormService);

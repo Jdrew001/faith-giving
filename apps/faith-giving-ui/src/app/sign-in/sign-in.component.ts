@@ -1,6 +1,6 @@
 import { HostBinding, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { GivingFlowService } from '../core/services/giving-flow.service';
 import { AuthService } from '../core/services/auth.service';
 
 @Component({
@@ -30,7 +30,7 @@ export class SignInComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private flow: GivingFlowService
   ) {}
 
   ngOnInit() {
@@ -42,8 +42,8 @@ export class SignInComponent implements OnInit {
     });
 
     this.authService.checkSession().then((found) => {
-      if (found && !this.codeSent) {
-        this.router.navigate(['/give']);
+      if (found && !this.codeSent && this.flow.view === 'sign-in') {
+        this.flow.showGiving();
       }
     });
   }
@@ -86,7 +86,7 @@ export class SignInComponent implements OnInit {
       .subscribe((result) => {
         this.loading = false;
         if (result?.success) {
-          this.router.navigate(['/give']);
+          this.flow.showGiving();
         }
       });
   }
@@ -105,6 +105,6 @@ export class SignInComponent implements OnInit {
   }
 
   continueAsGuest() {
-    this.router.navigate(['/give'], { queryParams: { guest: true } });
+    this.flow.continueAsGuest(this.phoneControl.value ?? '');
   }
 }

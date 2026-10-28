@@ -1,19 +1,25 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
+import { CommonModule, Location } from '@angular/common';
+import { GivingFlowService } from './core/services/giving-flow.service';
 
 import { AppComponent } from './app.component';
 import { AppVersionService } from './core/services/app-version.service';
 
 describe('AppComponent', () => {
   const appVersionService = { initialize: jest.fn() };
+  const location = { replaceState: jest.fn() };
 
   beforeEach(async () => {
     appVersionService.initialize.mockClear();
+    location.replaceState.mockClear();
     await TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
+      imports: [CommonModule],
       declarations: [AppComponent],
-      providers: [{ provide: AppVersionService, useValue: appVersionService }],
+      providers: [
+        { provide: AppVersionService, useValue: appVersionService },
+        { provide: Location, useValue: location },
+      ],
       schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
   });
@@ -24,6 +30,23 @@ describe('AppComponent', () => {
 
     expect(fixture.componentInstance.title).toEqual('faith-giving-ui');
     expect(fixture.nativeElement.classList.contains('redesign')).toBe(true);
+  });
+
+  afterEach(() => window.history.replaceState(null, '', '/'));
+
+  it('replaces old entry paths and consumes guest prefills without creating another URL', () => {
+    window.history.replaceState(
+      null,
+      '',
+      '/give/give?guest=true&phone=5555550100'
+    );
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    const flow = TestBed.inject(GivingFlowService);
+    expect(location.replaceState).toHaveBeenCalledWith('/');
+    expect(flow.view).toBe('giving');
+    expect(flow.isGuest).toBe(true);
+    expect(flow.prefillPhone).toBe('5555550100');
   });
 
   it('initializes version checks on startup', () => {

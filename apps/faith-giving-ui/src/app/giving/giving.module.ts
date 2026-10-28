@@ -1,8 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
 import { GivingComponent } from './giving.component';
-import { GivingRoutingModule } from './giving-routing.module';
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { CardModule } from 'primeng/card';
@@ -38,7 +36,6 @@ import { ProfileModalComponent } from './profile-modal/profile-modal.component';
   ],
   imports: [
     CommonModule,
-    GivingRoutingModule,
     ButtonModule,
     DropdownModule,
     CardModule,
@@ -47,7 +44,6 @@ import { ProfileModalComponent } from './profile-modal/profile-modal.component';
     ReactiveFormsModule,
     CheckboxModule,
     CoreModule,
-    RouterModule,
     HttpClientModule,
     NgxMaskDirective,
     NgxMaskPipe,
@@ -60,8 +56,12 @@ import { ProfileModalComponent } from './profile-modal/profile-modal.component';
       'pk_test_51IWOf3A0DJoBf0VzbZR7l3xohneGilLnLoYtjesw2BED5SqjGsV8TZa2Xx9d68RCFlmAN87ErPgQhx9UMT1yrC1400omCjotV3'
     ),
   ],
-  providers: [GivingFormService, 
-    GivingService, provideNgxMask(), ConfirmationService
+  exports: [GivingComponent],
+  providers: [
+    GivingFormService,
+    GivingService,
+    provideNgxMask(),
+    ConfirmationService,
   ],
 })
 export class GivingModule {}
