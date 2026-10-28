@@ -207,6 +207,7 @@ nodejs:
         cp apps/faith-giving-api/ecosystem.config.js dist/apps/faith-giving-api/ecosystem.config.js
         mkdir -p dist/apps/faith-giving-api/deploy
         cp tools/prepare-api-runtime.cjs dist/apps/faith-giving-api/deploy/prepare-api-runtime.cjs
+        cp tools/verify-api-package.cjs dist/apps/faith-giving-api/deploy/verify-api-package.cjs
         if [ -f dist/apps/faith-giving-api/package.json ]; then
           API_VERSION="$API_VERSION" node <<'NODE'
         const fs = require('fs');
@@ -251,6 +252,7 @@ nodejs:
       run: |
         cd dist/apps/faith-giving-api
         npm install --package-lock-only --ignore-scripts --force --no-audit --no-fund
+        node deploy/verify-api-package.cjs . --manifest
 
     - id: package_api
       name: Package Faith Giving API
@@ -358,6 +360,7 @@ nodejs:
           cd "$FAITH_GIVING_SERVICE_DIR"
           echo "→ Refreshing API runtime dependencies"
           timeout 300 npm ci --omit=dev --force --no-audit --no-fund
+          node deploy/verify-api-package.cjs .
           echo "→ Running API migrations"
           timeout 120 ./node_modules/.bin/typeorm migration:run -d migration-data-source.js
           echo "→ Restarting API with PM2"

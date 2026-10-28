@@ -48,6 +48,41 @@ It rejects any feature-flag configuration or Firebase requests.
 These checks use simulated authentication and payment responses. They do not
 establish OTP delivery, live charges, Stripe iframe rendering or deployment.
 
+## API migration package validation
+
+`apps/faith-giving-api/package.json` explicitly declares `pg` and `dotenv` as
+production dependencies. Nx discovers normal imports, but TypeORM loads the
+PostgreSQL driver dynamically and the migration entry point is written after the
+build. These runtime requirements must remain in the API manifest so production
+installs include them.
+
+Before upload, `tools/verify-api-package.cjs` checks that the generated manifest
+and normalized lockfile include PostgreSQL, dotenv and TypeORM as production
+dependencies. After the server's production install, it loads those packages from
+that installation and constructs the migration data source before migration
+execution. Validation does not open a database connection or run migrations.
+
+Run the package regression checks with:
+
+```sh
+node --test tools/verify-api-package.test.cjs
+```
+
+### Migration-driver repair — October 27, 2026
+
+The original generated API package omitted `pg`. A fresh production API build now
+includes `pg` and `dotenv` explicitly, and its normalized lockfile passes the
+package guard. A clean production-only install under the server's Node 24.22.1
+loaded the packaged migration source successfully without a database connection.
+
+The deployed package's manifests were backed up and the missing driver installed.
+A read-only database check confirmed that all nine migrations were already applied.
+The original migration command then passed with no pending migrations, and the
+halted API deployment was completed by reloading the API and saving its PM2
+configuration. The replacement API worker runs Node 24.22.1; the public API returns
+HTTP 200. The 14 package/runtime regression tests and pipeline syntax checks pass.
+The temporary clean-install directory was removed after validation.
+
 ## API deployment runtime
 
 API deployments package `tools/prepare-api-runtime.cjs` and run it on the SSH host

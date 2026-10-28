@@ -7,5 +7,9 @@
         "typeorm:run-migrations": "npx typeorm-ts-node-commonjs migration:run -d ./src/typeOrm.config.ts",
         "typeorm:revert-migrations": "npx typeorm-ts-node-commonjs migration:revert -d ./src/typeOrm.config.ts"
     },
-    "private": true
+    "private": true,
+    "dependencies": {
+        "dotenv": "^16.3.1",
+        "pg": "^8.11.0"
+    }
 }
