@@ -6,7 +6,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
-import { GivingExperienceService } from '../../core/services/giving-experience.service';
 import { GrowlService } from '../../core/growl.service';
 import { BaseConstants } from '../../utils/base.constants';
 import { GiveConstants } from '../giving.constants';
@@ -46,7 +45,6 @@ describe('ProfileModalComponent', () => {
     await TestBed.configureTestingModule({
       imports: [GivingModule, HttpClientTestingModule, NoopAnimationsModule],
       providers: [
-        { provide: GivingExperienceService, useValue: { enabled: true } },
         { provide: AuthService, useValue: auth },
         {
           provide: GrowlService,

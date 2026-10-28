@@ -1,4 +1,3 @@
-<ng-container *ngIf="experience.enabled; else legacy">
 <header class="app-header">
   <div class="header-inner">
     <a class="header-brand" routerLink="/" aria-label="Faith Giving home">
@@ -30,21 +29,3 @@
     </nav>
   </div>
 </header>
-
-</ng-container>
-
-<!-- Preserve the existing experience when beta_access is unavailable or off. -->
-<ng-template #legacy>
-<header class="app-header">
-  <div class="header-inner">
-    <div class="header-brand">
-      <span class="brand-text">Faith Giving</span>
-    </div>
-    <div class="header-avatar" (click)="onAvatarClick()" [class.authenticated]="authService.isAuthenticated">
-      <span *ngIf="authService.isAuthenticated; else guestIcon" class="avatar-initials">{{ initials }}</span>
-      <ng-template #guestIcon><i class="pi pi-user"></i></ng-template>
-    </div>
-  </div>
-</header>
-
-</ng-template>

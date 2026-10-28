@@ -1,10 +1,8 @@
-import { GivingExperienceService } from '../core/services/giving-experience.service';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { BehaviorSubject, of } from 'rxjs';
-import { FeatureFlagsService } from '../core/services/feature-flags.service';
+import { of } from 'rxjs';
 import { AuthService } from '../core/services/auth.service';
 import { GrowlService } from '../core/growl.service';
 import { GivingModule } from './giving.module';
@@ -31,8 +29,6 @@ describe('GivingComponent', () => {
     expYear: 2028,
   };
   let giving: GivingService;
-  let decisions: BehaviorSubject<{ enabled: boolean; status: string }>;
-  let experience: GivingExperienceService;
   let auth: {
     isAuthenticated: boolean;
     individual: typeof donor | null;
@@ -41,7 +37,6 @@ describe('GivingComponent', () => {
   };
 
   beforeEach(async () => {
-    decisions = new BehaviorSubject({ enabled: true, status: 'ready' });
     auth = {
       isAuthenticated: false,
       individual: null,
@@ -78,10 +73,6 @@ describe('GivingComponent', () => {
     await TestBed.configureTestingModule({
       imports: [GivingModule, RouterTestingModule, NoopAnimationsModule],
       providers: [
-        {
-          provide: FeatureFlagsService,
-          useValue: { decision$: () => decisions },
-        },
         { provide: AuthService, useValue: auth },
         { provide: GrowlService, useValue: { showErrorMessage: jest.fn() } },
         {
@@ -96,37 +87,20 @@ describe('GivingComponent', () => {
       .compileComponents();
     fixture = TestBed.createComponent(GivingComponent);
     component = fixture.componentInstance;
-    experience = TestBed.inject(GivingExperienceService);
     form = TestBed.inject(GivingFormService);
     fixture.detectChanges();
   });
 
-  it('renders the original templates while the flag is off or pending', () => {
-    decisions.next({ enabled: false, status: 'ready' });
-    fixture.detectChanges();
-    expect(fixture.nativeElement.querySelector('.progress-bar')).toBeTruthy();
-    expect(fixture.nativeElement.querySelector('#giving-email')).toBeNull();
-    decisions.next({ enabled: true, status: 'pending' });
-    fixture.detectChanges();
-    expect(fixture.nativeElement.querySelector('.progress-bar')).toBeTruthy();
-    decisions.next({ enabled: true, status: 'ready' });
-    fixture.detectChanges();
-    expect(fixture.nativeElement.querySelector('.step-badge')).toBeTruthy();
-  });
-
-  it('preserves payment DOM across a flag change until Done', () => {
+  it('preserves payment controls while processing and returns to gift details on Done', () => {
     auth.isAuthenticated = true;
     auth.individual = donor;
     giving.activeIndex = 1;
     component.savedPaymentMethods = [card];
     component.selectPaymentMethod(card.paymentMethodId);
-    component.lockExperience();
     fixture.detectChanges();
     const payment = fixture.nativeElement.querySelector('input[type="radio"]');
     giving.requestInit = true;
-    decisions.next({ enabled: false, status: 'ready' });
     fixture.detectChanges();
-    expect(experience.enabled).toBe(true);
     expect(fixture.nativeElement.querySelector('input[type="radio"]')).toBe(
       payment
     );
@@ -134,19 +108,9 @@ describe('GivingComponent', () => {
     giving.requestInit = false;
     component.done();
     fixture.detectChanges();
-    expect(experience.enabled).toBe(false);
-    expect(fixture.nativeElement.querySelector('.progress-bar')).toBeTruthy();
-  });
-
-  it('locks the original experience when the donor first interacts', () => {
-    decisions.next({ enabled: false, status: 'ready' });
-    fixture.detectChanges();
-    fixture.nativeElement.dispatchEvent(new Event('focusin'));
-    decisions.next({ enabled: true, status: 'ready' });
-    fixture.detectChanges();
-    expect(fixture.nativeElement.querySelector('.progress-bar')).toBeTruthy();
-    fixture.destroy();
-    expect(experience.enabled).toBe(true);
+    expect(
+      fixture.nativeElement.querySelector('.step-badge').textContent
+    ).toContain('Step 1 of 2');
   });
 
   it('keeps guest details and gift amounts in the first step', () => {

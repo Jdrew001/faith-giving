@@ -1,5 +1,32 @@
 # Faith Giving redesign QA
 
+## Primary theme follow-up — October 27, 2026
+
+The dark theme is now unconditional. The presentation flag, Firebase browser
+client, deployment configuration generator and legacy templates/styles have been
+removed. The checks below describe the original October 20 rollout; current
+validation uses [the primary-theme workflow](docs/frontend-validation.md).
+
+Current validation passed:
+
+- 13 frontend suites / 34 tests, including processing DOM preservation, repeat
+  payment suppression, Stripe styling/readiness, ZIP handling and profile behavior.
+- Production frontend build `f66fb9393e0fbad1`; initial bundle 1.91 MB, below the
+  2 MB warning limit. Two existing CSS selector optimization notices remain.
+- Controlled Chrome smoke: guest startup without Firebase, invalid guest
+  validation, session restoration, OTP sign-in, account switching, logout,
+  new-card navigation, simulated saved-card processing, receipt and Done.
+- No feature-flag asset or Firebase requests, unexpected API calls, or browser
+  runtime errors. Authentication and payments use fixture responses.
+- Desktop/mobile captures at 1280, 768, 390 and 320 pixels; no horizontal overflow
+  at the mobile/tablet widths. Desktop and 390px guest captures were visually
+  inspected. Evidence: `output/playwright/primary-*.png`.
+- Lint comparison across all 27 modified frontend TypeScript/template files found
+  no new findings; 7 existing errors and 9 existing warnings remain.
+- No deployment, Firebase template change, real OTP or live charge occurred.
+
+## Original redesign validation — October 20, 2026
+
 final result: passed
 
 ## Source and scope

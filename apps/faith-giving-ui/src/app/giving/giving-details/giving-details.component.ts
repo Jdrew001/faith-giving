@@ -1,4 +1,3 @@
-import { GivingExperienceService } from '../../core/services/giving-experience.service';
 import { HostBinding, Component, Input } from '@angular/core';
 import { GivingFormService } from '../services/giving-form.service';
 import { FormControl } from '@angular/forms';
@@ -7,18 +6,10 @@ import { GivingService } from '../services/giving.service';
 @Component({
   selector: 'faith-giving-giving-details',
   templateUrl: './giving-details.component.html',
-  styleUrls: [
-    './giving-details.component.legacy.css',
-    './giving-details.component.css',
-  ],
+  styleUrls: ['./giving-details.component.css'],
 })
 export class GivingDetailsComponent {
-  @HostBinding('class.redesign') get redesignEnabled() {
-    return this.experience.enabled;
-  }
-  @HostBinding('class.legacy') get legacyEnabled() {
-    return !this.experience.enabled;
-  }
+  @HostBinding('class.redesign') readonly primaryTheme = true;
 
   @Input() formSubmitted: boolean;
 
@@ -34,7 +25,6 @@ export class GivingDetailsComponent {
   }
 
   constructor(
-    public readonly experience: GivingExperienceService,
     private formService: GivingFormService,
     private givingService: GivingService
   ) {}

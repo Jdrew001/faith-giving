@@ -1,4 +1,3 @@
-import { GivingExperienceService } from '../../core/services/giving-experience.service';
 import {
   ComponentFixture,
   TestBed,
@@ -40,17 +39,7 @@ describe('CardDetailsComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [CardDetailsComponent],
       imports: [FormsModule, CheckboxModule, SkeletonModule],
-      providers: [
-        {
-          provide: GivingExperienceService,
-          useValue: {
-            enabled: true,
-            lockGift: jest.fn(),
-            releaseGift: jest.fn(),
-          },
-        },
-        { provide: GrowlService, useValue: growl },
-      ],
+      providers: [{ provide: GrowlService, useValue: growl }],
     }).compileComponents();
     fixture = TestBed.createComponent(CardDetailsComponent);
     component = fixture.componentInstance;
@@ -74,7 +63,7 @@ describe('CardDetailsComponent', () => {
     fixture.detectChanges();
   }
 
-  it('uses the dark Stripe style and self-hosted font only for the redesign', fakeAsync(() => {
+  it('uses the primary dark Stripe style and self-hosted font', fakeAsync(() => {
     const create = jest.fn().mockImplementation((name: string) => fields[name]);
     component.stripe = { elements: jest.fn(() => ({ create })) };
     mountFields();
@@ -100,21 +89,6 @@ describe('CardDetailsComponent', () => {
         .querySelector('input[inputmode="numeric"]')
         ?.getAttribute('type')
     ).toBe('text');
-  }));
-
-  it('keeps the original Stripe configuration and card template when beta_access is off', fakeAsync(() => {
-    TestBed.inject(GivingExperienceService).enabled = false;
-    const create = jest.fn().mockImplementation((name: string) => fields[name]);
-    component.stripe = { elements: jest.fn(() => ({ create })) };
-    mountFields();
-    expect(component.stripe.elements).toHaveBeenCalledWith();
-    expect(create.mock.calls[0][1]).toMatchObject({
-      style: { base: { color: '#1a1b21' } },
-    });
-    expect(create.mock.calls[0][1]).not.toHaveProperty('disableLink');
-    expect(
-      fixture.nativeElement.querySelector('input[type="number"]')
-    ).toBeTruthy();
   }));
 
   it('waits for every Stripe field before enabling the amount-specific payment action', fakeAsync(() => {

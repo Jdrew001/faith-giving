@@ -46,10 +46,9 @@ NX_DAEMON=false npx nx build faith-giving-api --configuration=production
 deployment, with the API managed by PM2. Its install steps use development
 dependencies and permit the legacy Firebase peer constraint.
 
-ShipStack project settings generate the public Firebase feature-flag asset after
-the frontend build. API packaging completes the generated dependency lockfile,
-and deployment installs its locked runtime dependencies before migrations and
-PM2 reload.
+The frontend uses the Faith Tabernacle dark theme for all donors and guests.
+API packaging completes the generated dependency lockfile, and deployment installs
+its locked runtime dependencies before migrations and PM2 reload.
 
-See [frontend feature flags](docs/frontend-feature-flags.md) for Firebase setup,
-controlled validation and local package regeneration.
+See [frontend validation](docs/frontend-validation.md) for theme behavior,
+controlled browser checks and API runtime requirements.

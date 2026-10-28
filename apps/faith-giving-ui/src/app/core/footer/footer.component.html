@@ -1,4 +1,3 @@
-<ng-container *ngIf="experience.enabled; else legacy">
 <footer class="app-footer">
   <div class="footer-inner">
     <p class="footer-copyright">&copy; {{ year }} Faith Tabernacle</p>
@@ -9,21 +8,3 @@
     </nav>
   </div>
 </footer>
-
-</ng-container>
-
-<!-- Preserve the existing experience when beta_access is unavailable or off. -->
-<ng-template #legacy>
-<footer class="app-footer">
-  <div class="footer-inner">
-    <p class="footer-brand">Faith Giving</p>
-    <div class="footer-links">
-      <a href="#">Privacy Policy</a>
-      <a href="#">Terms of Service</a>
-      <a href="#">Contact Support</a>
-    </div>
-    <p class="footer-copyright">&copy; {{ year }} Faith Giving. All rights reserved.</p>
-  </div>
-</footer>
-
-</ng-template>

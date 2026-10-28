@@ -1,26 +1,24 @@
 // Playwright CLI evaluates this file as its function input.
 // skipcq: JS-0128
-async function featureFlagsSmoke(page) {
+async function givingSmoke(page) {
   page.setDefaultTimeout(20000);
   const base = 'http://127.0.0.1:48179/give/';
   const donorA = {
     id: 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
-    firstname: 'Beta',
+    firstname: 'Alex',
     lastname: 'Donor',
-    email: 'beta@example.test',
+    email: 'alex@example.test',
     phone: '5555550100',
   };
   const donorB = {
     ...donorA,
     id: 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',
-    firstname: 'Regular',
+    firstname: 'Jordan',
   };
   const state = {
-    enabled: false,
     session: null,
-    forceBeta: false,
     otpDonor: donorA,
-    signals: [],
+    flagRequests: [],
     sessionChecks: 0,
     unexpected: [],
     pageErrors: [],
@@ -121,54 +119,14 @@ async function featureFlagsSmoke(page) {
     if (url.pathname.endsWith('/assets/version.json'))
       return json(route, { version: 'smoke' });
     if (route.request().method() === 'OPTIONS') return json(route, {});
-    if (url.pathname.endsWith('/assets/feature-flags.json')) {
-      return json(
-        route,
-        state.enabled
-          ? {
-              enabled: true,
-              firebase: {
-                apiKey: 'smoke-only-key',
-                projectId: 'faith-giving-smoke',
-                appId: state.forceBeta
-                  ? '1:123456789:web:smoke-guest'
-                  : '1:123456789:web:smoke',
-              },
-            }
-          : { enabled: false }
-      );
+    if (
+      url.pathname.endsWith('/assets/feature-flags.json') ||
+      url.hostname.includes('firebase')
+    ) {
+      state.flagRequests.push(url.href);
+      return route.abort();
     }
     if (url.pathname.includes('/api/')) return mockApi(route, url.pathname);
-    if (url.hostname === 'firebaseinstallations.googleapis.com') {
-      const body = route.request().postDataJSON();
-      return json(route, {
-        fid: body.fid,
-        refreshToken: 'smoke-refresh',
-        authToken: { token: 'smoke-token', expiresIn: '604800s' },
-      });
-    }
-    if (url.hostname === 'firebaseremoteconfigrealtime.googleapis.com') {
-      // Hold the simulated realtime stream open rather than triggering SDK failure.
-      return undefined;
-    }
-    if (url.hostname === 'firebaseremoteconfig.googleapis.com') {
-      // Leave the simulated realtime connection open; all fetches are deterministic below.
-      if (url.pathname.endsWith(':streamFetchInvalidations')) return undefined;
-      const donor =
-        route.request().postDataJSON().custom_signals?.individual_id ?? null;
-      state.signals.push(donor);
-      return json(
-        route,
-        {
-          entries: {
-            beta_access: String(state.forceBeta || donor === donorA.id),
-          },
-          state: 'UPDATE',
-          templateVersion: '1',
-        },
-        { ETag: `smoke-${state.signals.length}` }
-      );
-    }
     if (url.hostname === 'js.stripe.com')
       return route.fulfill({
         status: 200,
@@ -179,22 +137,6 @@ async function featureFlagsSmoke(page) {
     return route.abort();
   });
 
-  async function waitForSignal(expected) {
-    const deadline = Date.now() + 15000;
-    while (Date.now() < deadline) {
-      if (
-        state.signals[state.signals.length - 1] === expected &&
-        state.signals.length > 0
-      )
-        return;
-      await page.waitForTimeout(50);
-    }
-    throw new Error(
-      `Expected latest donor signal ${expected}; received ${JSON.stringify(
-        state.signals
-      )}`
-    );
-  }
   async function signIn(donor) {
     state.otpDonor = donor;
     await page.getByLabel('Phone Number').fill(donor.phone);
@@ -204,7 +146,6 @@ async function featureFlagsSmoke(page) {
     await page
       .getByRole('heading', { name: `Welcome back, ${donor.firstname}!` })
       .waitFor();
-    await waitForSignal(donor.id);
   }
   async function signOut() {
     const headerAction = page.getByRole('button', {
@@ -214,7 +155,6 @@ async function featureFlagsSmoke(page) {
     if (await headerAction.isVisible()) await headerAction.click();
     else await page.getByText('Not you? Sign out', { exact: true }).click();
     await page.getByRole('heading', { name: 'Sign in to give' }).waitFor();
-    await waitForSignal(null);
   }
 
   await page.setViewportSize({ width: 1280, height: 900 });
@@ -226,10 +166,10 @@ async function featureFlagsSmoke(page) {
     'Explicit guest route unexpectedly restored a session'
   );
   assert(
-    state.signals.length === 0,
-    'Disabled configuration unexpectedly fetched Remote Config'
+    state.flagRequests.length === 0,
+    'Giving unexpectedly requested feature flag configuration'
   );
-  await page.getByRole('button', { name: 'Pay with Stripe' }).click();
+  await page.getByRole('button', { name: 'Continue to payment' }).click();
   await page.getByRole('heading', { name: 'Online Giving' }).waitFor();
   assert(
     state.unexpected.length === 0,
@@ -237,18 +177,16 @@ async function featureFlagsSmoke(page) {
   );
 
   await page.screenshot({
-    path: 'output/playwright/legacy-guest-desktop.png',
+    path: 'output/playwright/primary-guest-startup.png',
     fullPage: true,
   });
   assert(
-    (await page.locator('html.faith-giving-redesign').count()) === 0,
-    'Disabled configuration enabled redesign'
+    (await page.locator('html.faith-giving-redesign').count()) === 1,
+    'Guest startup did not use the primary theme'
   );
-  state.enabled = true;
   state.session = donorA;
   await page.goto(`${base}give`, { waitUntil: 'domcontentloaded' });
-  await page.getByRole('heading', { name: 'Welcome back, Beta!' }).waitFor();
-  await waitForSignal(donorA.id);
+  await page.getByRole('heading', { name: 'Welcome back, Alex!' }).waitFor();
   assert(
     state.sessionChecks === 1,
     'Existing session restoration ownership changed'
@@ -263,7 +201,7 @@ async function featureFlagsSmoke(page) {
   await page.getByRole('button', { name: 'Continue to payment' }).click();
   await page.getByRole('radio', { name: 'visa ending in 4242' }).waitFor();
   await page.screenshot({
-    path: 'output/playwright/beta-saved-card-desktop.png',
+    path: 'output/playwright/primary-saved-card-desktop.png',
     fullPage: true,
   });
   await page.getByRole('button', { name: 'Add new payment method' }).click();
@@ -275,7 +213,7 @@ async function featureFlagsSmoke(page) {
     'Redesigned card fields are missing'
   );
   await page.screenshot({
-    path: 'output/playwright/beta-card-desktop.png',
+    path: 'output/playwright/primary-card-desktop.png',
     fullPage: true,
   });
   await page.getByRole('button', { name: 'Back to payment methods' }).click();
@@ -285,42 +223,40 @@ async function featureFlagsSmoke(page) {
     .getByRole('heading', { name: 'Processing your gift...' })
     .waitFor();
   await page.screenshot({
-    path: 'output/playwright/beta-processing-desktop.png',
+    path: 'output/playwright/primary-processing-desktop.png',
     fullPage: true,
   });
   await page
     .getByRole('heading', { name: 'Thank you for your generosity!' })
     .waitFor();
   await page.screenshot({
-    path: 'output/playwright/beta-receipt-desktop.png',
+    path: 'output/playwright/primary-receipt-desktop.png',
     fullPage: true,
   });
   await page.getByRole('button', { name: 'Done', exact: true }).click();
   await signOut();
 
   assert(
-    (await page.locator('html.faith-giving-redesign').count()) === 0,
-    'Logout retained beta UI'
+    (await page.locator('html.faith-giving-redesign').count()) === 1,
+    'Logout lost the primary theme'
   );
   await signIn(donorB);
   assert(
-    (await page.locator('.progress-bar').count()) === 1,
-    'Regular donor lost original giving UI'
+    (await page.locator('.step-badge').count()) === 1,
+    'Second donor did not use the primary giving UI'
   );
   await page.screenshot({
-    path: 'output/playwright/regular-donor-desktop.png',
+    path: 'output/playwright/second-donor-desktop.png',
     fullPage: true,
   });
   await signOut();
   await signIn(donorA);
   await page.locator('html.faith-giving-redesign').waitFor();
   await page.screenshot({
-    path: 'output/playwright/beta-returning-desktop.png',
+    path: 'output/playwright/primary-returning-desktop.png',
     fullPage: true,
   });
 
-  // A separate controlled template lets the guest design be checked without changing Firebase.
-  state.forceBeta = true;
   state.session = null;
   await page.goto(base + 'give?guest=true', { waitUntil: 'domcontentloaded' });
   await page.locator('html.faith-giving-redesign').waitFor();
@@ -338,7 +274,7 @@ async function featureFlagsSmoke(page) {
   await page.getByLabel('Offering 1 amount', { exact: true }).fill('25.00');
   await page.getByText('$125.00', { exact: true }).waitFor();
   await page.screenshot({
-    path: 'output/playwright/beta-guest-desktop.png',
+    path: 'output/playwright/primary-guest-desktop.png',
     fullPage: true,
   });
   for (const width of [320, 390, 768]) {
@@ -350,7 +286,7 @@ async function featureFlagsSmoke(page) {
       'Giving overflow at ' + width
     );
     await page.screenshot({
-      path: 'output/playwright/beta-guest-' + width + '.png',
+      path: 'output/playwright/primary-guest-' + width + '.png',
       fullPage: true,
     });
   }
@@ -360,7 +296,7 @@ async function featureFlagsSmoke(page) {
     .getByRole('heading', { name: 'Card Details', exact: true })
     .waitFor();
   await page.screenshot({
-    path: 'output/playwright/beta-card-mobile.png',
+    path: 'output/playwright/primary-card-mobile.png',
     fullPage: true,
   });
   await page.setViewportSize({ width: 1280, height: 900 });
@@ -372,21 +308,34 @@ async function featureFlagsSmoke(page) {
     state.pageErrors.length === 0,
     `Browser runtime errors: ${JSON.stringify(state.pageErrors)}`
   );
+  assert(
+    state.flagRequests.length === 0,
+    'Retired feature flags were requested'
+  );
+  assert(
+    await page.evaluate(
+      () =>
+        document.querySelector('meta[name="theme-color"]').content ===
+          '#0b0b0b' &&
+        getComputedStyle(document.body).backgroundColor === 'rgb(11, 11, 11)' &&
+        getComputedStyle(document.body).fontFamily.includes('Poppins')
+    ),
+    'Primary colors, font or browser theme color are missing'
+  );
   return {
     passed: [
-      'disabled guest startup',
+      'primary theme at guest startup without Firebase',
       'guest route skips session restore',
       'invalid guest submission stays in giving',
       'authenticated session restoration',
-      'beta card-details navigation',
+      'primary card-details navigation',
       'mock saved-card processing and receipt',
-      'single flag gates original and redesigned UI',
-      'responsive beta guest flow at 320, 390, 768, 1280 pixels',
-      'logout clears Firebase donor signal',
-      'OTP sign-in includes donor UUID',
-      'account switching replaces donor signal',
+      'primary theme persists after logout and account switching',
+      'responsive primary guest flow at 320, 390, 768, 1280 pixels',
+      'OTP sign-in and account switching',
+      'no feature flag configuration or Firebase requests',
     ],
-    donorSignals: state.signals,
+    flagRequests: state.flagRequests,
     liveRequests: 0,
   };
 }

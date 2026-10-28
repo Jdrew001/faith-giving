@@ -1,5 +1,13 @@
-import { GivingExperienceService } from '../../core/services/giving-experience.service';
-import { HostBinding, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import {
+  HostBinding,
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../core/services/auth.service';
 import { GrowlService } from '../../core/growl.service';
@@ -10,16 +18,10 @@ import { GivingService } from '../services/giving.service';
 @Component({
   selector: 'faith-giving-profile-modal',
   templateUrl: './profile-modal.component.html',
-  styleUrls: ['./profile-modal.component.legacy.css', './profile-modal.component.css']
+  styleUrls: ['./profile-modal.component.css'],
 })
 export class ProfileModalComponent implements OnInit, OnChanges {
-  @HostBinding('class.redesign') get redesignEnabled() {
-    return this.experience.enabled;
-  }
-  @HostBinding('class.legacy') get legacyEnabled() {
-    return !this.experience.enabled;
-  }
-
+  @HostBinding('class.redesign') readonly primaryTheme = true;
 
   @Input() visible: boolean = false;
   @Input() individual: any;
@@ -33,7 +35,6 @@ export class ProfileModalComponent implements OnInit, OnChanges {
   paymentMethodsError = false;
 
   constructor(
-    public readonly experience: GivingExperienceService,
     private fb: FormBuilder,
     private authService: AuthService,
     private growlService: GrowlService,
@@ -43,7 +44,7 @@ export class ProfileModalComponent implements OnInit, OnChanges {
       firstName: ['', [Validators.required]],
       lastName: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
-      phone: ['', [Validators.required, Validators.minLength(10)]]
+      phone: ['', [Validators.required, Validators.minLength(10)]],
     });
   }
 
@@ -63,8 +64,13 @@ export class ProfileModalComponent implements OnInit, OnChanges {
     this.paymentMethods = [];
     this.paymentMethodsError = false;
     this.loadingPaymentMethods = true;
-    this.givingService.fetchPaymentMethods()
-      .pipe(finalize(() => { this.loadingPaymentMethods = false; }))
+    this.givingService
+      .fetchPaymentMethods()
+      .pipe(
+        finalize(() => {
+          this.loadingPaymentMethods = false;
+        })
+      )
       .subscribe({
         next: (result) => {
           if (result?.success && Array.isArray(result.data)) {
@@ -75,37 +81,37 @@ export class ProfileModalComponent implements OnInit, OnChanges {
         },
         error: () => {
           this.paymentMethodsError = true;
-        }
+        },
       });
   }
 
   deletePaymentMethod(id: string) {
-    this.givingService.deletePaymentMethod(id)
-      .subscribe({
-        next: (result) => {
-          if (result?.success) {
-            this.growlService.showSuccessMessage('Payment method removed');
-            this.fetchPaymentMethods();
-          }
-        },
-        error: () => {
-          this.growlService.showErrorMessage('Failed to remove payment method');
+    this.givingService.deletePaymentMethod(id).subscribe({
+      next: (result) => {
+        if (result?.success) {
+          this.growlService.showSuccessMessage('Payment method removed');
+          this.fetchPaymentMethods();
         }
-      });
+      },
+      error: () => {
+        this.growlService.showErrorMessage('Failed to remove payment method');
+      },
+    });
   }
 
   private prefill() {
     const ind = this.individual ?? this.authService.individual;
     if (ind) {
       const digits = (ind.phone ?? '').replace(/\D/g, '');
-      const phone = digits.length === 11 && digits.startsWith('1')
-        ? digits.slice(1)
-        : digits;
+      const phone =
+        digits.length === 11 && digits.startsWith('1')
+          ? digits.slice(1)
+          : digits;
       this.profileForm.patchValue({
         firstName: ind.firstname,
         lastName: ind.lastname,
         email: ind.email,
-        phone
+        phone,
       });
     }
   }
@@ -119,20 +125,24 @@ export class ProfileModalComponent implements OnInit, OnChanges {
 
     const rawPhone = phone;
     const normalized = rawPhone.replace(/\D/g, '');
-    const e164Phone = normalized.startsWith('1') ? `+${normalized}` : `+1${normalized}`;
+    const e164Phone = normalized.startsWith('1')
+      ? `+${normalized}`
+      : `+1${normalized}`;
 
-    this.authService.updateProfile({
-      firstname: firstName,
-      lastname: lastName,
-      email: email,
-      phone: e164Phone
-    }).subscribe(result => {
-      this.loading = false;
-      if (result?.success) {
-        this.growlService.showSuccessMessage('Profile updated successfully');
-        this.dismiss();
-      }
-    });
+    this.authService
+      .updateProfile({
+        firstname: firstName,
+        lastname: lastName,
+        email: email,
+        phone: e164Phone,
+      })
+      .subscribe((result) => {
+        this.loading = false;
+        if (result?.success) {
+          this.growlService.showSuccessMessage('Profile updated successfully');
+          this.dismiss();
+        }
+      });
   }
 
   dismiss() {

@@ -1,109 +1,110 @@
-import { GivingExperienceService } from '../core/services/giving-experience.service';
 import { HostBinding, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../core/services/auth.service';
 
 @Component({
-    selector: 'faith-giving-sign-in',
-    templateUrl: './sign-in.component.html',
-    styleUrls: ['./sign-in.component.legacy.css', './sign-in.component.css']
+  selector: 'faith-giving-sign-in',
+  templateUrl: './sign-in.component.html',
+  styleUrls: ['./sign-in.component.css'],
 })
 export class SignInComponent implements OnInit {
-  @HostBinding('class.redesign') get redesignEnabled() {
-    return this.experience.enabled;
+  @HostBinding('class.redesign') readonly primaryTheme = true;
+
+  signInForm: FormGroup;
+  verifyForm: FormGroup;
+  loading = false;
+  formSubmitted = false;
+  codeSent = false;
+  resending = false;
+  phone = '';
+  signInMessage = '';
+
+  get phoneControl() {
+    return this.signInForm.get('phone');
   }
-  @HostBinding('class.legacy') get legacyEnabled() {
-    return !this.experience.enabled;
+  get code() {
+    return this.verifyForm.get('code');
   }
 
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
-    signInForm: FormGroup;
-    verifyForm: FormGroup;
-    loading = false;
-    formSubmitted = false;
-    codeSent = false;
-    resending = false;
-    phone = '';
-    signInMessage = '';
+  ngOnInit() {
+    this.signInForm = this.fb.group({
+      phone: ['', [Validators.required, Validators.minLength(10)]],
+    });
+    this.verifyForm = this.fb.group({
+      code: ['', [Validators.required, Validators.pattern(/^\d{6}$/)]],
+    });
 
-    get phoneControl() { return this.signInForm.get('phone'); }
-    get code() { return this.verifyForm.get('code'); }
+    this.authService.checkSession().then((found) => {
+      if (found && !this.codeSent) {
+        this.router.navigate(['/give']);
+      }
+    });
+  }
 
-    constructor(
-    public readonly experience: GivingExperienceService,
-        private fb: FormBuilder,
-        private authService: AuthService,
-        private router: Router
-    ) {}
+  sendCode() {
+    this.formSubmitted = true;
+    if (this.signInForm.invalid) return;
 
-    ngOnInit() {
-        this.signInForm = this.fb.group({
-            phone: ['', [Validators.required, Validators.minLength(10)]]
-        });
-        this.verifyForm = this.fb.group({
-            code: ['', [Validators.required, Validators.pattern(/^\d{6}$/)]]
-        });
+    const rawPhone = this.phoneControl.value as string;
+    const normalized = rawPhone.replace(/\D/g, '');
+    const e164Phone = normalized.startsWith('1')
+      ? `+${normalized}`
+      : `+1${normalized}`;
+    this.phone = e164Phone;
 
-        this.authService.checkSession().then(found => {
-            if (found && !this.codeSent) {
-                this.router.navigate(['/give']);
-            }
-        });
-    }
+    this.loading = true;
+    this.authService.requestOtp(e164Phone).subscribe((result) => {
+      this.loading = false;
+      if (!result) return;
 
-    sendCode() {
-        this.formSubmitted = true;
-        if (this.signInForm.invalid) return;
+      if (!result.found) {
+        this.signInMessage =
+          'We could not find an account for that phone number. You can try another number or continue as guest.';
+        return;
+      }
 
-        const rawPhone = this.phoneControl.value as string;
-        const normalized = rawPhone.replace(/\D/g, '');
-        const e164Phone = normalized.startsWith('1') ? `+${normalized}` : `+1${normalized}`;
-        this.phone = e164Phone;
+      this.signInMessage = '';
+      this.formSubmitted = false;
+      this.codeSent = true;
+    });
+  }
 
-        this.loading = true;
-        this.authService.requestOtp(e164Phone).subscribe(result => {
-            this.loading = false;
-            if (!result) return;
+  verify() {
+    this.formSubmitted = true;
+    if (this.verifyForm.invalid) return;
 
-            if (!result.found) {
-                this.signInMessage = 'We could not find an account for that phone number. You can try another number or continue as guest.';
-                return;
-            }
+    this.loading = true;
+    this.authService
+      .verifyOtp(this.phone, this.code.value)
+      .subscribe((result) => {
+        this.loading = false;
+        if (result?.success) {
+          this.router.navigate(['/give']);
+        }
+      });
+  }
 
-            this.signInMessage = '';
-            this.formSubmitted = false;
-            this.codeSent = true;
-        });
-    }
+  resendCode() {
+    this.resending = true;
+    this.authService.requestOtp(this.phone).subscribe(() => {
+      this.resending = false;
+    });
+  }
 
-    verify() {
-        this.formSubmitted = true;
-        if (this.verifyForm.invalid) return;
+  get maskedPhone(): string {
+    if (!this.phone) return '';
+    const digits = this.phone.replace(/\D/g, '');
+    return `(${digits.slice(-10, -7)}) ${digits.slice(-7, -4)}-****`;
+  }
 
-        this.loading = true;
-        this.authService.verifyOtp(this.phone, this.code.value).subscribe(result => {
-            this.loading = false;
-            if (result?.success) {
-                this.router.navigate(['/give']);
-            }
-        });
-    }
-
-    resendCode() {
-        this.resending = true;
-        this.authService.requestOtp(this.phone).subscribe(() => {
-            this.resending = false;
-        });
-    }
-
-    get maskedPhone(): string {
-        if (!this.phone) return '';
-        const digits = this.phone.replace(/\D/g, '');
-        return `(${digits.slice(-10, -7)}) ${digits.slice(-7, -4)}-****`;
-    }
-
-    continueAsGuest() {
-        this.router.navigate(['/give'], { queryParams: { guest: true } });
-    }
+  continueAsGuest() {
+    this.router.navigate(['/give'], { queryParams: { guest: true } });
+  }
 }

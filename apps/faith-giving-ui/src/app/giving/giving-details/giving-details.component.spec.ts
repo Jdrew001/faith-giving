@@ -1,4 +1,3 @@
-import { GivingExperienceService } from '../../core/services/giving-experience.service';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -16,14 +15,6 @@ describe('GivingDetailsComponent', () => {
       declarations: [GivingDetailsComponent],
       imports: [ReactiveFormsModule, DropdownModule, NoopAnimationsModule],
       providers: [
-        {
-          provide: GivingExperienceService,
-          useValue: {
-            enabled: true,
-            lockGift: jest.fn(),
-            releaseGift: jest.fn(),
-          },
-        },
         GivingFormService,
         {
           provide: GivingService,

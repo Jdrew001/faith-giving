@@ -103,10 +103,6 @@ web:
       name: Build Faith Giving UI
       run: npx nx build faith-giving-ui --configuration=production
 
-    - id: write_feature_flags_json
-      name: Write Firebase feature flag deployment configuration
-      run: node tools/write-feature-flags-config.mjs
-
     - id: package_ui
       name: Package Faith Giving UI
       type: package

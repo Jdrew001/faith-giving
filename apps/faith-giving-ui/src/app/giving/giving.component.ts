@@ -1,9 +1,7 @@
-import { GivingExperienceService } from '../core/services/giving-experience.service';
 import {
   HostBinding,
   Component,
   ElementRef,
-  HostListener,
   OnDestroy,
   OnInit,
   ViewChildren,
@@ -25,15 +23,10 @@ declare const Stripe;
 @Component({
   selector: 'faith-giving-giving',
   templateUrl: './giving.component.html',
-  styleUrls: ['./giving.component.legacy.css', './giving.component.css'],
+  styleUrls: ['./giving.component.css'],
 })
 export class GivingComponent implements OnInit, OnDestroy {
-  @HostBinding('class.redesign') get redesignEnabled() {
-    return this.experience.enabled;
-  }
-  @HostBinding('class.legacy') get legacyEnabled() {
-    return !this.experience.enabled;
-  }
+  @HostBinding('class.redesign') readonly primaryTheme = true;
 
   @ViewChildren('confirmDialog') confirmDialog: ConfirmDialog;
 
@@ -92,7 +85,6 @@ export class GivingComponent implements OnInit, OnDestroy {
   private _modalSub: Subscription;
 
   constructor(
-    public readonly experience: GivingExperienceService,
     private formService: GivingFormService,
     private growlService: GrowlService,
     public giveService: GivingService,
@@ -106,7 +98,6 @@ export class GivingComponent implements OnInit, OnDestroy {
     this.stripe = Stripe(this.stripeKey);
     this.formService.createGivingForm();
     this._modalSub = this.profileModalService.open$.subscribe(() => {
-      this.experience.lockGift();
       this.showProfileModal = true;
     });
     this.giveService.getCategoryReferenceData();
@@ -153,7 +144,6 @@ export class GivingComponent implements OnInit, OnDestroy {
   }
 
   payWithStripe() {
-    this.experience.lockGift();
     this.giveService.formSubmitted = true;
     if (this.givingForm.invalid) {
       const invalidFields = Object.keys(this.givingForm.controls).filter(
@@ -169,7 +159,7 @@ export class GivingComponent implements OnInit, OnDestroy {
     if (this.isAuthenticated) {
       this.fetchSavedPaymentMethods();
     }
-    if (this.experience.enabled) this.giveService.formSubmitted = false;
+    this.giveService.formSubmitted = false;
     this.giveService.activeIndex = 1;
   }
 
@@ -178,8 +168,7 @@ export class GivingComponent implements OnInit, OnDestroy {
     zipCode: string | number;
     savePaymentMethod?: boolean;
   }) {
-    this.experience.lockGift();
-    if (this.experience.enabled && this.requestInit) return;
+    if (this.requestInit) return;
     if (this.selectedPaymentMethod) {
       // Pay with saved card - skip Stripe Elements, use saved paymentMethodId
       const selectedCard = this.savedPaymentMethods.find(
@@ -267,7 +256,6 @@ export class GivingComponent implements OnInit, OnDestroy {
     this.giveService.activeIndex = 0;
     this.selectedPaymentMethod = null;
     this.useNewCard = this.savedPaymentMethods.length === 0;
-    this.experience.releaseGift();
   }
 
   viewReceipt() {
@@ -312,13 +300,5 @@ export class GivingComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this._modalSub?.unsubscribe();
-    this.experience.releaseGift();
-  }
-
-  @HostListener('focusin')
-  @HostListener('pointerdown')
-  @HostListener('input')
-  lockExperience(): void {
-    this.experience.lockGift();
   }
 }

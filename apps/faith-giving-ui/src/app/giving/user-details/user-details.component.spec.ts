@@ -1,4 +1,3 @@
-import { GivingExperienceService } from '../../core/services/giving-experience.service';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
@@ -12,18 +11,7 @@ describe('UserDetailsComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [UserDetailsComponent],
       imports: [ReactiveFormsModule, NgxMaskDirective],
-      providers: [
-        {
-          provide: GivingExperienceService,
-          useValue: {
-            enabled: true,
-            lockGift: jest.fn(),
-            releaseGift: jest.fn(),
-          },
-        },
-        GivingFormService,
-        provideNgxMask(),
-      ],
+      providers: [GivingFormService, provideNgxMask()],
     }).compileComponents();
     TestBed.inject(GivingFormService).createGivingForm();
     fixture = TestBed.createComponent(UserDetailsComponent);

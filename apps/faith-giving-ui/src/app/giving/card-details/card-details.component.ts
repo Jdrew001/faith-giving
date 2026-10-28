@@ -1,4 +1,3 @@
-import { GivingExperienceService } from '../../core/services/giving-experience.service';
 import {
   HostBinding,
   AfterViewInit,
@@ -14,18 +13,10 @@ import { GrowlService } from '../../core/growl.service';
 @Component({
   selector: 'faith-giving-card-details',
   templateUrl: './card-details.component.html',
-  styleUrls: [
-    './card-details.component.legacy.css',
-    './card-details.component.css',
-  ],
+  styleUrls: ['./card-details.component.css'],
 })
 export class CardDetailsComponent implements AfterViewInit {
-  @HostBinding('class.redesign') get redesignEnabled() {
-    return this.experience.enabled;
-  }
-  @HostBinding('class.legacy') get legacyEnabled() {
-    return !this.experience.enabled;
-  }
+  @HostBinding('class.redesign') readonly primaryTheme = true;
 
   @Input() formSubmitted: boolean;
   @Input() stripe;
@@ -56,7 +47,7 @@ export class CardDetailsComponent implements AfterViewInit {
   zipCode;
   savePaymentMethod = false;
 
-  private readonly redesignElementStyles = {
+  readonly elementStyles = {
     base: {
       color: '#ffffff',
       iconColor: '#ffffff',
@@ -83,39 +74,6 @@ export class CardDetailsComponent implements AfterViewInit {
     },
   };
 
-  private readonly legacyElementStyles = {
-    base: {
-      color: '#1a1b21',
-      iconColor: '#1a1b21',
-      fontFamily: 'Plus Jakarta Sans, sans-serif',
-      fontSize: '16px',
-      fontSmoothing: 'antialiased',
-
-      '::placeholder': {
-        color: '#76777b',
-      },
-      ':-webkit-autofill': {
-        color: '#1a1b21',
-      },
-      '::-webkit-input-placeholder': {
-        color: '#76777b',
-      },
-    },
-    invalid: {
-      color: '#ba1a1a',
-      iconColor: '#ba1a1a',
-      '::placeholder': {
-        color: '#76777b',
-      },
-    },
-  };
-
-  get elementStyles() {
-    return this.experience.enabled
-      ? this.redesignElementStyles
-      : this.legacyElementStyles;
-  }
-
   elementClasses = {
     focus: 'focused',
     empty: 'empty',
@@ -123,9 +81,7 @@ export class CardDetailsComponent implements AfterViewInit {
   };
 
   get isZipCodeValid() {
-    return this.experience.enabled
-      ? /^\d{5}$/.test(this.zipCode?.toString() ?? '')
-      : this.zipCode?.toString()?.length === 5;
+    return /^\d{5}$/.test(this.zipCode?.toString() ?? '');
   }
 
   get isCreditCardFormValid() {
@@ -137,10 +93,7 @@ export class CardDetailsComponent implements AfterViewInit {
     );
   }
 
-  constructor(
-    public readonly experience: GivingExperienceService,
-    private growlService: GrowlService
-  ) {}
+  constructor(private growlService: GrowlService) {}
 
   ngAfterViewInit() {
     setTimeout(() => {
@@ -150,8 +103,8 @@ export class CardDetailsComponent implements AfterViewInit {
   }
 
   submit() {
-    if (this.experience.enabled && this.initRequest) return;
-    if (this.experience.enabled) this.formSubmitted = true;
+    if (this.initRequest) return;
+    this.formSubmitted = true;
     if (!this.isCreditCardFormValid) {
       this.growlService.showErrorMessage(
         'Please fix the errors in the form before submitting.'
@@ -178,15 +131,13 @@ export class CardDetailsComponent implements AfterViewInit {
       'assets/fonts/Poppins-Regular.woff2',
       document.baseURI
     ).href;
-    const elements = this.experience.enabled
-      ? this.stripe.elements({
-          fonts: [{ family: 'Poppins', src: `url(${fontUrl})`, weight: '400' }],
-        })
-      : this.stripe.elements();
+    const elements = this.stripe.elements({
+      fonts: [{ family: 'Poppins', src: `url(${fontUrl})`, weight: '400' }],
+    });
     this.number = elements.create('cardNumber', {
       style: this.elementStyles,
       classes: this.elementClasses,
-      ...(this.experience.enabled ? { disableLink: true } : {}),
+      disableLink: true,
       placeholder: '1234 1234 1234 1234',
     });
     this.exp = elements.create('cardExpiry', {
@@ -232,10 +183,9 @@ export class CardDetailsComponent implements AfterViewInit {
     });
     this.exp.addEventListener('ready', () => {
       this.expErrors = null;
-      if (!this.experience.enabled) this.cvvLoaded = true;
+
       setTimeout(() => {
-        if (this.experience.enabled) this.expLoaded = true;
-        else this.cvvLoaded = true;
+        this.expLoaded = true;
       }, 1000);
     });
 
@@ -250,10 +200,9 @@ export class CardDetailsComponent implements AfterViewInit {
     });
     this.cvv.addEventListener('ready', () => {
       this.cvvErrors = null;
-      if (!this.experience.enabled) this.expLoaded = true;
+
       setTimeout(() => {
-        if (this.experience.enabled) this.cvvLoaded = true;
-        else this.expLoaded = true;
+        this.cvvLoaded = true;
       }, 1000);
     });
   }
