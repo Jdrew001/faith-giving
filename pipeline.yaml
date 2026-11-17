@@ -228,7 +228,7 @@ nodejs:
         }
         EOF
         mkdir -p dist/apps/faith-giving-api/migrations
-        npx tsc apps/faith-giving-api/migrations/*.ts --outDir dist/apps/faith-giving-api/migrations --module commonjs --target es2018 --esModuleInterop --skipLibCheck
+        npx tsc apps/faith-giving-api/migrations/*.ts --outDir dist/apps/faith-giving-api/migrations --module commonjs --target es2018 --esModuleInterop --skipLibCheck --types node
         cat > dist/apps/faith-giving-api/migration-data-source.js <<'EOF'
         const { DataSource } = require('typeorm');
         require('dotenv').config();
