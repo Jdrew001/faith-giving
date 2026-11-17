@@ -6,12 +6,12 @@ export class CorsMiddleware implements NestMiddleware {
   private allowedOrigins: string[] | string = this.isDevelopment ? '*': ['https://discoverfaitharlington.org'];
 
   use(req: any, res: any, next: () => void) {
-    const origin = req.headers.origin as string;
+    const origin = this.requestOrigin(req);
     if (this.isDevelopment) {
       next();
       return;
     } 
-    if (this.allowedOrigins.includes(origin)) {
+    if (origin && this.allowedOrigins.includes(origin)) {
       res.setHeader('Access-Control-Allow-Origin', origin);
     } else {
       throw new BadRequestException('Unable to Authorize');
@@ -20,4 +20,15 @@ export class CorsMiddleware implements NestMiddleware {
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept');
     next();
   }
+
+  private requestOrigin(req: any): string | undefined {
+    if (typeof req.headers.origin === 'string') return req.headers.origin;
+    if (typeof req.headers.referer !== 'string') return undefined;
+    try {
+      return new URL(req.headers.referer).origin;
+    } catch {
+      return undefined;
+    }
+  }
+
 }
